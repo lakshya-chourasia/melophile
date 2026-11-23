@@ -2,13 +2,13 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-sans: 'Space Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: 'Bebas Neue', 'Space Grotesk', Impact, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 }
 
 /* ─────────────────────────────────────────────
-   RESET & VIEWPORT
+   RESET & VIEWPORT — COMICBEATS NEO-BRUTALIST THEME
 ───────────────────────────────────────────── */
 *, *::before, *::after {
   box-sizing: border-box;
@@ -16,12 +16,15 @@
 }
 
 :root {
-  --bg-canvas: #09090b;
-  --bg-surface: #111114;
-  --bg-elevated: #18181d;
-  --border-subtle: rgba(255, 255, 255, 0.08);
-  --accent-primary: #f59e0b;
-  --accent-hover: #fbbf24;
+  --bg-canvas: #0d0e15;
+  --bg-surface: #12131a;
+  --bg-surface-low: #1a1b22;
+  --bg-surface-container: #1e1f27;
+  --bg-surface-high: #292931;
+  --bg-surface-highest: #34343c;
+  --comic-cyan: #00f0ff;
+  --comic-magenta: #ff506e;
+  --comic-yellow: #fde400;
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-left: env(safe-area-inset-left, 0px);
@@ -35,9 +38,9 @@ html, body, #root {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background-color: #09090b;
-  color: #f4f4f6;
-  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: #0d0e15;
+  color: #e3e1ec;
+  font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -50,8 +53,24 @@ button, input, textarea, select {
   font-family: inherit;
 }
 
-.font-sans, .font-display {
-  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+.font-sans {
+  font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.font-display {
+  font-family: 'Bebas Neue', 'Space Grotesk', Impact, sans-serif;
+  letter-spacing: 0.03em;
+}
+
+@keyframes comicMarquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-comic-marquee {
+  display: flex;
+  width: max-content;
+  animation: comicMarquee 14s linear infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {

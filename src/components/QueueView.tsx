@@ -70,36 +70,36 @@ export const QueueView: React.FC<QueueViewProps> = ({
             else onPlayTrack(track);
           }
         }}
-        className={`group flex items-center gap-3.5 px-3.5 py-2.5 rounded-xl border transition-colors duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/70 ${
+        className={`group flex items-center gap-2.5 sm:gap-3.5 px-2.5 sm:px-3.5 py-2.5 border-2 border-black transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00f0ff] ${
           isNowPlayingRow
-            ? 'bg-[#1a1710] border-amber-500/40'
-            : 'bg-transparent hover:bg-white/[0.04] border-transparent hover:border-white/[0.06]'
+            ? 'bg-[#292931] shadow-[4px_4px_0px_#00f0ff]'
+            : 'bg-[#1e1f27] hover:bg-[#292931] shadow-[3px_3px_0px_#000000] hover:-translate-y-0.5'
         }`}
       >
         {/* Index / Equalizer Column */}
-        <div className="w-7 flex items-center justify-center shrink-0">
+        <div className={`${isNowPlayingRow ? 'flex' : 'hidden sm:flex'} w-7 sm:w-8 items-center justify-center shrink-0`}>
           {isNowPlayingRow && isPlaying ? (
-            <div className="flex items-end gap-[2px] h-3.5" aria-label="Playing">
-              <span className="w-[2px] bg-amber-400 rounded-full animate-bar-1" />
-              <span className="w-[2px] bg-amber-400 rounded-full animate-bar-2" />
-              <span className="w-[2px] bg-amber-400 rounded-full animate-bar-3" />
+            <div className="flex items-end gap-[2px] h-4" aria-label="Playing">
+              <span className="w-[3px] bg-[#00f0ff] animate-bar-1" />
+              <span className="w-[3px] bg-[#fde400] animate-bar-2" />
+              <span className="w-[3px] bg-[#ff506e] animate-bar-3" />
             </div>
           ) : (
             <span
-              className={`text-xs font-mono tabular-nums ${
-                isNowPlayingRow ? 'text-amber-400 font-semibold' : 'text-zinc-500 group-hover:hidden'
+              className={`font-display text-lg tracking-wider ${
+                isNowPlayingRow ? 'text-[#00f0ff]' : 'text-[#fde400] group-hover:hidden'
               }`}
             >
-              {indexLabel}
+              {isNowPlayingRow ? 'LIVE' : `#${indexLabel}`}
             </span>
           )}
           {!isNowPlayingRow && (
-            <Play className="w-3.5 h-3.5 text-zinc-100 fill-zinc-100 hidden group-hover:block" />
+            <Play className="w-4 h-4 text-[#00f0ff] fill-[#00f0ff] hidden group-hover:block" />
           )}
         </div>
 
         {/* Artwork */}
-        <div className="w-11 h-11 rounded-lg overflow-hidden bg-[#0c0c0f] border border-white/[0.08] shrink-0">
+        <div className="w-12 h-12 border-2 border-black overflow-hidden bg-[#0d0e15] shrink-0 shadow-[2px_2px_0px_#000000]">
           <ArtworkImage
             title={cleanTitle}
             artist={artist}
@@ -113,44 +113,48 @@ export const QueueView: React.FC<QueueViewProps> = ({
         {/* Title & Artist */}
         <div className="flex-1 min-w-0">
           <p
-            className={`text-sm font-semibold truncate leading-snug ${
-              isNowPlayingRow ? 'text-amber-400' : 'text-zinc-100 group-hover:text-white'
+            className={`font-display text-lg tracking-wide uppercase truncate leading-tight ${
+              isNowPlayingRow ? 'text-[#00f0ff]' : 'text-[#e3e1ec]'
             }`}
           >
             {cleanTitle}
           </p>
-          <p className="text-xs text-zinc-400 truncate mt-0.5">{artist}</p>
+          <p className="text-xs text-[#b9cacb] font-medium truncate mt-0.5">{artist}</p>
         </div>
 
         {/* Duration */}
-        <span className="text-xs font-mono tabular-nums text-zinc-500 hidden sm:inline shrink-0 mr-1">
+        <span className="text-xs font-mono font-bold tabular-nums text-[#b9cacb] hidden sm:inline shrink-0 mr-1">
           {durationLabel}
         </span>
 
         {/* Row Actions */}
         <div
-          className="flex items-center gap-1 shrink-0"
+          className="flex items-center gap-1.5 shrink-0"
           onClick={(e) => e.stopPropagation()}
         >
-          {isNowPlayingRow && (
-            <button
-              type="button"
-              onClick={onTogglePlay}
-              className="w-8 h-8 rounded-lg text-amber-400 hover:bg-amber-400/15 flex items-center justify-center transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber-400"
-              title={isPlaying ? 'Pause' : 'Play'}
-              aria-label={isPlaying ? 'Pause current track' : 'Resume current track'}
-            >
-              {isPlaying ? <Pause className="w-4 h-4 fill-current" /> : <Play className="w-4 h-4 fill-current ml-0.5" />}
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={() => (isNowPlayingRow ? onTogglePlay() : onPlayTrack(track))}
+            className="w-9 h-9 bg-[#00f0ff] text-[#00363a] border-2 border-black shadow-[2px_2px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none flex items-center justify-center transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00f0ff]"
+            title={isNowPlayingRow && isPlaying ? 'Pause' : 'Play'}
+            aria-label={isNowPlayingRow && isPlaying ? 'Pause current track' : `Play ${cleanTitle}`}
+          >
+            {isNowPlayingRow && isPlaying ? (
+              <Pause className="w-4 h-4 fill-[#00363a]" />
+            ) : (
+              <Play className="w-4 h-4 fill-[#00363a] ml-0.5" />
+            )}
+          </button>
 
           <button
             type="button"
             onClick={() => onToggleFavorite(track)}
-            className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber-400 ${
-              fav ? 'text-amber-400 hover:bg-white/[0.06]' : 'text-zinc-500 hover:text-zinc-100 hover:bg-white/[0.06]'
+            className={`w-9 h-9 border-2 border-black flex items-center justify-center transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00f0ff] ${
+              fav
+                ? 'bg-[#ff506e] text-white shadow-[2px_2px_0px_#000000]'
+                : 'bg-[#12131a] text-[#b9cacb] hover:text-white hover:bg-[#292931]'
             }`}
-            title={fav ? 'Remove from favorites' : 'Save to favorites'}
+            title={fav ? 'Remove from vault' : 'Save to vault'}
             aria-label={fav ? `Remove ${cleanTitle} from favorites` : `Save ${cleanTitle} to favorites`}
           >
             <Heart className={`w-4 h-4 ${fav ? 'fill-current' : ''}`} />
@@ -160,7 +164,7 @@ export const QueueView: React.FC<QueueViewProps> = ({
             <button
               type="button"
               onClick={() => onRemoveFromQueue(track)}
-              className="w-8 h-8 rounded-lg text-zinc-500 hover:text-rose-400 hover:bg-rose-500/10 flex items-center justify-center transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-rose-400"
+              className="w-9 h-9 bg-[#12131a] border-2 border-black text-[#b9cacb] hover:text-white hover:bg-[#ff506e] flex items-center justify-center transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff506e]"
               title="Remove from queue"
               aria-label={`Remove ${cleanTitle} from queue`}
             >
@@ -173,42 +177,44 @@ export const QueueView: React.FC<QueueViewProps> = ({
   };
 
   return (
-    <section className="space-y-6 max-w-4xl">
+    <section className="space-y-6 max-w-5xl">
       {/* Header */}
-      <div className="flex flex-wrap items-end justify-between gap-4 pb-4 border-b border-white/[0.07]">
+      <div className="flex flex-wrap items-end justify-between gap-4 pb-4 border-b-[3px] border-black">
         <div>
-          <h2 className="text-2xl sm:text-3xl font-bold text-zinc-50 tracking-tight text-balance">
-            Playback Queue
-          </h2>
-          <p className="text-xs sm:text-sm text-zinc-400 mt-1 flex items-center gap-2">
-            <span className="font-mono tabular-nums">{queue.length}</span>
-            <span>{queue.length === 1 ? 'track in session' : 'tracks in session'}</span>
-            <span aria-hidden="true">·</span>
-            <span>{isShuffle ? 'Shuffle active' : 'Sequential order'}</span>
+          <div className="flex items-center gap-2.5 mb-1">
+            <span className="bg-[#fde400] text-[#201c00] border-2 border-black px-2 py-0.5 font-display text-xs tracking-wider uppercase -rotate-2 shadow-[2px_2px_0px_#000000]">
+              THE COMIC VAULT QUEUE
+            </span>
+            <span className="text-xs font-mono font-bold text-[#00f0ff]">
+              {queue.length} {queue.length === 1 ? 'ISSUE' : 'ISSUES'} LOADED
+            </span>
+          </div>
+          <p className="text-xs sm:text-sm text-[#b9cacb] font-medium">
+            {isShuffle ? 'Multiverse Shuffle Active' : 'Sequential Arc Playback'}
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
           <button
             type="button"
             onClick={onToggleShuffle}
-            className={`px-3.5 py-2 rounded-lg text-xs font-medium border transition-colors cursor-pointer flex items-center gap-1.5 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/70 ${
+            className={`px-4 py-2 border-2 border-black font-display text-sm tracking-wider uppercase transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap shadow-[3px_3px_0px_#000000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00f0ff] ${
               isShuffle
-                ? 'bg-amber-500/15 text-amber-300 border-amber-500/40'
-                : 'bg-[#18181D] text-zinc-300 hover:text-white border-white/[0.08] hover:border-white/[0.16]'
+                ? 'bg-[#00f0ff] text-[#00363a]'
+                : 'bg-[#1e1f27] text-[#e3e1ec] hover:bg-[#292931]'
             }`}
           >
             <Shuffle className="w-3.5 h-3.5" />
-            <span>{isShuffle ? 'Shuffle On' : 'Shuffle Off'}</span>
+            <span>{isShuffle ? 'SHUFFLE ON' : 'SHUFFLE OFF'}</span>
           </button>
 
           {onClearQueue && upNextTracks.length > 0 && (
             <button
               type="button"
               onClick={onClearQueue}
-              className="px-3.5 py-2 rounded-lg text-xs font-medium text-zinc-300 hover:text-rose-300 bg-[#18181D] hover:bg-rose-500/10 border border-white/[0.08] hover:border-rose-500/30 transition-colors cursor-pointer whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-400/70"
+              className="px-4 py-2 bg-[#ff506e] hover:bg-[#ff6b85] text-white border-2 border-black shadow-[3px_3px_0px_#000000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none font-display text-sm tracking-wider uppercase transition-all cursor-pointer whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff506e]"
             >
-              Clear Up Next
+              CLEAR UP NEXT
             </button>
           )}
         </div>
@@ -216,43 +222,48 @@ export const QueueView: React.FC<QueueViewProps> = ({
 
       {/* Now Playing Section */}
       {currentTrack && (
-        <div className="space-y-2">
-          <h3 className="text-xs font-semibold text-zinc-400 tracking-wide px-1">Now Playing</h3>
+        <div className="space-y-2.5">
+          <h3 className="font-display text-lg tracking-wider uppercase text-[#00f0ff] flex items-center gap-2">
+            <span>NOW SPINNING</span>
+            <span className="h-[2px] flex-1 bg-black" />
+          </h3>
           {renderTrackRow(currentTrack, '00', true)}
         </div>
       )}
 
       {/* Up Next Section */}
-      <div className="space-y-2">
-        <div className="flex items-center justify-between px-1">
-          <h3 className="text-xs font-semibold text-zinc-400 tracking-wide">
-            Up Next{' '}
-            <span className="font-mono tabular-nums text-zinc-500 ml-1">({upNextTracks.length})</span>
+      <div className="space-y-2.5">
+        <div className="flex items-center gap-2">
+          <h3 className="font-display text-lg tracking-wider uppercase text-[#fde400]">
+            UP NEXT ({upNextTracks.length})
           </h3>
+          <span className="h-[2px] flex-1 bg-black" />
         </div>
 
         {upNextTracks.length === 0 ? (
-          <div className="rounded-xl border border-white/[0.07] bg-[#141418] px-6 py-12 text-center space-y-3">
-            <div className="w-10 h-10 rounded-lg bg-white/[0.04] border border-white/[0.07] flex items-center justify-center mx-auto text-zinc-400">
-              <ListMusic className="w-5 h-5" />
+          <div className="border-[3px] border-black bg-[#1e1f27] shadow-[5px_5px_0px_#000000] px-6 py-12 text-center space-y-4">
+            <div className="w-12 h-12 bg-[#00f0ff] text-[#00363a] border-2 border-black shadow-[3px_3px_0px_#000000] flex items-center justify-center mx-auto -rotate-3">
+              <ListMusic className="w-6 h-6" />
             </div>
             <div>
-              <p className="text-sm font-semibold text-zinc-200">No upcoming tracks in your queue</p>
-              <p className="text-xs text-zinc-400 mt-1">
-                Add songs from Home, Search, or your Library to build a continuous session.
+              <p className="font-display text-2xl tracking-wide text-white uppercase">
+                QUEUE DECK IS EMPTY!
+              </p>
+              <p className="text-xs text-[#b9cacb] mt-1 max-w-sm mx-auto">
+                Add tracks from Home Base, Explore, or Search to stack your comic session.
               </p>
             </div>
             <button
               type="button"
               onClick={onBrowseHome}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-amber-400 hover:bg-amber-300 text-zinc-950 text-xs font-semibold transition-colors cursor-pointer"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#fde400] hover:bg-[#ffec42] text-[#201c00] border-2 border-black shadow-[4px_4px_0px_#000000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none font-display text-base tracking-wider uppercase transition-all cursor-pointer"
             >
-              <Compass className="w-3.5 h-3.5" />
-              <span>Browse Tracks</span>
+              <Compass className="w-4 h-4" />
+              <span>BROWSE TRACKS</span>
             </button>
           </div>
         ) : (
-          <div className="space-y-1">
+          <div className="space-y-2.5">
             {upNextTracks.map((track, i) =>
               renderTrackRow(track, String(i + 1).padStart(2, '0'), false)
             )}

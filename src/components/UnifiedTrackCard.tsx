@@ -6,7 +6,9 @@ import { Play, Pause, Plus, Check, Heart } from 'lucide-react';
 
 interface UnifiedTrackCardProps {
   track: Track;
-  variant?: 'card' | 'shelf';
+  variant: 'shelf' | 'card';
+  issueNumber?: string;
+  fxLabel?: string;
   isCurrent: boolean;
   isPlaying: boolean;
   isFavorite: boolean;
@@ -17,9 +19,19 @@ interface UnifiedTrackCardProps {
   onToggleFavorite: (track: Track) => void;
 }
 
+const FX_BADGE_STYLES = [
+  { text: 'BOOM!', cls: 'bg-[#ff506e] text-white rotate-2' },
+  { text: 'ZAP!', cls: 'bg-[#00f0ff] text-[#00363a] -rotate-2' },
+  { text: 'CRUNCH!', cls: 'bg-[#fde400] text-[#201c00] rotate-2' },
+  { text: 'PUNCH!', cls: 'bg-[#ff506e] text-white -rotate-3' },
+  { text: 'SLAM!', cls: 'bg-[#00f0ff] text-[#00363a] rotate-1' },
+];
+
 export const UnifiedTrackCard: React.FC<UnifiedTrackCardProps> = ({
   track,
-  variant = 'card',
+  variant,
+  issueNumber,
+  fxLabel,
   isCurrent,
   isPlaying,
   isFavorite,
@@ -29,7 +41,7 @@ export const UnifiedTrackCard: React.FC<UnifiedTrackCardProps> = ({
   onAddToQueue,
   onToggleFavorite,
 }) => {
-  const { title: cleanTitle, artistFromTitle } = cleanTrackTitle(track.title);
+  const { title: cleanTitle, artistFromTitle } = cleanTrackTitle(track.title, track.artist);
   const artist = getFullSingerName(track.artist || artistFromTitle || '', cleanTitle);
   const durationLabel =
     track.duration && track.duration !== 'YouTube Track'
@@ -38,7 +50,12 @@ export const UnifiedTrackCard: React.FC<UnifiedTrackCardProps> = ({
       ? formatTime(track.durationSec)
       : '';
 
-  const handlePrimaryClick = () => {
+  // Deterministic comic FX badge per track
+  const hash = track.id.split('').reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
+  const fx = FX_BADGE_STYLES[hash % FX_BADGE_STYLES.length];
+  const badgeText = fxLabel || fx.text;
+
+  const handlePrimaryAction = () => {
     if (isCurrent) {
       onTogglePlay();
     } else {
@@ -49,92 +66,109 @@ export const UnifiedTrackCard: React.FC<UnifiedTrackCardProps> = ({
   if (variant === 'shelf') {
     return (
       <div
+        onClick={handlePrimaryAction}
         role="button"
         tabIndex={0}
-        onClick={handlePrimaryClick}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
-            handlePrimaryClick();
+            handlePrimaryAction();
           }
         }}
-        className={`group flex items-center gap-3 p-2 pr-3 rounded-xl border transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/70 ${
+        className={`group flex items-center justify-between gap-2 sm:gap-3 p-2 sm:p-2.5 rounded border-[2px] border-black transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00f0ff] ${
           isCurrent
-            ? 'bg-[#1a160e] border-amber-500/45 shadow-[0_6px_24px_-12px_rgba(245,158,11,0.35)]'
-            : 'bg-[#141418]/90 hover:bg-[#1b1b22] border-white/[0.06] hover:border-white/[0.14]'
+            ? 'bg-[#34343c] shadow-[3px_3px_0px_#000000]'
+            : 'bg-[#1a1b22] hover:bg-[#292931] shadow-[2px_2px_0px_#000000]'
         }`}
-        aria-label={`${isCurrent && isPlaying ? 'Pause' : 'Play'} ${cleanTitle} by ${artist}`}
       >
-        {/* Artwork + Play Overlay */}
-        <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-[#0c0c0f] shrink-0 ring-1 ring-white/[0.08]">
-          <ArtworkImage
-            title={cleanTitle}
-            artist={artist}
-            trackId={track.id}
-            initialSrc={track.thumbnail}
-            alt={`${cleanTitle} by ${artist}`}
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-          />
-
-          <div
-            className={`absolute inset-0 bg-black/55 flex items-center justify-center transition-opacity duration-150 ${
-              isCurrent
-                ? 'opacity-100'
-                : 'opacity-0 group-hover:opacity-100 group-focus-within:opacity-100'
-            }`}
-          >
-            {isCurrent && isPlaying ? (
-              <div className="flex items-end gap-[2px] h-3.5 group-hover:hidden">
-                <span className="w-[2px] bg-amber-400 rounded-full animate-bar-1" />
-                <span className="w-[2px] bg-amber-400 rounded-full animate-bar-2" />
-                <span className="w-[2px] bg-amber-400 rounded-full animate-bar-3" />
-              </div>
-            ) : null}
-            <span
-              className={`${
-                isCurrent && isPlaying ? 'hidden group-hover:flex' : 'flex'
-              } w-7 h-7 rounded-full bg-amber-400 text-zinc-950 items-center justify-center shadow-md`}
+        {/* Rank + Poster + Title & Speech-Tag Artist */}
+        <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
+          {issueNumber && (
+            <div
+              className={`hidden sm:flex w-7 h-7 sm:w-8 sm:h-8 border-[2px] border-black font-display text-lg sm:text-xl items-center justify-center shadow-[2px_2px_0px_#000000] shrink-0 ${
+                isCurrent
+                  ? 'bg-[#fde400] text-[#201c00] -rotate-2'
+                  : 'bg-[#1e1f27] text-[#e3e1ec]'
+              }`}
             >
-              {isCurrent && isPlaying ? (
-                <Pause className="w-3.5 h-3.5 fill-zinc-950 text-zinc-950" />
-              ) : (
-                <Play className="w-3.5 h-3.5 fill-zinc-950 text-zinc-950 ml-0.5" />
-              )}
-            </span>
+              {issueNumber}
+            </div>
+          )}
+
+          <div className="relative w-12 h-12 rounded border-[2px] border-black bg-[#0d0e15] shadow-[2px_2px_0px_#000000] shrink-0 overflow-hidden">
+            <ArtworkImage
+              title={cleanTitle}
+              artist={artist}
+              trackId={track.id}
+              initialSrc={track.thumbnail}
+              alt={cleanTitle}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            />
+            {isCurrent && isPlaying && (
+              <div className="absolute inset-0 bg-black/55 flex items-center justify-center gap-[3px]">
+                <span className="w-[3px] h-4 bg-[#00f0ff] animate-bar-1" />
+                <span className="w-[3px] h-5 bg-[#fde400] animate-bar-2" />
+                <span className="w-[3px] h-3.5 bg-[#ff506e] animate-bar-3" />
+              </div>
+            )}
+          </div>
+
+          <div className="min-w-0 flex-1">
+            <p
+              className={`text-sm font-bold uppercase truncate leading-snug tracking-wide ${
+                isCurrent ? 'text-[#dbfcff]' : 'text-[#e3e1ec] group-hover:text-[#00f0ff]'
+              }`}
+            >
+              {cleanTitle}
+            </p>
+            <div className="inline-block mt-0.5 max-w-full">
+              <span className="block bg-[#0d0e15] text-[#b9cacb] text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border border-black/80 shadow-[1px_1px_0px_#000000] truncate">
+                {artist}
+              </span>
+            </div>
           </div>
         </div>
 
-        {/* Title & Artist */}
-        <div className="flex-1 min-w-0">
-          <p
-            className={`text-sm font-semibold truncate leading-snug transition-colors ${
-              isCurrent ? 'text-amber-400' : 'text-zinc-100 group-hover:text-white'
-            }`}
-          >
-            {cleanTitle}
-          </p>
-          <p className="text-xs text-zinc-400 truncate mt-0.5 leading-snug">{artist}</p>
-        </div>
-
-        {/* Duration + Actions */}
+        {/* Right: Comic FX Tag + Duration + Actions */}
         <div
-          className="flex items-center gap-1 shrink-0"
+          className="flex items-center gap-2 shrink-0"
           onClick={(e) => e.stopPropagation()}
         >
+          <span
+            className={`hidden sm:inline-block font-display text-[13px] px-2 py-0.5 border-[2px] border-black shadow-[2px_2px_0px_#000000] ${fx.cls}`}
+          >
+            {badgeText}
+          </span>
+
           {durationLabel && (
-            <span className="text-[11px] font-mono tabular-nums text-zinc-500 mr-1 hidden sm:inline">
+            <span className="hidden md:inline text-xs font-mono font-bold tabular-nums text-[#b9cacb] min-w-[40px] text-right">
               {durationLabel}
             </span>
           )}
+
+          <button
+            type="button"
+            onClick={() => onToggleFavorite(track)}
+            className={`w-9 h-9 sm:w-8 sm:h-8 rounded border-[2px] border-black flex items-center justify-center transition-all cursor-pointer shadow-[2px_2px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 ${
+              isFavorite
+                ? 'bg-[#ff506e] text-white'
+                : 'bg-[#1e1f27] text-[#b9cacb] hover:text-[#ff506e] hover:bg-[#292931]'
+            }`}
+            title={isFavorite ? 'Remove from Vault' : 'Save to Vault'}
+            aria-label={isFavorite ? `Remove ${cleanTitle} from Vault` : `Save ${cleanTitle} to Vault`}
+          >
+            <Heart className={`w-4 h-4 sm:w-3.5 sm:h-3.5 ${isFavorite ? 'fill-current' : ''}`} />
+          </button>
+
           <button
             type="button"
             onClick={() => onAddToQueue(track)}
-            className={`w-7 h-7 rounded-lg flex items-center justify-center transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber-400 ${
+            className={`hidden sm:flex w-8 h-8 rounded border-[2px] border-black items-center justify-center transition-all cursor-pointer shadow-[2px_2px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 ${
               isInQueue
-                ? 'text-amber-400 hover:bg-white/[0.06]'
-                : 'text-zinc-500 hover:text-zinc-100 hover:bg-white/[0.06] sm:opacity-0 sm:group-hover:opacity-100 sm:focus:opacity-100'
+                ? 'bg-[#fde400] text-[#201c00]'
+                : 'bg-[#1e1f27] text-[#b9cacb] hover:text-[#00f0ff] hover:bg-[#292931]'
             }`}
-            title={isInQueue ? 'In queue' : 'Add to queue'}
+            title={isInQueue ? 'In Queue' : 'Add to Queue'}
             aria-label={isInQueue ? `${cleanTitle} is in queue` : `Add ${cleanTitle} to queue`}
           >
             {isInQueue ? <Check className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
@@ -142,143 +176,120 @@ export const UnifiedTrackCard: React.FC<UnifiedTrackCardProps> = ({
 
           <button
             type="button"
-            onClick={() => onToggleFavorite(track)}
-            className={`w-7 h-7 rounded-lg flex items-center justify-center transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber-400 ${
-              isFavorite
-                ? 'text-amber-400 hover:bg-white/[0.06]'
-                : 'text-zinc-500 hover:text-zinc-100 hover:bg-white/[0.06] sm:opacity-0 sm:group-hover:opacity-100 sm:focus:opacity-100'
+            onClick={handlePrimaryAction}
+            className={`w-10 h-10 sm:w-9 sm:h-9 rounded-full border-[2px] border-black flex items-center justify-center transition-transform cursor-pointer shadow-[2px_2px_0px_#000000] hover:scale-105 active:translate-x-0.5 active:translate-y-0.5 ${
+              isCurrent
+                ? 'bg-[#fde400] text-[#201c00]'
+                : 'bg-[#00f0ff] text-[#00363a]'
             }`}
-            title={isFavorite ? 'Remove from favorites' : 'Save to favorites'}
-            aria-label={isFavorite ? `Remove ${cleanTitle} from favorites` : `Save ${cleanTitle} to favorites`}
+            title={isCurrent && isPlaying ? 'Pause' : `Play ${cleanTitle}`}
+            aria-label={isCurrent && isPlaying ? `Pause ${cleanTitle}` : `Play ${cleanTitle}`}
           >
-            <Heart className={`w-3.5 h-3.5 ${isFavorite ? 'fill-current' : ''}`} />
+            {isCurrent && isPlaying ? (
+              <Pause className="w-4 h-4 fill-current" />
+            ) : (
+              <Play className="w-4 h-4 fill-current ml-0.5" />
+            )}
           </button>
         </div>
       </div>
     );
   }
 
+  // ── Variant: 'card' (Comic Issue Cover Card) ──
   return (
     <div
+      onClick={handlePrimaryAction}
       role="button"
       tabIndex={0}
-      onClick={handlePrimaryClick}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          handlePrimaryClick();
+          handlePrimaryAction();
         }
       }}
-      className={`group relative rounded-xl p-3 border transition-all duration-150 cursor-pointer flex flex-col focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/70 ${
+      className={`group flex flex-col justify-between rounded-lg p-2.5 sm:p-3.5 border-[2px] border-black transition-all duration-200 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00f0ff] ${
         isCurrent
-          ? 'bg-[#1a160e] border-amber-500/45 shadow-[0_10px_30px_-14px_rgba(245,158,11,0.3)]'
-          : 'bg-[#141418]/90 hover:bg-[#1a1a21] border-white/[0.06] hover:border-white/[0.14]'
+          ? 'bg-[#292931] shadow-[4px_4px_0px_#00f0ff] sm:shadow-[6px_6px_0px_#00f0ff]'
+          : 'bg-[#1e1f27] shadow-[4px_4px_0px_#000000] sm:shadow-[5px_5px_0px_#000000] hover:-translate-y-1 hover:shadow-[7px_7px_0px_#000000]'
       }`}
-      aria-label={`${isCurrent && isPlaying ? 'Pause' : 'Play'} ${cleanTitle} by ${artist}`}
     >
-      {/* Artwork Container */}
-      <div className="relative aspect-square w-full rounded-lg overflow-hidden bg-[#0c0c0f] mb-3 ring-1 ring-white/[0.06]">
+      {/* Square Comic Cover Art */}
+      <div className="relative aspect-square w-full rounded overflow-hidden border-[2px] border-black bg-[#0d0e15] mb-2.5 sm:mb-3.5">
         <ArtworkImage
           title={cleanTitle}
           artist={artist}
           trackId={track.id}
           initialSrc={track.thumbnail}
-          alt={`${cleanTitle} by ${artist}`}
-          className="w-full h-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.04]"
+          alt={cleanTitle}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
 
-        {/* Measured Bottom Contrast Scrim */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-55 group-hover:opacity-80 transition-opacity duration-150 pointer-events-none" />
-
-        {/* Live Equalizer Bars (Only when genuinely playing) */}
-        {isCurrent && isPlaying && (
-          <div
-            className="absolute top-2.5 left-2.5 h-6 px-2 rounded-md bg-black/75 backdrop-blur-md flex items-center gap-1.5 ring-1 ring-amber-400/30"
-            aria-label="Currently playing"
-          >
-            <div className="flex items-end gap-[2px] h-3">
-              <span className="w-[2px] bg-amber-400 rounded-full animate-bar-1" />
-              <span className="w-[2px] bg-amber-400 rounded-full animate-bar-2" />
-              <span className="w-[2px] bg-amber-400 rounded-full animate-bar-3" />
-            </div>
-            <span className="text-[11px] font-medium text-amber-300 leading-none">Playing</span>
+        {/* Top-Left Comic Issue Number */}
+        {issueNumber && (
+          <div className="absolute top-1.5 left-1.5 sm:top-2 sm:left-2 flex items-center gap-1">
+            <span className="bg-[#fde400] text-[#201c00] border-[2px] border-black font-display text-xs sm:text-base px-1.5 sm:px-2 py-0.5 leading-none shadow-[2px_2px_0px_#000000] -rotate-3">
+              #{issueNumber}
+            </span>
           </div>
         )}
 
-        {/* Primary Play / Pause Trigger */}
+        {/* Bottom-Right Comic Burst Tag */}
+        <div
+          className={`hidden sm:block absolute bottom-2 right-2 border-[2px] border-black font-display text-sm px-2 py-0.5 leading-none shadow-[2px_2px_0px_#000000] ${fx.cls}`}
+        >
+          {badgeText}
+        </div>
+
+        {/* Center Play Action Burst */}
         <button
           type="button"
           onClick={(e) => {
             e.stopPropagation();
-            handlePrimaryClick();
+            handlePrimaryAction();
           }}
-          className={`absolute bottom-2.5 right-2.5 w-10 h-10 rounded-full bg-amber-400 hover:bg-amber-300 text-zinc-950 flex items-center justify-center shadow-[0_8px_20px_rgba(0,0,0,0.45)] transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white ${
+          className={`absolute inset-0 m-auto w-11 h-11 sm:w-13 sm:h-13 rounded-full border-[2px] border-black bg-[#00f0ff] text-[#00363a] shadow-[3px_3px_0px_#000000] flex items-center justify-center transition-all duration-200 cursor-pointer ${
             isCurrent
-              ? 'opacity-100 translate-y-0'
-              : 'opacity-0 translate-y-1.5 group-hover:opacity-100 group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:translate-y-0'
+              ? 'opacity-100 scale-100'
+              : 'opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100'
           }`}
+          title={isCurrent && isPlaying ? 'Pause' : `Play ${cleanTitle}`}
           aria-label={isCurrent && isPlaying ? `Pause ${cleanTitle}` : `Play ${cleanTitle}`}
         >
           {isCurrent && isPlaying ? (
-            <Pause className="w-4 h-4 fill-zinc-950 text-zinc-950" />
+            <Pause className="w-5 h-5 fill-current" />
           ) : (
-            <Play className="w-4 h-4 fill-zinc-950 text-zinc-950 ml-0.5" />
+            <Play className="w-5 h-5 fill-current ml-0.5" />
           )}
         </button>
       </div>
 
-      {/* Metadata & Quick Actions */}
-      <div className="flex-1 flex flex-col justify-between gap-2 min-w-0">
-        <div className="min-w-0">
+      {/* Metadata + Bottom Ink Strip */}
+      <div className="min-w-0">
+        <div className="flex items-center justify-between gap-1.5 mb-0.5">
           <p
-            className={`text-sm font-semibold truncate leading-snug transition-colors ${
-              isCurrent ? 'text-amber-400' : 'text-zinc-100 group-hover:text-white'
+            className={`font-display text-lg sm:text-2xl tracking-wide uppercase truncate leading-tight ${
+              isCurrent ? 'text-[#00f0ff]' : 'text-[#dbfcff]'
             }`}
           >
             {cleanTitle}
           </p>
-          <p className="text-xs text-zinc-400 truncate mt-0.5 leading-snug">{artist}</p>
-        </div>
-
-        {/* Clean Unboxed Footer Metadata + Subtle Affordances */}
-        <div className="flex items-center justify-between pt-1.5 border-t border-white/[0.05]">
-          <span className="text-[11px] font-mono tabular-nums text-zinc-500">
-            {durationLabel || '—'}
-          </span>
-
-          <div
-            className="flex items-center gap-0.5"
-            onClick={(e) => e.stopPropagation()}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleFavorite(track);
+            }}
+            className={`w-8 h-8 -mr-1.5 flex items-center justify-center shrink-0 transition-colors cursor-pointer ${
+              isFavorite ? 'text-[#ff506e]' : 'text-[#b9cacb] hover:text-[#ff506e]'
+            }`}
+            aria-label={isFavorite ? 'Remove from Vault' : 'Save to Vault'}
           >
-            <button
-              type="button"
-              onClick={() => onAddToQueue(track)}
-              className={`w-7 h-7 rounded-md flex items-center justify-center transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber-400 ${
-                isInQueue
-                  ? 'text-amber-400 hover:bg-white/[0.06]'
-                  : 'text-zinc-500 hover:text-zinc-100 hover:bg-white/[0.06]'
-              }`}
-              title={isInQueue ? 'In queue' : 'Add to queue'}
-              aria-label={isInQueue ? `${cleanTitle} is in queue` : `Add ${cleanTitle} to queue`}
-            >
-              {isInQueue ? <Check className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
-            </button>
-
-            <button
-              type="button"
-              onClick={() => onToggleFavorite(track)}
-              className={`w-7 h-7 rounded-md flex items-center justify-center transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber-400 ${
-                isFavorite
-                  ? 'text-amber-400 hover:bg-white/[0.06]'
-                  : 'text-zinc-500 hover:text-zinc-100 hover:bg-white/[0.06]'
-              }`}
-              title={isFavorite ? 'Remove from favorites' : 'Save to favorites'}
-              aria-label={isFavorite ? `Remove ${cleanTitle} from favorites` : `Save ${cleanTitle} to favorites`}
-            >
-              <Heart className={`w-3.5 h-3.5 ${isFavorite ? 'fill-current' : ''}`} />
-            </button>
-          </div>
+            <Heart className={`w-4 h-4 ${isFavorite ? 'fill-current' : ''}`} />
+          </button>
         </div>
+
+        <p className="text-[11px] sm:text-xs text-[#b9cacb] uppercase font-medium truncate">{artist}</p>
       </div>
     </div>
   );

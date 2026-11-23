@@ -338,6 +338,8 @@ export const YouTubePlayer = forwardRef<YouTubePlayerHandle, YouTubePlayerProps>
           try {
             const hidden = isDocumentHidden();
             if (autoPlay && playerRef.current.loadVideoById) {
+              callbacksRef.current.onTimeUpdate(0, 0);
+              callbacksRef.current.onStateChange(true, true);
               if (hidden) {
                 // Background / screen-off track switch: load at full volume immediately
                 pendingFadeInRef.current = false;
@@ -408,6 +410,8 @@ export const YouTubePlayer = forwardRef<YouTubePlayerHandle, YouTubePlayerProps>
             if (playerRef.current?.seekTo) {
               endFadeTriggeredForIdRef.current = null;
               playerRef.current.seekTo(seconds, true);
+              const dur = playerRef.current.getDuration ? playerRef.current.getDuration() || 0 : 0;
+              callbacksRef.current.onTimeUpdate(seconds, dur);
             }
           } catch (e) {
             console.warn('YouTubePlayer seekTo error:', e);
@@ -527,11 +531,22 @@ export const YouTubePlayer = forwardRef<YouTubePlayerHandle, YouTubePlayerProps>
               lastLoadedIdRef.current = initialVideoId;
               try {
                 // Ensure the underlying iframe carries full Android media permissions
+                // and never receives focus/hover that wakes YouTube's center pause HUD
                 const iframe = event.target.getIframe?.();
                 if (iframe) {
                   iframe.setAttribute('allow', 'autoplay; encrypted-media; picture-in-picture');
                   iframe.setAttribute('playsinline', '1');
+                  iframe.setAttribute('tabindex', '-1');
+                  iframe.style.pointerEvents = 'none';
                 }
+                const disableCaptions = (target: any) => {
+                  try {
+                    target.unloadModule?.('captions');
+                    target.unloadModule?.('cc');
+                    target.setOption?.('captions', 'track', {});
+                  } catch {}
+                };
+                disableCaptions(event.target);
                 applyRawVolume(
                   isPlayingPropRef.current && !isDocumentHidden() ? 0 : targetVolumeRef.current
                 );
@@ -548,11 +563,22 @@ export const YouTubePlayer = forwardRef<YouTubePlayerHandle, YouTubePlayerProps>
                 console.warn('onReady setup error:', e);
               }
             },
+            onApiChange: (event: any) => {
+              try {
+                event.target?.unloadModule?.('captions');
+                event.target?.unloadModule?.('cc');
+                event.target?.setOption?.('captions', 'track', {});
+              } catch {}
+            },
             onStateChange: (event: any) => {
               // YT.PlayerState: -1 unstarted, 0 ended, 1 playing, 2 paused, 3 buffering, 5 video cued
               const state = event.data;
               if (state === 1) {
-                // PLAYING
+                // PLAYING — ensure auto-captions / subtitle overlays stay unloaded
+                try {
+                  event.target?.unloadModule?.('captions');
+                  event.target?.unloadModule?.('cc');
+                } catch {}
                 bgPauseRecoveryCountRef.current = 0;
                 if (isDocumentHidden()) {
                   pendingFadeInRef.current = false;
@@ -720,7 +746,7 @@ export const YouTubePlayer = forwardRef<YouTubePlayerHandle, YouTubePlayerProps>
             }
           } catch {}
         }
-      }, 150);
+      }, 80);
 
       return () => {
         if (updateTimerRef.current) {
@@ -737,7 +763,7 @@ export const YouTubePlayer = forwardRef<YouTubePlayerHandle, YouTubePlayerProps>
       >
         <div
           ref={containerRef}
-          className="w-full h-full flex items-center justify-center pointer-events-none scale-[1.45] origin-[50%_46%] [&>iframe]:w-full [&>iframe]:h-full [&>iframe]:object-cover"
+          className="w-full h-full flex items-center justify-center pointer-events-none [&>iframe]:w-full [&>iframe]:h-full [&>iframe]:border-0"
         />
       </div>
     );

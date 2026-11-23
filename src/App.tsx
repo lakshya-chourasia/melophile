@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { User, onAuthStateChanged, signInWithPopup, signOut } from 'firebase/auth';
 import { Track, RepeatMode, VisualizerMode, ActiveView, GenreCollection, Playlist, ThemePreset, StreamQuality, PlayerStyle } from './types/player';
 import { THEME_PRESETS } from './utils/themeConfig';
 import { Sidebar } from './components/Sidebar';
@@ -12,11 +13,26 @@ import { PlayerBottomBar } from './components/PlayerBottomBar';
 import { MobileBottomNav } from './components/MobileBottomNav';
 import { YouTubePlayer, YouTubePlayerHandle } from './components/YouTubePlayer';
 import { SpotifyLayout } from './components/SpotifyLayout';
-import { getNextTrackIndex, getPrevTrackIndex, extractYouTubeId, cleanTrackTitle, getDynamicTrackTag, getFullSingerName, cryptoShuffleList, pickCryptoRandom } from './utils/playerUtils';
-import { prefetchArtwork } from './services/artworkService';
+import { getNextTrackIndex, getPrevTrackIndex, extractYouTubeId, cleanTrackTitle, getDynamicTrackTag, getFullSingerName, extractCatalogArtistName, cryptoShuffleList, pickCryptoRandom, deduplicateTracksBySong } from './utils/playerUtils';
+import { prefetchArtwork, primeArtworkUrls } from './services/artworkService';
 import { FALLBACK_CURATED_GENRES } from './data/curatedFallback';
 import { backgroundAudio } from './services/backgroundAudioService';
 import { getQualityOption } from './utils/qualityConfig';
+import { auth, googleProvider } from './firebase';
+import {
+  ListenHistoryItem,
+  UserTasteProfile,
+  computeTasteProfile,
+  ensureUserProfile,
+  updateUserTasteProfile,
+  saveFavoriteToCloud,
+  removeFavoriteFromCloud,
+  recordTrackPlayInCloud,
+  savePlaylistToCloud,
+  deletePlaylistFromCloud,
+  subscribeUserFavorites,
+  subscribeUserHistory,
+} from './services/userDataService';
 import { X, CheckCircle2 } from 'lucide-react';
 
 const INITIAL_STARTER_POOL: Track[] = [
@@ -212,6 +228,40 @@ export default function App() {
     }
   });
 
+  const [listenHistory, setListenHistory] = useState<ListenHistoryItem[]>(() => {
+    try {
+      const saved = localStorage.getItem('melophile_listen_history');
+      const parsed = saved ? JSON.parse(saved) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  });
+
+  // Firebase Auth (Google Login) State
+  const [authUser, setAuthUser] = useState<User | null>(null);
+  const [authReady, setAuthReady] = useState<boolean>(false);
+  const [isSigningIn, setIsSigningIn] = useState<boolean>(false);
+  const syncedUidRef = useRef<string | null>(null);
+  const favoritesRef = useRef<Track[]>(favorites);
+  const listenHistoryRef = useRef<ListenHistoryItem[]>(listenHistory);
+  const playlistsRef = useRef<Playlist[]>(playlists);
+
+  useEffect(() => {
+    favoritesRef.current = favorites;
+  }, [favorites]);
+
+  useEffect(() => {
+    listenHistoryRef.current = listenHistory;
+    try {
+      localStorage.setItem('melophile_listen_history', JSON.stringify(listenHistory.slice(0, 80)));
+    } catch {}
+  }, [listenHistory]);
+
+  useEffect(() => {
+    playlistsRef.current = playlists;
+  }, [playlists]);
+
   // Discovery & Genres (Cryptographically shuffled even on initial paint before live random universe loads)
   const [genres, setGenres] = useState<GenreCollection[]>(() => getShuffledFallbackGenres());
   const [featuredTracks, setFeaturedTracks] = useState<Track[]>([]);
@@ -229,12 +279,22 @@ export default function App() {
   const [themePreset] = useState<ThemePreset>('obsidian');
   const currentTheme = THEME_PRESETS[themePreset];
 
-  const showToast = (msg: string) => {
+  const showToast = useCallback((msg: string) => {
     setToastMessage(msg);
     setTimeout(() => {
       setToastMessage((prev) => (prev === msg ? null : prev));
     }, 4000);
-  };
+  }, []);
+
+  // Computed Taste Profile (weighted from liked songs + listening history)
+  const tasteProfile: UserTasteProfile = useMemo(
+    () => computeTasteProfile(favorites, listenHistory),
+    [favorites, listenHistory]
+  );
+  const tasteProfileRef = useRef<UserTasteProfile>(tasteProfile);
+  useEffect(() => {
+    tasteProfileRef.current = tasteProfile;
+  }, [tasteProfile]);
 
   // Persist Volume
   useEffect(() => {
@@ -251,9 +311,114 @@ export default function App() {
     localStorage.setItem('aura_playlists', JSON.stringify(playlists));
   }, [playlists]);
 
-  // Dynamic Random Recommendations State
+  // Firebase Auth Listener & Live Cloud Sync (Favorites, History, Taste Profile)
+  useEffect(() => {
+    let unsubFavorites: (() => void) | null = null;
+    let unsubHistory: (() => void) | null = null;
+
+    const unsubAuth = onAuthStateChanged(auth, async (user) => {
+      setAuthUser(user);
+      setAuthReady(true);
+
+      if (unsubFavorites) {
+        unsubFavorites();
+        unsubFavorites = null;
+      }
+      if (unsubHistory) {
+        unsubHistory();
+        unsubHistory = null;
+      }
+
+      if (!user) {
+        syncedUidRef.current = null;
+        return;
+      }
+
+      try {
+        await ensureUserProfile(user, tasteProfileRef.current);
+
+        // One-time merge of any guest local data into user's Firestore vault on sign-in
+        if (syncedUidRef.current !== user.uid) {
+          syncedUidRef.current = user.uid;
+          const localFavs = favoritesRef.current.slice(0, 30);
+          const localHist = listenHistoryRef.current.slice(0, 20);
+          const localPl = playlistsRef.current.slice(0, 15);
+          await Promise.allSettled([
+            ...localFavs.map((t) => saveFavoriteToCloud(user.uid, t)),
+            ...localHist.map((h) =>
+              recordTrackPlayInCloud(user.uid, {
+                id: h.trackId,
+                title: h.title,
+                artist: h.artist,
+                duration: h.duration,
+                durationSec: h.durationSec,
+                thumbnail: h.thumbnail,
+              })
+            ),
+            ...localPl.map((pl) => savePlaylistToCloud(user.uid, pl)),
+          ]);
+        }
+
+        unsubFavorites = subscribeUserFavorites(user.uid, (cloudFavs) => {
+          setFavorites(cloudFavs);
+        });
+        unsubHistory = subscribeUserHistory(user.uid, (cloudHist) => {
+          setListenHistory(cloudHist);
+        });
+      } catch (err) {
+        console.warn('[Auth/Sync] Cloud sync warning:', err);
+      }
+    });
+
+    return () => {
+      unsubAuth();
+      if (unsubFavorites) unsubFavorites();
+      if (unsubHistory) unsubHistory();
+    };
+  }, []);
+
+  // Debounced taste profile sync to Firestore whenever signed-in user's taste updates
+  useEffect(() => {
+    if (!authUser) return;
+    if (tasteProfile.topArtists.length === 0 && tasteProfile.totalPlays === 0) return;
+    const timer = setTimeout(() => {
+      void updateUserTasteProfile(authUser.uid, tasteProfile).catch(() => {});
+    }, 1800);
+    return () => clearTimeout(timer);
+  }, [authUser, tasteProfile]);
+
+  const handleGoogleSignIn = useCallback(async () => {
+    if (isSigningIn) return;
+    setIsSigningIn(true);
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const firstName = result.user.displayName?.split(' ')[0] || 'Listener';
+      showToast(`Signed in as ${firstName} · Taste & vault synced`);
+    } catch (err: any) {
+      if (err?.code === 'auth/popup-closed-by-user' || err?.code === 'auth/cancelled-popup-request') {
+        return;
+      }
+      console.error('Google sign-in failed:', err);
+      showToast('Could not complete Google sign-in. Please allow popups and try again.');
+    } finally {
+      setIsSigningIn(false);
+    }
+  }, [isSigningIn, showToast]);
+
+  const handleSignOut = useCallback(async () => {
+    try {
+      await signOut(auth);
+      showToast('Signed out · Local listening continues');
+    } catch (err) {
+      console.error('Sign-out failed:', err);
+    }
+  }, [showToast]);
+
+  // Dynamic Taste-Personalized Recommendations State
   const [recommendations, setRecommendations] = useState<Track[]>([]);
   const [isRecommendationsLoading, setIsRecommendationsLoading] = useState<boolean>(false);
+  const [isPersonalizedRecs, setIsPersonalizedRecs] = useState<boolean>(false);
+  const [tasteBasis, setTasteBasis] = useState<string[]>([]);
 
   const buildExcludeQuery = useCallback(
     (extraIds: string[] = []) => {
@@ -274,23 +439,45 @@ export default function App() {
       try {
         const exclude = buildExcludeQuery(track ? [track.id] : []);
         const nonce = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+        const taste = tasteProfileRef.current;
+        const cleanCurrentArtist = track
+          ? extractCatalogArtistName(
+              cleanTrackTitle(track.title, track.artist).artistFromTitle || track.artist || ''
+            )
+          : '';
         const params = new URLSearchParams({
           trackId: track?.id || '',
           limit: '12',
           exclude,
           nonce,
         });
+        if (taste.topArtists.length > 0) {
+          params.set('artists', taste.topArtists.slice(0, 5).join(','));
+        }
+        if (taste.topGenres.length > 0) {
+          params.set('genres', taste.topGenres.slice(0, 4).join(','));
+        }
+        if (cleanCurrentArtist) {
+          params.set('currentArtist', cleanCurrentArtist);
+        }
+        if (taste.recentTitles.length > 0) {
+          params.set('recentTitles', taste.recentTitles.slice(0, 8).join(','));
+        }
+
         const res = await fetch(`/api/recommendations?${params.toString()}`, { cache: 'no-store' });
         if (res.ok) {
           const data = await res.json();
           if (data.recommendations && data.recommendations.length > 0) {
             const freshRecs: Track[] = cryptoShuffleList(data.recommendations);
             setRecommendations(freshRecs);
+            setIsPersonalizedRecs(Boolean(data.personalized));
+            setTasteBasis(Array.isArray(data.tasteBasis) ? data.tasteBasis : []);
+            primeArtworkUrls(freshRecs, 12);
             rememberSeenIds(freshRecs.map((t) => t.id));
           }
         }
       } catch (err) {
-        console.warn('Failed to fetch random recommendations:', err);
+        console.warn('Failed to fetch recommendations:', err);
       } finally {
         setIsRecommendationsLoading(false);
       }
@@ -305,10 +492,27 @@ export default function App() {
       try {
         const exclude = buildExcludeQuery();
         const nonce = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-        const res = await fetch(
-          `/api/curated?exclude=${encodeURIComponent(exclude)}&nonce=${encodeURIComponent(nonce)}`,
-          { cache: 'no-store' }
-        );
+        const url = `/api/curated?exclude=${encodeURIComponent(exclude)}&nonce=${encodeURIComponent(nonce)}`;
+
+        let res: Response | null = null;
+        for (let attempt = 0; attempt < 2; attempt++) {
+          try {
+            const r = await fetch(url, { cache: 'no-store' });
+            if (r.ok) {
+              res = r;
+              break;
+            }
+          } catch {
+            if (attempt === 0) {
+              await new Promise((resolve) => setTimeout(resolve, 1000));
+            }
+          }
+        }
+
+        if (!res) {
+          throw new Error('Curated feed temporarily unavailable');
+        }
+
         const data = await res.json();
 
         if (data.genres && data.genres.length > 0) {
@@ -331,6 +535,7 @@ export default function App() {
 
           setFeaturedTracks(freshFeatured);
           setPopularTracks(freshPopular);
+          primeArtworkUrls([...freshFeatured, ...freshPopular, ...allFresh], 24);
           rememberSeenIds(allFresh.map((t) => t.id));
 
           if (isInitial && allFresh.length > 0 && !hasUserInteractedRef.current) {
@@ -346,7 +551,7 @@ export default function App() {
             const otherTracks = cryptoShuffleList(allFresh.filter((t) => t.id !== starter.id));
             setQueue([starter, ...otherTracks.slice(0, 10)]);
             fetchRecommendations(starter);
-          } else if (!isInitial) {
+          } else {
             fetchRecommendations(currentTrack || undefined);
           }
 
@@ -354,8 +559,18 @@ export default function App() {
             showToast('Generated a brand-new random music mix');
           }
         }
-      } catch (err) {
-        console.error('Failed to generate random music universe:', err);
+      } catch {
+        const localShuffled = getShuffledFallbackGenres();
+        const localAll = cryptoShuffleList(
+          localShuffled
+            .flatMap((g) => g.tracks || [])
+            .filter((t) => !restrictedVideoIds.has(t.id))
+        );
+        setGenres(localShuffled);
+        if (localAll.length > 0) {
+          setFeaturedTracks(localAll.slice(0, 6));
+          setPopularTracks(cryptoShuffleList(localAll).slice(0, 9));
+        }
         if (notify) showToast('Shuffled a fresh local mix');
       } finally {
         setIsRandomizingFeed(false);
@@ -369,12 +584,22 @@ export default function App() {
     loadRandomUniverse({ isInitial: true, notify: false });
   }, []);
 
-  // Refetch totally fresh random recommendations whenever currentTrack changes
+  // Refresh personalized recommendations ONCE when a Google user signs in and their cloud taste loads
+  // (Never auto-shuffle recommendations while the user is actively clicking/playing songs)
+  const refreshedForUidRef = useRef<string | null>(null);
   useEffect(() => {
-    if (currentTrack?.id) {
-      fetchRecommendations(currentTrack);
+    if (!authUser?.uid) {
+      refreshedForUidRef.current = null;
+      return;
     }
-  }, [currentTrack?.id]);
+    if (refreshedForUidRef.current === authUser.uid) return;
+    if (tasteProfile.topArtists.length === 0) return;
+    refreshedForUidRef.current = authUser.uid;
+    const timer = setTimeout(() => {
+      fetchRecommendations(currentTrack || undefined);
+    }, 650);
+    return () => clearTimeout(timer);
+  }, [authUser?.uid, tasteProfile.topArtists.length]);
 
   // Prefetch artwork for upcoming tracks in the queue and recommendations
   useEffect(() => {
@@ -389,25 +614,142 @@ export default function App() {
     }
   }, [recommendations]);
 
-  // Search YouTube
-  const handleSearch = async (q: string) => {
-    if (!q.trim()) return;
-    setIsSearching(true);
-    setSearchQuery(q);
-    setActiveView('discover');
+  // Realtime Search State Refs (AbortController + LRU Cache + Monotonic Sequence Guard)
+  const searchAbortRef = useRef<AbortController | null>(null);
+  const searchReqIdRef = useRef<number>(0);
+  const searchCacheRef = useRef<Map<string, Track[]>>(new Map());
 
-    try {
-      const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
-      if (!res.ok) throw new Error('Search failed');
-      const data = await res.json();
-      setSearchResults(data.tracks || []);
-    } catch (err: any) {
-      console.error(err);
-      showToast('Unable to complete YouTube search right now.');
-    } finally {
-      setIsSearching(false);
-    }
-  };
+  // 0ms instant local catalog matching before live network results return
+  const findLocalInstantMatches = useCallback(
+    (q: string): Track[] => {
+      const needle = q.trim().toLowerCase();
+      if (needle.length < 2) return [];
+      const seen = new Set<string>();
+      const matches: Track[] = [];
+      const pool: Track[] = [
+        ...favorites,
+        ...featuredTracks,
+        ...popularTracks,
+        ...recommendations,
+        ...queue,
+        ...genres.flatMap((g) => g.tracks || []),
+      ];
+      for (const t of pool) {
+        if (!t?.id || seen.has(t.id) || restrictedVideoIds.has(t.id)) continue;
+        const hay = `${t.title || ''} ${t.artist || ''}`.toLowerCase();
+        if (hay.includes(needle)) {
+          seen.add(t.id);
+          matches.push(t);
+          if (matches.length >= 12) break;
+        }
+      }
+      return deduplicateTracksBySong(matches, needle);
+    },
+    [favorites, featuredTracks, genres, popularTracks, queue, recommendations, restrictedVideoIds]
+  );
+
+  // Realtime Abortable Music Search (0ms cache/local hits + fast live fetch + silent artwork promotion)
+  const handleSearch = useCallback(
+    async (q: string) => {
+      const trimmed = q.trim();
+      if (!trimmed) return;
+
+      const cacheKey = trimmed.toLowerCase();
+      setSearchQuery(trimmed);
+      setActiveView('discover');
+
+      // Abort any previous in-flight search immediately so stale responses never overwrite
+      if (searchAbortRef.current) {
+        searchAbortRef.current.abort();
+      }
+      const reqId = ++searchReqIdRef.current;
+
+      const controller = new AbortController();
+      searchAbortRef.current = controller;
+
+      // 1. Instant 0ms client cache hit for songs
+      const cached = searchCacheRef.current.get(cacheKey);
+      if (cached) {
+        setSearchResults(cached);
+        setIsSearching(false);
+        return;
+      }
+
+      // 2. Instant 0ms local matches while live catalog streams in
+      const localMatches = findLocalInstantMatches(trimmed);
+      if (localMatches.length > 0) {
+        setSearchResults(localMatches);
+      }
+
+      setIsSearching(true);
+
+      try {
+        const res = await fetch(`/api/search?q=${encodeURIComponent(trimmed)}`, {
+          signal: controller.signal,
+        });
+        if (!res.ok) throw new Error('Search failed');
+        const data = await res.json();
+        if (controller.signal.aborted || reqId !== searchReqIdRef.current) return;
+
+        const rawTracks: Track[] = Array.isArray(data.tracks) ? data.tracks : [];
+        const tracks = deduplicateTracksBySong(rawTracks, trimmed);
+        primeArtworkUrls(tracks, 20);
+        setSearchResults(tracks);
+        setIsSearching(false);
+
+        // Cache client-side (keep latest 60 queries)
+        searchCacheRef.current.set(cacheKey, tracks);
+        if (searchCacheRef.current.size > 60) {
+          const oldest = searchCacheRef.current.keys().next().value;
+          if (oldest) searchCacheRef.current.delete(oldest);
+        }
+
+        // 3. Silent background artwork upgrade for any video-only tracks that resolve in Wave 2
+        const missingArt = tracks.filter((t) => !t.hasSquareArtwork).slice(0, 12);
+        if (missingArt.length > 0) {
+          fetch('/api/batch-artwork', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            signal: controller.signal,
+            body: JSON.stringify({
+              items: missingArt.map((t) => {
+                const cleaned = cleanTrackTitle(t.title);
+                return {
+                  key: t.id,
+                  id: t.id,
+                  title: cleaned.title,
+                  artist: cleaned.artistFromTitle || t.artist || '',
+                };
+              }),
+            }),
+          })
+            .then((r) => (r.ok ? r.json() : null))
+            .then((artData) => {
+              const map: Record<string, string> = artData?.artworks || artData?.results || {};
+              if (controller.signal.aborted || reqId !== searchReqIdRef.current) return;
+              if (Object.keys(map).length === 0) return;
+              setSearchResults((prev) => {
+                const upgraded = prev.map((t) =>
+                  map[t.id] ? { ...t, thumbnail: map[t.id], hasSquareArtwork: true } : t
+                );
+                primeArtworkUrls(upgraded, 16);
+                searchCacheRef.current.set(cacheKey, upgraded);
+                return upgraded;
+              });
+            })
+            .catch(() => {});
+        }
+      } catch (err: any) {
+        if (err?.name === 'AbortError') return;
+        console.error(err);
+        if (reqId === searchReqIdRef.current) {
+          setIsSearching(false);
+          showToast('Unable to complete music search right now.');
+        }
+      }
+    },
+    [findLocalInstantMatches]
+  );
 
   // Select Curated Collection from Dropdown
   const handleSelectCollection = (genreId: string) => {
@@ -428,7 +770,7 @@ export default function App() {
     }
   };
 
-  // Play Specific Track
+  // Play Specific Track (updates local listening taste + saves play to Firestore when signed in)
   const handlePlayTrack = useCallback((track: Track) => {
     hasUserInteractedRef.current = true;
     // Arm Android 30s background audio anchor synchronously inside the user gesture
@@ -436,6 +778,32 @@ export default function App() {
     const isSameTrack = currentTrack?.id === track.id;
     setCurrentTrack(track);
     rememberSeenIds([track.id]);
+
+    // Record play into local listening taste history immediately
+    if (!isSameTrack) {
+      const { title: cleanT, artistFromTitle } = cleanTrackTitle(track.title, track.artist);
+      const artist = extractCatalogArtistName(artistFromTitle || track.artist || '') || track.artist || 'Artist';
+      const genreTag = getDynamicTrackTag(cleanT, artist, track.views);
+      setListenHistory((prev) => {
+        const existing = prev.find((h) => h.trackId === track.id);
+        const updatedItem: ListenHistoryItem = {
+          trackId: track.id,
+          title: cleanT || track.title,
+          artist,
+          genreTag,
+          duration: track.duration || '0:00',
+          durationSec: track.durationSec || 0,
+          thumbnail: track.thumbnail || '',
+          playCount: (existing?.playCount || 0) + 1,
+          lastPlayedAtMs: Date.now(),
+        };
+        return [updatedItem, ...prev.filter((h) => h.trackId !== track.id)].slice(0, 80);
+      });
+
+      if (authUser) {
+        void recordTrackPlayInCloud(authUser.uid, track).catch(() => {});
+      }
+    }
 
     setQueue((prevQueue) => {
       const exists = prevQueue.some((t) => t.id === track.id);
@@ -453,7 +821,7 @@ export default function App() {
       setIsPlaying(true);
       setIsBuffering(true);
     }
-  }, [currentTrack, rememberSeenIds]);
+  }, [authUser, currentTrack, rememberSeenIds]);
 
   // Surprise Me: Pick and immediately play a totally random unseen song from the live engine
   const handleSurprisePlay = useCallback(async () => {
@@ -507,7 +875,9 @@ export default function App() {
     const { title, artistFromTitle } = cleanTrackTitle(currentTrack.title);
     const artist = artistFromTitle || currentTrack.artist || '';
 
-    fetch(`/api/highres-artwork?track=${encodeURIComponent(title)}&artist=${encodeURIComponent(artist)}`)
+    fetch(
+      `/api/highres-artwork?track=${encodeURIComponent(title)}&artist=${encodeURIComponent(artist)}&videoId=${encodeURIComponent(currentTrack.id)}`
+    )
       .then((res) => res.json())
       .then((data) => {
         if (data.artworkUrl) {
@@ -605,7 +975,7 @@ export default function App() {
     };
     handlePlayTrack(track);
     setActiveView('now-playing');
-    showToast(`Streaming "${track.title}"`);
+    showToast(`Streaming "${cleanTrackTitle(track.title, track.artist).title}"`);
   };
 
   // Play Genre
@@ -659,12 +1029,13 @@ export default function App() {
 
   // Queue Management
   const handleAddToQueue = (track: Track) => {
+    const properName = cleanTrackTitle(track.title, track.artist).title;
     if (queue.some((t) => t.id === track.id)) {
-      showToast(`"${track.title}" is already in queue.`);
+      showToast(`"${properName}" is already in queue.`);
       return;
     }
     setQueue((prev) => [...prev, track]);
-    showToast(`Added to queue: "${track.title}"`);
+    showToast(`Added to queue: "${properName}"`);
   };
 
   const handleRemoveFromQueue = (track: Track) => {
@@ -680,18 +1051,22 @@ export default function App() {
     showToast('Queue cleared.');
   };
 
-  // Favorites
+  // Favorites (optimistic local update + Firestore cloud sync when signed in)
   const handleToggleFavorite = (track: Track) => {
-    setFavorites((prev) => {
-      const exists = prev.some((t) => t.id === track.id);
-      if (exists) {
-        showToast(`Removed from liked songs`);
-        return prev.filter((t) => t.id !== track.id);
-      } else {
-        showToast(`Saved to liked songs`);
-        return [...prev, track];
+    const exists = favorites.some((t) => t.id === track.id);
+    if (exists) {
+      setFavorites((prev) => prev.filter((t) => t.id !== track.id));
+      showToast(authUser ? 'Removed from cloud vault' : 'Removed from liked songs');
+      if (authUser) {
+        void removeFavoriteFromCloud(authUser.uid, track.id).catch(() => {});
       }
-    });
+    } else {
+      setFavorites((prev) => [track, ...prev.filter((t) => t.id !== track.id)]);
+      showToast(authUser ? 'Saved to cloud vault · Taste updated' : 'Saved to liked songs');
+      if (authUser) {
+        void saveFavoriteToCloud(authUser.uid, track).catch(() => {});
+      }
+    }
   };
 
   // Playlists
@@ -703,6 +1078,9 @@ export default function App() {
       createdAt: Date.now(),
     };
     setPlaylists((prev) => [...prev, newPlaylist]);
+    if (authUser) {
+      void savePlaylistToCloud(authUser.uid, newPlaylist).catch(() => {});
+    }
     showToast(`Created playlist "${name}"`);
   };
 
@@ -717,6 +1095,9 @@ export default function App() {
 
   const handleDeletePlaylist = (playlistId: string) => {
     setPlaylists((prev) => prev.filter((p) => p.id !== playlistId));
+    if (authUser) {
+      void deletePlaylistFromCloud(authUser.uid, playlistId).catch(() => {});
+    }
     showToast('Playlist deleted');
   };
 
@@ -830,14 +1211,29 @@ export default function App() {
   const dynamicPlaylistTitle = activeCollection ? activeCollection.name : currentArtist.toUpperCase();
   const dynamicGenreTag = (activeCollection as any)?.tag || getDynamicTrackTag(cleanCurrentTitle, currentArtist, currentTrack?.views);
 
+  // Memoize filtered track arrays so 4Hz currentTime updates during playback never create new references
+  const visibleQueue = useMemo(
+    () => queue.filter((t) => !restrictedVideoIds.has(t.id)),
+    [queue, restrictedVideoIds]
+  );
+  const visibleRecommendations = useMemo(
+    () => recommendations.filter((t) => !restrictedVideoIds.has(t.id)),
+    [recommendations, restrictedVideoIds]
+  );
+  const visibleSearchResults = useMemo(
+    () => searchResults.filter((t) => !restrictedVideoIds.has(t.id)),
+    [searchResults, restrictedVideoIds]
+  );
+
   return (
-    <div className="h-screen w-screen text-zinc-100 flex flex-col font-sans relative overflow-hidden bg-[#09090B] select-none">
+    <div className="h-[100dvh] w-full text-[#e3e1ec] flex flex-col font-sans relative overflow-hidden bg-[#0d0e15] select-none">
       <SpotifyLayout
         currentTrack={currentTrack}
         isPlaying={isPlaying}
         isBuffering={isBuffering}
         currentTime={currentTime}
         duration={duration}
+        playbackRate={playbackRate}
         volume={volume}
         repeatMode={repeatMode}
         isShuffle={isShuffle}
@@ -872,11 +1268,21 @@ export default function App() {
             onPlaybackRestricted={handlePlaybackRestricted}
           />
         }
-        queue={queue.filter((t) => !restrictedVideoIds.has(t.id))}
-        recommendations={recommendations.filter((t) => !restrictedVideoIds.has(t.id))}
+        queue={visibleQueue}
+        recommendations={visibleRecommendations}
+        isRecommendationsLoading={isRecommendationsLoading}
+        isPersonalizedRecs={isPersonalizedRecs}
+        tasteBasis={tasteBasis}
+        tasteProfile={tasteProfile}
+        listenHistoryCount={listenHistory.length}
+        authUser={authUser}
+        authReady={authReady}
+        isSigningIn={isSigningIn}
+        onGoogleSignIn={handleGoogleSignIn}
+        onSignOut={handleSignOut}
         favorites={favorites}
         searchQuery={searchQuery}
-        searchResults={searchResults.filter((t) => !restrictedVideoIds.has(t.id))}
+        searchResults={visibleSearchResults}
         isSearching={isSearching}
         onTogglePlay={handleTogglePlay}
         onSeek={(time) => {
@@ -894,12 +1300,28 @@ export default function App() {
         onSetVideoVisible={(visible) => setIsVideoVisible(visible)}
         onPlayTrack={handlePlayTrack}
         onPlayGenre={handlePlayGenre}
+        onPlayTrackList={(tracks, title, shuffle = false) => {
+          const playable = tracks.filter((t) => !restrictedVideoIds.has(t.id));
+          if (playable.length === 0) {
+            showToast(`No playable tracks found in "${title}".`);
+            return;
+          }
+          const ordered = shuffle ? cryptoShuffleList(playable) : playable;
+          setQueue(ordered);
+          handlePlayTrack(ordered[0]);
+          showToast(`Playing "${title}" (${ordered.length} tracks)`);
+        }}
         onAddToQueue={handleAddToQueue}
         onRemoveFromQueue={handleRemoveFromQueue}
         onClearQueue={handleClearQueue}
         onToggleFavorite={handleToggleFavorite}
         onSearch={handleSearch}
         onClearSearch={() => {
+          if (searchAbortRef.current) {
+            searchAbortRef.current.abort();
+          }
+          searchReqIdRef.current += 1;
+          setIsSearching(false);
           setSearchQuery('');
           setSearchResults([]);
         }}
@@ -912,25 +1334,32 @@ export default function App() {
         onSurprisePlay={handleSurprisePlay}
         onRefreshRecommendations={() => {
           fetchRecommendations(currentTrack || undefined);
-          showToast('Rolled fresh random recommendations');
+          showToast(
+            tasteProfile.topArtists.length > 0
+              ? 'Refreshed recommendations for your taste'
+              : 'Rolled fresh recommendations'
+          );
         }}
       />
 
-      {/* Unified Obsidian Toast Notification */}
+      {/* ComicBeats Toast Notification */}
       {toastMessage && (
         <div
           role="status"
           aria-live="polite"
-          className="fixed top-16 left-4 right-4 sm:left-auto sm:right-6 z-[70] bg-[#141418]/95 backdrop-blur-xl text-zinc-100 text-xs font-medium px-4 py-2.5 rounded-xl border border-white/[0.12] shadow-2xl flex items-center justify-between sm:justify-start gap-2.5 max-w-sm"
+          className="fixed left-4 right-4 sm:left-auto sm:right-6 z-[70] bg-[#1e1f27] text-[#e3e1ec] text-xs font-bold uppercase tracking-wide px-4 py-3 border-[3px] border-black shadow-[4px_4px_0px_#000000] flex items-center justify-between sm:justify-start gap-3 max-w-sm"
+          style={{ top: 'calc(env(safe-area-inset-top, 0px) + 1rem)' }}
         >
-          <div className="flex items-center gap-2 min-w-0">
-            <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
+          <div className="flex items-center gap-2.5 min-w-0">
+            <span className="w-6 h-6 bg-[#00f0ff] border-2 border-black text-[#00363a] flex items-center justify-center shrink-0">
+              <CheckCircle2 className="w-3.5 h-3.5 stroke-[2.5]" />
+            </span>
             <span className="truncate">{toastMessage}</span>
           </div>
           <button
             type="button"
             onClick={() => setToastMessage(null)}
-            className="p-1 hover:text-white text-zinc-400 shrink-0 cursor-pointer rounded-md"
+            className="p-1 hover:bg-[#ff506e] hover:text-white text-[#b9cacb] shrink-0 cursor-pointer border-2 border-transparent hover:border-black transition-colors"
             aria-label="Dismiss notification"
           >
             <X className="w-3.5 h-3.5" />

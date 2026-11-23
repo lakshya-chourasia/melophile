@@ -6,6 +6,8 @@ export interface Track {
   durationSec: number;
   views?: string;
   thumbnail: string;
+  videoThumbnail?: string;
+  hasSquareArtwork?: boolean;
   isOfficial?: boolean;
 }
 
@@ -60,5 +62,15 @@ export interface LyricsData {
 
 export type CrossfadeDuration = 0 | 1 | 1.5 | 2 | 3;
 export type StreamQuality = 'auto' | 'highres' | 'hd1080' | 'hd720' | 'large' | 'medium' | 'small';
+export type EqPresetKey = 'sub-boom' | 'crisp-vocal' | 'lofi-vinyl' | 'rooftop-drop';
 
-
+export interface TrackAudioProfile {
+  bpm: number;
+  gainDb: number;
+  energy: number;
+  bassWeight: number;
+  vocalWeight: number;
+  trebleWeight: number;
+  groove: 'four-on-floor' | 'backbeat' | 'half-time' | 'ballad';
+  source: 'deezer-bpm' | 'estimated';
+}

@@ -118,7 +118,7 @@ export const FALLBACK_CURATED_GENRES: GenreCollection[] = [
     tracks: [
       {
         id: 'jfKfPfyJRdk',
-        title: 'lofi hip hop radio - beats to relax/study to',
+        title: 'Lofi Hip Hop Radio',
         artist: 'Lofi Girl',
         duration: 'Live',
         durationSec: 0,

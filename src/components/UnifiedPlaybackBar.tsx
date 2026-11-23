@@ -21,6 +21,7 @@ import {
   Minimize2,
   SlidersHorizontal,
   Check,
+  ListMusic,
 } from 'lucide-react';
 
 interface UnifiedPlaybackBarProps {
@@ -49,6 +50,7 @@ interface UnifiedPlaybackBarProps {
   onToggleVideo: () => void;
   onToggleLyrics: () => void;
   onToggleCinema: () => void;
+  onOpenQueue?: () => void;
 }
 
 export const UnifiedPlaybackBar: React.FC<UnifiedPlaybackBarProps> = ({
@@ -77,6 +79,7 @@ export const UnifiedPlaybackBar: React.FC<UnifiedPlaybackBarProps> = ({
   onToggleVideo,
   onToggleLyrics,
   onToggleCinema,
+  onOpenQueue,
 }) => {
   const [isQualityMenuOpen, setIsQualityMenuOpen] = useState(false);
   const qualityMenuRef = useRef<HTMLDivElement | null>(null);
@@ -107,38 +110,36 @@ export const UnifiedPlaybackBar: React.FC<UnifiedPlaybackBarProps> = ({
   const volumePercent = Math.min(100, Math.max(0, volume));
   const VolumeIcon = volume === 0 ? VolumeX : volume < 50 ? Volume1 : Volume2;
   const activeQuality = getQualityOption(playbackQuality);
-
   const repeatLabel =
     repeatMode === 'one' ? 'Repeat One' : repeatMode === 'all' ? 'Repeat Queue' : 'Repeat Off';
 
   return (
     <div className="shrink-0 z-[65] relative select-none">
-      {/* ── MOBILE COMPACT MINI-PLAYER (Home Only, < md) ── */}
+      {/* ── MOBILE FLOATING COMIC MINI-PLAYER (< md, Home Only) ── */}
       {!isCinemaMode && (
-        <div
-          onClick={onToggleCinema}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              onToggleCinema();
-            }
-          }}
-          className="md:hidden flex items-center justify-between px-3.5 py-2 bg-[#0c0c0f]/95 backdrop-blur-xl border-t border-white/[0.08] cursor-pointer relative active:bg-[#18181D] transition-colors"
-          aria-label={`Now playing ${cleanTitle} by ${artist}. Tap to expand player`}
-        >
-          {/* Thin Scrubber Track on Top Edge */}
-          <div className="absolute top-0 inset-x-0 h-[2px] bg-white/[0.08]">
-            <div
-              className="h-full bg-amber-400 transition-[width] duration-150"
-              style={{ width: `${progressPercent}%` }}
-            />
-          </div>
+        <div className="md:hidden px-2.5 py-1.5 bg-[#12131a]/95 border-t-[2px] border-black">
+          <div
+            onClick={onToggleCinema}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onToggleCinema();
+              }
+            }}
+            className="relative overflow-hidden bg-[#292931] border-[2px] border-black rounded-xl p-1.5 pr-2 shadow-[3px_3px_0px_#000000] flex items-center gap-2.5 cursor-pointer"
+            aria-label={`Now playing ${cleanTitle} by ${artist}. Tap to expand Action Stage`}
+          >
+            {/* Slim top edge progress strip */}
+            <div className="absolute top-0 left-0 right-0 h-[3px] bg-[#0d0e15] pointer-events-none">
+              <div
+                className="h-full bg-[#00f0ff] transition-[width] duration-150"
+                style={{ width: `${progressPercent}%` }}
+              />
+            </div>
 
-          {/* Track Thumbnail & Info */}
-          <div className="flex items-center gap-3 min-w-0 flex-1 pr-2">
-            <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-[#18181D] shrink-0 ring-1 ring-white/[0.1]">
+            <div className="w-11 h-11 rounded-lg border-[2px] border-black bg-[#0d0e15] shadow-[1px_1px_0px_#000000] overflow-hidden shrink-0">
               <ArtworkImage
                 title={cleanTitle}
                 artist={artist}
@@ -148,85 +149,79 @@ export const UnifiedPlaybackBar: React.FC<UnifiedPlaybackBarProps> = ({
                 className="w-full h-full object-cover"
               />
             </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-xs font-semibold text-zinc-50 truncate leading-snug">
+
+            <div className="flex-1 min-w-0 overflow-hidden">
+              <p className="text-sm font-bold uppercase text-[#00f0ff] truncate leading-tight">
                 {cleanTitle}
               </p>
-              <p className="text-[11px] text-zinc-400 truncate leading-snug">{artist}</p>
+              <p className="text-[11px] font-bold uppercase text-[#b9cacb] truncate mt-0.5">
+                {artist}
+              </p>
             </div>
-          </div>
 
-          {/* Mobile Quick Controls (>= 44px touch targets) */}
-          <div
-            className="flex items-center gap-0.5 shrink-0"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              type="button"
-              onClick={onToggleLyrics}
-              className={`w-11 h-11 rounded-lg flex items-center justify-center transition-colors cursor-pointer ${
-                isLyricsActive ? 'text-amber-400' : 'text-zinc-400 hover:text-zinc-100'
-              }`}
-              aria-label="Open synchronized lyrics"
-              title="Synchronized Lyrics"
-            >
-              <Mic2 className="w-4 h-4" />
-            </button>
+            <div className="flex items-center gap-1.5 shrink-0" onClick={(e) => e.stopPropagation()}>
+              <button
+                type="button"
+                onClick={() => onToggleFavorite(currentTrack)}
+                className={`w-10 h-10 rounded-lg border-[2px] border-black flex items-center justify-center cursor-pointer shadow-[2px_2px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 transition-transform ${
+                  isCurrentFavorite ? 'bg-[#ff506e] text-white' : 'bg-[#1e1f27] text-[#b9cacb]'
+                }`}
+                aria-label="Save to Vault"
+              >
+                <Heart className={`w-4 h-4 ${isCurrentFavorite ? 'fill-current' : ''}`} />
+              </button>
 
-            <button
-              type="button"
-              onClick={() => onToggleFavorite(currentTrack)}
-              className={`w-11 h-11 rounded-lg flex items-center justify-center transition-colors cursor-pointer ${
-                isCurrentFavorite ? 'text-amber-400' : 'text-zinc-400 hover:text-zinc-100'
-              }`}
-              aria-label={isCurrentFavorite ? 'Remove from favorites' : 'Save to favorites'}
-              title={isCurrentFavorite ? 'Saved to favorites' : 'Save to favorites'}
-            >
-              <Heart className={`w-4 h-4 ${isCurrentFavorite ? 'fill-current' : ''}`} />
-            </button>
+              <button
+                type="button"
+                onClick={onNext}
+                className="w-10 h-10 rounded-lg border-[2px] border-black bg-[#1e1f27] text-[#e3e1ec] flex items-center justify-center shadow-[2px_2px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 transition-transform cursor-pointer"
+                aria-label="Next track"
+              >
+                <SkipForward className="w-4 h-4 fill-current" />
+              </button>
 
-            <button
-              type="button"
-              onClick={onTogglePlay}
-              className="w-11 h-11 rounded-full bg-amber-400 hover:bg-amber-300 text-zinc-950 flex items-center justify-center active:scale-95 transition-transform cursor-pointer shrink-0 ml-1"
-              aria-label={isPlaying ? 'Pause' : 'Play'}
-              title={isPlaying ? 'Pause' : 'Play'}
-            >
-              {isBuffering ? (
-                <div className="w-4 h-4 border-2 border-zinc-950 border-t-transparent rounded-full animate-spin" />
-              ) : isPlaying ? (
-                <Pause className="w-4 h-4 fill-zinc-950 text-zinc-950" />
-              ) : (
-                <Play className="w-4 h-4 fill-zinc-950 text-zinc-950 ml-0.5" />
-              )}
-            </button>
+              <button
+                type="button"
+                onClick={onTogglePlay}
+                className="w-11 h-11 rounded-lg border-[2px] border-black bg-[#fde400] text-[#201c00] flex items-center justify-center shadow-[2px_2px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 transition-transform cursor-pointer shrink-0"
+                aria-label={isPlaying ? 'Pause' : 'Play'}
+              >
+                {isBuffering ? (
+                  <div className="w-4 h-4 border-2 border-[#201c00] border-t-transparent rounded-full animate-spin" />
+                ) : isPlaying ? (
+                  <Pause className="w-5 h-5 fill-current" />
+                ) : (
+                  <Play className="w-5 h-5 fill-current ml-0.5" />
+                )}
+              </button>
+            </div>
           </div>
         </div>
       )}
 
-      {/* ── IDENTICAL PERSISTENT STUDIO PLAYBACK BAR (Home Desktop & Cinema Mode) ── */}
+      {/* ── DESKTOP & CINEMA COMICBEATS PERSISTENT BOTTOM DECK (h-24) ── */}
       <footer
         className={`${
           isCinemaMode
-            ? 'flex flex-col md:flex-row pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom,0px))] md:py-0 md:h-20 gap-3 md:gap-0'
-            : 'hidden md:flex md:h-20'
-        } w-full bg-[#0c0c0f]/95 backdrop-blur-xl border-t border-white/[0.08] px-4 sm:px-6 items-center justify-between`}
+            ? 'flex flex-col md:flex-row py-3 md:py-0 md:h-24 gap-3 md:gap-0 pb-[max(0.75rem,env(safe-area-inset-bottom,0px))]'
+            : 'hidden md:flex md:h-24'
+        } w-full bg-[#1e1f27] border-t-[3px] border-black shadow-[0_-4px_0px_#000000] px-4 sm:px-6 items-center justify-between gap-4`}
       >
-        {/* Left Zone: Track Info & Favorite (Identical across Home and Cinema) */}
+        {/* Left Zone: Track Info & Vault Heart */}
         <div
           className={`flex items-center gap-3 ${
             isCinemaMode
-              ? 'w-full md:w-[28%] md:min-w-[200px] md:max-w-[340px] justify-between md:justify-start'
-              : 'w-[28%] min-w-[200px] max-w-[340px]'
-          }`}
+              ? 'w-full md:w-[290px] lg:w-[320px] justify-between md:justify-start'
+              : 'w-[270px] lg:w-[310px]'
+          } shrink-0`}
         >
-          <div className="flex items-center gap-3 min-w-0">
+          <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
             <button
               type="button"
               onClick={onToggleCinema}
-              className="relative w-12 h-12 rounded-lg overflow-hidden bg-[#18181D] shrink-0 ring-1 ring-white/[0.08] cursor-pointer group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/70"
-              title={isCinemaMode ? 'Return to Home Workspace' : 'Open Cinema Mode'}
-              aria-label={isCinemaMode ? 'Return to Home Workspace' : 'Open Cinema Mode'}
+              className="relative w-11 h-11 md:w-14 md:h-14 bg-[#34343c] border-[2px] border-black shadow-[3px_3px_0px_#000000] shrink-0 overflow-hidden cursor-pointer group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00f0ff]"
+              title={isCinemaMode ? 'Exit Fullscreen Stage' : 'Open Action Stage'}
+              aria-label={isCinemaMode ? 'Exit Fullscreen Stage' : 'Open Action Stage'}
             >
               <ArtworkImage
                 title={cleanTitle}
@@ -238,56 +233,58 @@ export const UnifiedPlaybackBar: React.FC<UnifiedPlaybackBarProps> = ({
               />
             </button>
 
-            <div className="min-w-0 pr-1 text-left">
-              <button
-                type="button"
-                onClick={onToggleCinema}
-                className="block max-w-full text-left text-sm font-semibold text-zinc-50 hover:text-amber-400 truncate leading-snug cursor-pointer transition-colors focus-visible:outline-none focus-visible:text-amber-400"
-                title={isCinemaMode ? 'Return to Home Workspace' : 'Open Cinema Mode'}
-              >
-                {cleanTitle}
-              </button>
-              <p className="text-xs text-zinc-400 truncate mt-0.5 leading-snug">{artist}</p>
+            <div className="min-w-0 overflow-hidden text-left">
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={onToggleCinema}
+                  className="text-sm font-bold uppercase text-[#e3e1ec] hover:text-[#00f0ff] truncate leading-tight cursor-pointer transition-colors"
+                  title={cleanTitle}
+                >
+                  {cleanTitle}
+                </button>
+              </div>
+              <p className="text-xs text-[#b9cacb] uppercase truncate mt-0.5">{artist}</p>
             </div>
           </div>
 
           <button
             type="button"
             onClick={() => onToggleFavorite(currentTrack)}
-            className={`w-9 h-9 rounded-lg flex items-center justify-center transition-colors shrink-0 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/70 ${
+            className={`w-10 h-10 md:w-9 md:h-9 border-[2px] border-black flex items-center justify-center transition-all shrink-0 cursor-pointer shadow-[2px_2px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 ${
               isCurrentFavorite
-                ? 'text-amber-400 hover:bg-white/[0.06]'
-                : 'text-zinc-400 hover:text-zinc-100 hover:bg-white/[0.06]'
+                ? 'bg-[#ff506e] text-white'
+                : 'bg-[#1a1b22] text-[#b9cacb] hover:text-[#ff506e] hover:bg-[#292931]'
             }`}
-            title={isCurrentFavorite ? 'Remove from favorites' : 'Save to favorites'}
-            aria-label={isCurrentFavorite ? 'Remove from favorites' : 'Save to favorites'}
+            title={isCurrentFavorite ? 'Saved in Issue Vault' : 'Save to Issue Vault'}
+            aria-label={isCurrentFavorite ? 'Remove from Vault' : 'Save to Vault'}
           >
             <Heart className={`w-4 h-4 ${isCurrentFavorite ? 'fill-current' : ''}`} />
           </button>
         </div>
 
-        {/* Center Zone: Transport Controls & Tactile Scrubber (Identical across Home and Cinema) */}
-        <div className="w-full md:flex-1 md:max-w-xl md:px-6 flex flex-col items-center gap-1.5">
-          <div className="flex items-center gap-3 sm:gap-5">
+        {/* Center Zone: Ink-Bordered Transport Controls & Hard-Bordered Cyan Scrubber */}
+        <div className="w-full md:flex-1 md:max-w-xl flex flex-col items-center gap-2">
+          <div className="flex items-center gap-3">
             <button
               type="button"
               onClick={onToggleShuffle}
-              className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors cursor-pointer relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/70 ${
+              className={`w-10 h-10 md:w-8 md:h-8 border-[2px] border-black flex items-center justify-center shadow-[2px_2px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 transition-all cursor-pointer ${
                 isShuffle
-                  ? 'text-amber-400 bg-amber-500/10'
-                  : 'text-zinc-400 hover:text-zinc-100 hover:bg-white/[0.06]'
+                  ? 'bg-[#fde400] text-[#201c00]'
+                  : 'bg-[#1a1b22] text-[#e3e1ec] hover:bg-[#292931]'
               }`}
               title={isShuffle ? 'Shuffle On' : 'Shuffle Off'}
-              aria-label={isShuffle ? 'Disable shuffle' : 'Enable shuffle'}
+              aria-label="Toggle shuffle"
               aria-pressed={isShuffle}
             >
-              <Shuffle className="w-4 h-4" />
+              <Shuffle className="w-4 h-4 md:w-3.5 md:h-3.5" />
             </button>
 
             <button
               type="button"
               onClick={onPrev}
-              className="w-9 h-9 rounded-lg text-zinc-200 hover:text-white hover:bg-white/[0.06] flex items-center justify-center transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/70"
+              className="w-10 h-10 md:w-8 md:h-8 border-[2px] border-black bg-[#1a1b22] text-[#e3e1ec] hover:bg-[#292931] flex items-center justify-center shadow-[2px_2px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 transition-all cursor-pointer"
               title="Previous track (P)"
               aria-label="Previous track"
             >
@@ -297,23 +294,23 @@ export const UnifiedPlaybackBar: React.FC<UnifiedPlaybackBarProps> = ({
             <button
               type="button"
               onClick={onTogglePlay}
-              className="w-10 h-10 rounded-full bg-amber-400 hover:bg-amber-300 text-zinc-950 flex items-center justify-center active:scale-95 transition-transform cursor-pointer shrink-0 shadow-[0_6px_20px_-6px_rgba(245,158,11,0.6)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+              className="w-12 h-12 md:w-11 md:h-11 border-[3px] border-black bg-[#00f0ff] text-[#00363a] flex items-center justify-center shadow-[3px_3px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[1px_1px_0px_#000000] transition-all cursor-pointer shrink-0"
               title={isPlaying ? 'Pause (Space)' : 'Play (Space)'}
               aria-label={isPlaying ? 'Pause' : 'Play'}
             >
               {isBuffering ? (
-                <div className="w-4 h-4 border-2 border-zinc-950 border-t-transparent rounded-full animate-spin" />
+                <div className="w-4.5 h-4.5 border-2 border-[#00363a] border-t-transparent rounded-full animate-spin" />
               ) : isPlaying ? (
-                <Pause className="w-4.5 h-4.5 fill-zinc-950 text-zinc-950" />
+                <Pause className="w-5 h-5 fill-current" />
               ) : (
-                <Play className="w-4.5 h-4.5 fill-zinc-950 text-zinc-950 ml-0.5" />
+                <Play className="w-5 h-5 fill-current ml-0.5" />
               )}
             </button>
 
             <button
               type="button"
               onClick={onNext}
-              className="w-9 h-9 rounded-lg text-zinc-200 hover:text-white hover:bg-white/[0.06] flex items-center justify-center transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/70"
+              className="w-10 h-10 md:w-8 md:h-8 border-[2px] border-black bg-[#1a1b22] text-[#e3e1ec] hover:bg-[#292931] flex items-center justify-center shadow-[2px_2px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 transition-all cursor-pointer"
               title="Next track (N)"
               aria-label="Next track"
             >
@@ -323,41 +320,35 @@ export const UnifiedPlaybackBar: React.FC<UnifiedPlaybackBarProps> = ({
             <button
               type="button"
               onClick={onToggleRepeat}
-              className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/70 ${
+              className={`w-10 h-10 md:w-8 md:h-8 border-[2px] border-black flex items-center justify-center shadow-[2px_2px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 transition-all cursor-pointer ${
                 repeatMode !== 'off'
-                  ? 'text-amber-400 bg-amber-500/10'
-                  : 'text-zinc-400 hover:text-zinc-100 hover:bg-white/[0.06]'
+                  ? 'bg-[#fde400] text-[#201c00]'
+                  : 'bg-[#1a1b22] text-[#e3e1ec] hover:bg-[#292931]'
               }`}
               title={repeatLabel}
               aria-label={repeatLabel}
             >
               {repeatMode === 'one' ? (
-                <Repeat1 className="w-4 h-4" />
+                <Repeat1 className="w-4 h-4 md:w-3.5 md:h-3.5" />
               ) : (
-                <Repeat className="w-4 h-4" />
+                <Repeat className="w-4 h-4 md:w-3.5 md:h-3.5" />
               )}
             </button>
           </div>
 
-          {/* Precision Scrubber Timeline */}
-          <div className="w-full flex items-center gap-2.5 group/scrubber select-none">
-            <span className="text-[11px] font-mono tabular-nums text-zinc-400 min-w-[38px] text-right">
+          {/* Hard-Bordered Cyan Progress Bar */}
+          <div className="w-full flex items-center gap-2.5 group/scrubber">
+            <span className="text-[11px] font-mono font-bold tabular-nums text-[#b9cacb] min-w-[38px] text-right">
               {formatTime(currentTime)}
             </span>
 
-            <div className="relative flex-1 flex items-center h-4">
-              <div className="w-full h-1 group-hover/scrubber:h-1.5 bg-white/[0.14] rounded-full overflow-hidden relative pointer-events-none transition-[height] duration-150">
+            <div className="relative flex-1 flex items-center h-8 md:h-4">
+              <div className="w-full h-3 bg-[#0d0e15] border-[2px] border-black p-[1px] overflow-hidden pointer-events-none">
                 <div
-                  className="h-full bg-amber-400 group-hover/scrubber:bg-amber-300 rounded-full transition-colors"
+                  className="h-full bg-[#00f0ff] border-r-[2px] border-black transition-[width] duration-100"
                   style={{ width: `${progressPercent}%` }}
                 />
               </div>
-
-              <div
-                className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow-md ring-2 ring-amber-400 opacity-0 group-hover/scrubber:opacity-100 transition-opacity pointer-events-none"
-                style={{ left: `calc(${progressPercent}% - 6px)` }}
-              />
-
               <input
                 type="range"
                 min={0}
@@ -370,50 +361,60 @@ export const UnifiedPlaybackBar: React.FC<UnifiedPlaybackBarProps> = ({
               />
             </div>
 
-            <span className="text-[11px] font-mono tabular-nums text-zinc-400 min-w-[38px]">
+            <span className="text-[11px] font-mono font-bold tabular-nums text-[#b9cacb] min-w-[38px]">
               {formatTime(effectiveDuration)}
             </span>
           </div>
         </div>
 
-        {/* Right Zone: Quality, Video, Lyrics, Cinema Toggle & Volume (Identical across Home and Cinema) */}
+        {/* Right Zone: Comic EQ Strip, Quality, Video, Lyrics, Volume & Queue */}
         <div
           className={`${
             isCinemaMode
-              ? 'flex w-full md:w-[28%] md:min-w-[210px] md:max-w-[340px] justify-between md:justify-end'
-              : 'flex w-[28%] min-w-[210px] max-w-[340px] justify-end'
-          } items-center gap-1.5`}
+              ? 'flex w-full md:w-[300px] lg:w-[340px] justify-between md:justify-end'
+              : 'flex w-[270px] lg:w-[340px] justify-end'
+          } items-center gap-2 shrink-0`}
         >
-          {/* Real Interactive Stream Quality Selector */}
+          {/* Live 5-Bar Comic EQ Strip */}
+          <div
+            aria-hidden="true"
+            className="hidden xl:flex items-end gap-1 h-7 px-2 py-1 bg-[#0d0e15] border-[2px] border-black shrink-0"
+          >
+            <span className={`w-1 bg-[#00f0ff] ${isPlaying ? 'animate-bar-1' : 'h-2'}`} />
+            <span className={`w-1 bg-[#fde400] ${isPlaying ? 'animate-bar-2' : 'h-3'}`} />
+            <span className={`w-1 bg-[#ff506e] ${isPlaying ? 'animate-bar-3' : 'h-1.5'}`} />
+            <span className={`w-1 bg-[#00f0ff] ${isPlaying ? 'animate-bar-2' : 'h-2.5'}`} />
+            <span className={`w-1 bg-[#7df4ff] ${isPlaying ? 'animate-bar-1' : 'h-2'}`} />
+          </div>
+
           {onChangePlaybackQuality && (
             <div className="relative" ref={qualityMenuRef}>
               <button
                 type="button"
                 onClick={() => setIsQualityMenuOpen((o) => !o)}
-                className={`h-8 px-2.5 rounded-lg border text-xs font-medium transition-colors cursor-pointer flex items-center gap-1.5 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/70 ${
+                className={`h-10 md:h-8 px-2.5 md:px-2 border-[2px] border-black text-[11px] font-mono font-bold transition-colors cursor-pointer flex items-center gap-1 shadow-[2px_2px_0px_#000000] ${
                   isQualityMenuOpen
-                    ? 'bg-amber-500/15 text-amber-300 border-amber-500/40'
-                    : 'bg-[#18181D] hover:bg-[#202027] text-zinc-200 border-white/[0.08]'
+                    ? 'bg-[#00f0ff] text-[#00363a]'
+                    : 'bg-[#1a1b22] text-[#e3e1ec] hover:bg-[#292931]'
                 }`}
                 title={`Stream quality: ${activeQuality.label}`}
                 aria-label={`Stream quality: ${activeQuality.label}`}
                 aria-expanded={isQualityMenuOpen}
-                aria-haspopup="menu"
               >
-                <SlidersHorizontal className="w-3.5 h-3.5 text-amber-400" />
-                <span className="font-mono tabular-nums text-[11px]">
-                  {activeQuality.shortLabel}
-                </span>
+                <SlidersHorizontal className="w-3.5 h-3.5" />
+                <span>{activeQuality.shortLabel}</span>
               </button>
 
               {isQualityMenuOpen && (
                 <div
                   role="menu"
-                  className="absolute bottom-11 left-0 md:left-auto md:right-0 w-60 rounded-xl bg-[#141418] border border-white/[0.1] shadow-2xl p-1.5 z-50"
+                  className="absolute bottom-12 md:bottom-11 left-0 md:left-auto md:right-0 w-60 max-w-[calc(100vw-2rem)] bg-[#1e1f27] border-[2px] border-black shadow-[5px_5px_0px_#000000] p-1.5 z-50"
                 >
-                  <div className="px-2.5 py-1.5 border-b border-white/[0.06] mb-1">
-                    <p className="text-xs font-semibold text-zinc-200">Stream Quality</p>
-                    <p className="text-[11px] text-zinc-500">YouTube player resolution preference</p>
+                  <div className="px-2.5 py-1.5 border-b-[2px] border-black mb-1">
+                    <p className="font-display text-lg text-[#00f0ff] tracking-wide leading-none">
+                      STREAM QUALITY
+                    </p>
+                    <p className="text-[10px] text-[#b9cacb] uppercase">YouTube resolution lock</p>
                   </div>
                   {STREAM_QUALITY_OPTIONS.map((option) => {
                     const selected = option.id === activeQuality.id;
@@ -427,19 +428,23 @@ export const UnifiedPlaybackBar: React.FC<UnifiedPlaybackBarProps> = ({
                           onChangePlaybackQuality(option.id);
                           setIsQualityMenuOpen(false);
                         }}
-                        className={`w-full text-left px-2.5 py-2 rounded-lg flex items-start justify-between gap-2 transition-colors cursor-pointer ${
+                        className={`w-full text-left px-2.5 py-2 flex items-start justify-between gap-2 transition-colors cursor-pointer ${
                           selected
-                            ? 'bg-amber-500/15 text-amber-300'
-                            : 'text-zinc-200 hover:bg-white/[0.05]'
+                            ? 'bg-[#00f0ff] text-[#00363a] font-bold'
+                            : 'text-[#e3e1ec] hover:bg-[#292931]'
                         }`}
                       >
                         <div className="min-w-0">
-                          <p className="text-xs font-semibold leading-tight">{option.label}</p>
-                          <p className="text-[11px] text-zinc-400 mt-0.5 leading-tight">
+                          <p className="text-xs font-bold leading-tight uppercase">{option.label}</p>
+                          <p
+                            className={`text-[10px] mt-0.5 leading-tight ${
+                              selected ? 'text-[#00363a]/80' : 'text-[#b9cacb]'
+                            }`}
+                          >
                             {option.detail}
                           </p>
                         </div>
-                        {selected && <Check className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />}
+                        {selected && <Check className="w-3.5 h-3.5 shrink-0 mt-0.5" />}
                       </button>
                     );
                   })}
@@ -448,81 +453,73 @@ export const UnifiedPlaybackBar: React.FC<UnifiedPlaybackBarProps> = ({
             </div>
           )}
 
-          {/* Mode & Cinema Controls (Consistent slots in BOTH Home and Cinema Mode) */}
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1.5">
             <button
               type="button"
               onClick={onToggleVideo}
-              className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/70 ${
+              className={`w-10 h-10 md:w-8 md:h-8 border-[2px] border-black flex items-center justify-center shadow-[2px_2px_0px_#000000] cursor-pointer transition-colors ${
                 isVideoActive
-                  ? 'bg-amber-400 text-zinc-950'
-                  : 'text-zinc-400 hover:text-zinc-100 hover:bg-white/[0.06]'
+                  ? 'bg-[#ff506e] text-white'
+                  : 'bg-[#1a1b22] text-[#e3e1ec] hover:bg-[#292931]'
               }`}
-              title={isVideoActive ? 'Hide Video' : 'Watch Video'}
+              title={isVideoActive ? 'Hide Video' : 'Fullscreen Video'}
               aria-label={isVideoActive ? 'Hide video' : 'Watch video'}
-              aria-pressed={isVideoActive}
             >
-              <Film className="w-4 h-4" />
+              <Film className="w-4 h-4 md:w-3.5 md:h-3.5" />
             </button>
 
             <button
               type="button"
               onClick={onToggleLyrics}
-              className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/70 ${
+              className={`w-10 h-10 md:w-8 md:h-8 border-[2px] border-black flex items-center justify-center shadow-[2px_2px_0px_#000000] cursor-pointer transition-colors ${
                 isLyricsActive
-                  ? 'bg-amber-400 text-zinc-950'
-                  : 'text-zinc-400 hover:text-zinc-100 hover:bg-white/[0.06]'
+                  ? 'bg-[#fde400] text-[#201c00]'
+                  : 'bg-[#1a1b22] text-[#e3e1ec] hover:bg-[#292931]'
               }`}
-              title={isLyricsActive ? 'Close Lyrics' : 'Synchronized Lyrics'}
-              aria-label={isLyricsActive ? 'Close synchronized lyrics' : 'Open synchronized lyrics'}
-              aria-pressed={isLyricsActive}
+              title="Comic Lyrics Stream"
+              aria-label="Open synchronized lyrics"
             >
-              <Mic2 className="w-4 h-4" />
+              <Mic2 className="w-4 h-4 md:w-3.5 md:h-3.5" />
             </button>
 
             <button
               type="button"
               onClick={onToggleCinema}
-              className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/70 ${
+              className={`w-10 h-10 md:w-8 md:h-8 border-[2px] border-black flex items-center justify-center shadow-[2px_2px_0px_#000000] cursor-pointer transition-colors ${
                 isCinemaMode
-                  ? 'bg-amber-500/15 text-amber-400 border border-amber-500/35'
-                  : 'text-zinc-400 hover:text-zinc-100 hover:bg-white/[0.06]'
+                  ? 'bg-[#00f0ff] text-[#00363a]'
+                  : 'bg-[#1a1b22] text-[#e3e1ec] hover:bg-[#292931]'
               }`}
-              title={isCinemaMode ? 'Exit Cinema Mode (Esc)' : 'Open Cinema Mode'}
-              aria-label={isCinemaMode ? 'Exit Cinema Mode' : 'Open Cinema Mode'}
-              aria-pressed={isCinemaMode}
+              title={isCinemaMode ? 'Exit Action Stage (Esc)' : 'Open Action Stage'}
+              aria-label={isCinemaMode ? 'Exit Action Stage' : 'Open Action Stage'}
             >
               {isCinemaMode ? (
-                <Minimize2 className="w-4 h-4" />
+                <Minimize2 className="w-4 h-4 md:w-3.5 md:h-3.5" />
               ) : (
-                <Maximize2 className="w-4 h-4" />
+                <Maximize2 className="w-4 h-4 md:w-3.5 md:h-3.5" />
               )}
             </button>
           </div>
 
-          {/* Custom Tactile Volume Control (Matching Timeline Scrubber Precision) */}
-          <div className="hidden lg:flex items-center gap-2 ml-1 group/volume">
+          {/* Hard-Bordered Comic Yellow Volume Meter */}
+          <div className="hidden lg:flex items-center gap-1.5 ml-1">
             <button
               type="button"
               onClick={() => onChangeVolume(volume === 0 ? 80 : 0)}
-              className="w-8 h-8 rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-white/[0.06] flex items-center justify-center transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/70"
-              title={volume === 0 ? 'Unmute (M)' : `Mute (${volume}%) (M)`}
+              className="text-[#b9cacb] hover:text-[#fde400] cursor-pointer transition-colors"
+              title={volume === 0 ? 'Unmute (M)' : `Mute (${volume}%)`}
               aria-label={volume === 0 ? 'Unmute audio' : 'Mute audio'}
             >
               <VolumeIcon className="w-4 h-4" />
             </button>
 
-            <div className="relative w-20 flex items-center h-4">
-              <div className="w-full h-1 group-hover/volume:h-1.5 bg-white/[0.14] rounded-full overflow-hidden pointer-events-none transition-[height] duration-150">
+            <div className="relative w-20 h-4 flex items-center">
+              <div className="w-full h-2.5 bg-[#0d0e15] border-[2px] border-black overflow-hidden pointer-events-none">
                 <div
-                  className="h-full bg-zinc-200 group-hover/volume:bg-amber-400 rounded-full transition-colors"
+                  className="h-full bg-[#fde400] border-r-[2px] border-black"
                   style={{ width: `${volumePercent}%` }}
                 />
               </div>
-              <div
-                className="absolute top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-white rounded-full shadow ring-2 ring-amber-400 opacity-0 group-hover/volume:opacity-100 transition-opacity pointer-events-none"
-                style={{ left: `calc(${volumePercent}% - 5px)` }}
-              />
               <input
                 type="range"
                 min={0}
@@ -534,11 +531,19 @@ export const UnifiedPlaybackBar: React.FC<UnifiedPlaybackBarProps> = ({
                 title={`Volume: ${volume}%`}
               />
             </div>
-
-            <span className="text-[10px] font-mono tabular-nums text-zinc-500 w-7 text-right">
-              {volume}%
-            </span>
           </div>
+
+          {onOpenQueue && (
+            <button
+              type="button"
+              onClick={onOpenQueue}
+              className="w-10 h-10 md:w-8 md:h-8 border-[2px] border-black bg-[#1a1b22] text-[#e3e1ec] hover:bg-[#00f0ff] hover:text-[#00363a] flex items-center justify-center shadow-[2px_2px_0px_#000000] cursor-pointer transition-colors"
+              title="Open Issue Vault Queue"
+              aria-label="Open Queue"
+            >
+              <ListMusic className="w-4 h-4" />
+            </button>
+          )}
         </div>
       </footer>
     </div>

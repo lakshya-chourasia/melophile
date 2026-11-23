@@ -1,0 +1,1603 @@
+<!-- ComicBeats Desktop - Issue #1 Home -->
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Space+Grotesk:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"tertiary-container":"#f3db00","surface-dim":"#12131a","error":"#ffb4ab","surface-bright":"#383941","on-primary-fixed-variant":"#004f54","secondary-fixed":"#ffdadb","on-error-container":"#ffdad6","surface-variant":"#34343c","on-surface":"#e3e1ec","primary-fixed":"#7df4ff","on-surface-variant":"#b9cacb","surface-tint":"#00dbe9","on-secondary-fixed-variant":"#91002d","on-tertiary-container":"#6b5f00","secondary-fixed-dim":"#ffb2b8","surface-container-low":"#1a1b22","inverse-surface":"#e3e1ec","outline":"#849495","surface-container":"#1e1f27","primary-fixed-dim":"#00dbe9","inverse-primary":"#006970","on-tertiary-fixed":"#201c00","outline-variant":"#3b494b","surface":"#12131a","surface-container-lowest":"#0d0e15","background":"#12131a","tertiary":"#fff6d1","on-secondary-container":"#5b0018","surface-container-highest":"#34343c","on-primary":"#00363a","on-background":"#e3e1ec","secondary":"#ffb2b8","surface-container-high":"#292931","inverse-on-surface":"#2f3038","on-tertiary":"#373100","on-error":"#690005","primary-container":"#00f0ff","secondary-container":"#ff506e","on-secondary":"#67001d","on-primary-container":"#006970","on-secondary-fixed":"#40000f","on-primary-fixed":"#002022","tertiary-fixed-dim":"#dec800","error-container":"#93000a","primary":"#dbfcff","on-tertiary-fixed-variant":"#504700","tertiary-fixed":"#fde400"},borderRadius:{DEFAULT:"0.25rem",lg:"0.5rem",xl:"0.75rem",full:"9999px"},spacing:{"space-sm":"0.5rem","space-xl":"2.5rem","space-md":"1rem","margin-desktop":"2.5rem","space-xs":"0.25rem","margin":"1rem","space-lg":"1.5rem","gutter-desktop":"1.5rem","gutter":"1rem"},fontFamily:{"label-lg":["Space Grotesk"],"headline-xl-mobile":["Bebas Neue"],"headline-lg-mobile":["Bebas Neue"],"body-md":["Space Grotesk"],"headline-xl":["Bebas Neue"],"body-sm":["Space Grotesk"],"headline-lg":["Bebas Neue"],"title-lg":["Space Grotesk"],"body-lg":["Space Grotesk"],"title-md":["Space Grotesk"],"label-sm":["Space Grotesk"],"headline-md":["Bebas Neue"]},fontSize:{"label-lg":["13px",{lineHeight:"16px",letterSpacing:"0.08em",fontWeight:"700"}],"headline-xl-mobile":["38px",{lineHeight:"40px",letterSpacing:"0.03em",fontWeight:"400"}],"headline-lg-mobile":["30px",{lineHeight:"32px",letterSpacing:"0.02em",fontWeight:"400"}],"body-md":["14px",{lineHeight:"20px",fontWeight:"400"}],"headline-xl":["56px",{lineHeight:"56px",letterSpacing:"0.04em",fontWeight:"400"}],"body-sm":["12px",{lineHeight:"16px",fontWeight:"400"}],"headline-lg":["40px",{lineHeight:"42px",letterSpacing:"0.03em",fontWeight:"400"}],"title-lg":["20px",{lineHeight:"26px",letterSpacing:"-0.01em",fontWeight:"700"}],"body-lg":["16px",{lineHeight:"24px",fontWeight:"400"}],"title-md":["16px",{lineHeight:"22px",fontWeight:"700"}],"label-sm":["10px",{lineHeight:"12px",letterSpacing:"0.1em",fontWeight:"700"}],"headline-md":["28px",{lineHeight:"30px",letterSpacing:"0.02em",fontWeight:"400"}]}}}};</script></head><body class="bg-surface-container-lowest text-on-surface font-body-md text-body-md antialiased selection:bg-primary-container selection:text-on-primary-container"><aside class="fixed left-0 top-0 bottom-24 w-72 bg-surface-container-low border-r-[3px] border-black z-40 flex flex-col justify-between p-space-md shadow-[4px_0px_0px_#000000]"><div class="flex flex-col gap-space-md"><div class="flex items-center justify-between p-space-sm bg-surface-container border-[2px] border-black shadow-[3px_3px_0px_#000000]"><div class="flex items-center gap-space-sm"><div class="w-9 h-9 bg-primary-container border-[2px] border-black flex items-center justify-center -rotate-3 shadow-[2px_2px_0px_#000000]"><span class="material-symbols-outlined text-on-primary-container font-black">bolt</span></div><div><span class="font-headline-md text-headline-md tracking-wider text-primary block leading-none">KAPOW!</span><span class="font-label-sm text-label-sm uppercase tracking-widest text-tertiary-fixed block leading-none">PULSE AUDIO</span></div></div><div class="bg-secondary-container text-white font-headline-md text-[13px] px-2 py-0.5 border-[2px] border-black rotate-6 shadow-[2px_2px_0px_#000000]">VOL. 01</div></div><nav class="flex flex-col gap-space-xs" data-active-classes="bg-primary-container text-on-primary-container shadow-[3px_3px_0px_#000000] translate-x-1 font-bold"><a aria-current="page" class="flex items-center gap-space-sm px-space-md py-space-sm rounded border-[2px] border-black transition-transform duration-100 bg-primary-container text-on-primary-container shadow-[3px_3px_0px_#000000] translate-x-1 font-bold" data-path="home" href="#"><span class="material-symbols-outlined text-[20px]">home</span><span class="font-title-md text-title-md uppercase tracking-wide">Home Base</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded border-[2px] border-black bg-surface-container text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-transform duration-100" data-path="explore" href="#"><span class="material-symbols-outlined text-[20px]">explore</span><span class="font-title-md text-title-md uppercase tracking-wide">Comics / Explore</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded border-[2px] border-black bg-surface-container text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-transform duration-100" data-path="top-charts" href="#"><span class="material-symbols-outlined text-[20px]">local_fire_department</span><span class="font-title-md text-title-md uppercase tracking-wide">Top Charts</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded border-[2px] border-black bg-surface-container text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-transform duration-100" data-path="vault" href="#"><span class="material-symbols-outlined text-[20px]">auto_stories</span><span class="font-title-md text-title-md uppercase tracking-wide">Issue Vault</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded border-[2px] border-black bg-surface-container text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-transform duration-100" data-path="radio-station" href="#"><span class="material-symbols-outlined text-[20px]">podcasts</span><span class="font-title-md text-title-md uppercase tracking-wide">Radio Station</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded border-[2px] border-black bg-surface-container text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-transform duration-100" data-path="equalizer-studio" href="#"><span class="material-symbols-outlined text-[20px]">graphic_eq</span><span class="font-title-md text-title-md uppercase tracking-wide">Equalizer Studio</span></a></nav></div><div class="p-space-sm bg-surface-container border-[2px] border-black shadow-[3px_3px_0px_#000000] flex items-center justify-between"><div class="flex items-center gap-space-sm"><div class="w-9 h-9 rounded-full bg-primary border-[2px] border-black flex items-center justify-center shadow-[1px_1px_0px_#000000]"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="flex flex-col"><span class="font-title-md text-[13px] leading-tight text-on-surface uppercase">MILES_X99</span><span class="font-label-sm text-label-sm text-primary-fixed">HERO TIER</span></div></div><button class="w-8 h-8 bg-surface-container-high border-[2px] border-black flex items-center justify-center text-on-surface hover:bg-primary-container hover:text-on-primary-container transition-colors shadow-[2px_2px_0px_#000000]"><span class="material-symbols-outlined text-[18px]">settings</span></button></div></aside><div class="pl-72 pb-24 min-h-screen"><header class="fixed top-0 left-72 right-0 h-16 bg-surface-container-low/95 backdrop-blur border-b-[3px] border-black z-30 flex items-center justify-between px-gutter-desktop shadow-[0_4px_0px_#000000]"><div class="flex items-center gap-space-md flex-1 max-w-xl"><div class="relative w-full"><span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span><input class="w-full h-10 pl-10 pr-space-md bg-surface-container border-[2px] border-black text-on-surface placeholder:text-on-surface-variant font-body-sm text-body-sm focus:outline-none focus:border-primary-container focus:shadow-[3px_3px_0px_#000000] transition-all" placeholder="Search multiverse tracks, comic scores, artists..." type="text"/></div></div><div class="flex items-center gap-space-md"><div class="bg-tertiary-fixed text-on-tertiary-fixed px-3 py-1 border-[2px] border-black font-headline-md text-[16px] tracking-wide -rotate-2 shadow-[2px_2px_0px_#000000]">STREAM ACTIVE</div><button class="w-10 h-10 bg-surface-container border-[2px] border-black flex items-center justify-center text-on-surface hover:bg-surface-container-high transition-transform active:translate-y-0.5 shadow-[2px_2px_0px_#000000]"><span class="material-symbols-outlined text-[20px]">notifications</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center border-[2px] border-black shadow-[2px_2px_0px_#000000]"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></header><main class="w-full pt-16 px-gutter-desktop bg-surface-container-lowest min-h-screen"><div class="flex flex-col w-full pb-16">
+<!-- Top Hero Splash Banner (Comic Arc Showcase) -->
+<section class="relative w-full mb-space-xl">
+<!-- Halftone backdrop & skewed action panel -->
+<div class="relative bg-surface-container-high rounded-xl overflow-hidden shadow-[6px_6px_0px_#000000]">
+<!-- Background Graphic Novel Visual -->
+<div class="absolute inset-0 opacity-40 mix-blend-luminosity bg-cover bg-center" data-alt="Dynamic graphic novel splash art inspired by Spider-Verse, featuring a hooded superhero leaping through neon skyscrapers in Brooklyn under rain, with vibrant cyan and magenta chromatic aberration, halftone dots texture, and heavy ink outlines." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDuQCCoIDQ9TeYZx1A5-mGYMKNODFZD2ed4rnQoSIj4YKRRIiWey9bRtqVHdYM3BPfmJQK7n0CuiQzmlj4kw8O-ph1cu-yZFZAD4u-YAw_c4T0nfsASotcav-gZsbEWCTlmQv65AN1nWAGLLIzwj7v26csOq2SHJ9jMen_4waE2_NWIREjaMfrRIBuT2Se9fQCN8ApAVZtFpT9tSLEm_YWKipn8-qIiaoAVeB1vAWc')"></div>
+<!-- Ben-Day Dots SVG Overlay Pattern -->
+<div class="absolute inset-0 opacity-15 pointer-events-none" style="background-image: radial-gradient(#00f0ff 1.5px, transparent 1.5px); background-size: 14px 14px;"></div>
+<!-- Content Container -->
+<div class="relative z-10 p-gutter-desktop flex flex-col lg:flex-row items-center justify-between gap-space-lg">
+<!-- Left: Text narrative & Callouts -->
+<div class="flex-1 max-w-2xl">
+<!-- Top Multiverse Stamp -->
+<div class="flex flex-wrap items-center gap-space-sm mb-space-sm">
+<span class="bg-tertiary-fixed text-on-tertiary-fixed font-headline-md text-headline-md px-3 py-1 shadow-[3px_3px_0px_#000000] -rotate-2">
+              FEATURED ISSUE #01
+            </span>
+<span class="bg-secondary-container text-white font-label-sm text-label-sm uppercase px-2.5 py-1 tracking-widest shadow-[2px_2px_0px_#000000] rotate-1">
+              EARTH-1610 TRANSMISSION
+            </span>
+<div class="flex items-center gap-1 bg-surface-container-lowest px-2.5 py-1 shadow-[2px_2px_0px_#000000]">
+<span class="material-symbols-outlined text-primary-container text-[16px] animate-pulse">local_fire_department</span>
+<span class="font-label-sm text-label-sm text-primary-container">98.4% HYPED</span>
+</div>
+</div>
+<!-- Main Comic Arc Headline -->
+<h1 class="font-headline-xl text-headline-xl text-primary tracking-wide leading-none uppercase drop-shadow-[3px_3px_0px_#000000] mb-space-xs">
+            SPIDER-VERSE <span class="text-tertiary-fixed underline decoration-secondary-container decoration-wavy">CITY BEATS</span>
+</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-space-lg max-w-xl">
+            Sonic collision across multidimensional dimensions. Heavy 808 sub-bass, neon synth arpeggios, and orchestral breakbeats curated by Miles &amp; Gwen for midnight borough swinging.
+          </p>
+<!-- Action Button Cluster with Comic Bursts -->
+<div class="flex flex-wrap items-center gap-space-md">
+<!-- Play Arc Button with KAPOW burst -->
+<div class="relative inline-block group">
+<!-- KAPOW burst badge -->
+<div class="absolute -top-4 -right-4 z-20 bg-tertiary-fixed text-on-tertiary-fixed font-headline-md text-[18px] px-2.5 py-0.5 shadow-[2px_2px_0px_#000000] rotate-12 group-hover:scale-110 transition-transform">
+                KAPOW!
+              </div>
+<button class="bg-primary-container text-on-primary-container font-headline-md text-headline-md px-8 py-3.5 shadow-[5px_5px_0px_#000000] hover:translate-x-1 hover:translate-y-1 hover:shadow-[2px_2px_0px_#000000] transition-all flex items-center gap-space-sm cursor-pointer">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+<span>PLAY ISSUE ARC</span>
+</button>
+</div>
+<!-- Shuffle Multiverse Button -->
+<button class="bg-surface-container text-on-surface font-title-md text-title-md px-6 py-3.5 shadow-[4px_4px_0px_#000000] hover:bg-surface-container-highest hover:text-primary transition-all flex items-center gap-space-sm cursor-pointer active:translate-x-0.5 active:translate-y-0.5">
+<span class="material-symbols-outlined text-[22px]">shuffle</span>
+<span>SHUFFLE MULTIVERSE</span>
+</button>
+<!-- Bookmark / Add Issue -->
+<button class="w-12 h-12 bg-surface-container text-on-surface flex items-center justify-center shadow-[4px_4px_0px_#000000] hover:bg-secondary-container hover:text-white transition-all cursor-pointer">
+<span class="material-symbols-outlined text-[22px]">bookmark_add</span>
+</button>
+</div>
+</div>
+<!-- Right: Comic Cover Box Art Preview -->
+<div class="relative w-64 h-80 flex-shrink-0 group hidden md:block">
+<!-- Back layer card tilt -->
+<div class="absolute inset-0 bg-secondary-container rotate-6 shadow-[5px_5px_0px_#000000] rounded"></div>
+<!-- Main Issue Cover -->
+<div class="relative w-full h-full bg-surface-container-lowest -rotate-2 rounded shadow-[5px_5px_0px_#000000] overflow-hidden flex flex-col justify-between p-3 group-hover:rotate-0 transition-transform duration-200">
+<div class="bg-cover bg-center h-48 w-full shadow-[2px_2px_0px_#000000] relative" data-alt="Comic book comic cover close-up of Spider-Gwen perched on a gargoyle wearing white headphones, graphic novel ink splatter style, neon teal and magenta lights, bold Ben-Day dots shading." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCJejWsyG26eLDFKaWTd8PbCMq_lBByv1UZiYn5xIDN3Ovk_SBezqYUSoKgwtem2rrsu4UZ3eiam07qBgwVDcAkdz7qQUZGoEXr9y2I2W0wo6dkMNvRu9SNxVpWeb0y7SXw1_rWDT2LHNTGoXTqeUxu6OtQ2Uw-OdyaZoKvtbKMaaLB8s-N9eCmACk1r1Lp_0I_v1Aippb-HEjsj0qKKKzvYnScenLicZlEu5DgMMM')">
+<span class="absolute top-2 left-2 bg-primary-container text-on-primary-container font-headline-md text-[13px] px-1.5 shadow-[1px_1px_0px_#000000]">CCA APPROVED</span>
+<span class="absolute bottom-2 right-2 bg-tertiary-fixed text-on-tertiary-fixed font-headline-md text-[15px] px-2 shadow-[2px_2px_0px_#000000] -rotate-6">75¢ MINT</span>
+</div>
+<!-- Bottom issue specs -->
+<div class="flex items-end justify-between pt-2">
+<div>
+<span class="font-headline-md text-[18px] text-primary block leading-none">ISSUE #01</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant uppercase">32 Tracks • 1H 44M</span>
+</div>
+<!-- Barcode Sticker Stamp -->
+<div class="bg-white p-1 shadow-[1px_1px_0px_#000000] flex flex-col items-center">
+<div class="flex items-center gap-0.5 h-5">
+<div class="w-0.5 h-full bg-black"></div>
+<div class="w-1 h-full bg-black"></div>
+<div class="w-0.5 h-full bg-black"></div>
+<div class="w-1.5 h-full bg-black"></div>
+<div class="w-0.5 h-full bg-black"></div>
+<div class="w-1 h-full bg-black"></div>
+</div>
+<span class="font-label-sm text-[8px] text-black font-bold tracking-tighter">071486-01</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Heavy Rotation: 3 Diagonal / Comic Cover Grid -->
+<section class="w-full mb-space-xl">
+<div class="flex items-center justify-between mb-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-4 h-8 bg-primary-container shadow-[2px_2px_0px_#000000] -rotate-6"></div>
+<h2 class="font-headline-lg text-headline-lg uppercase text-on-surface tracking-wide">
+          HEAVY ROTATION ISSUES
+        </h2>
+<span class="bg-secondary-container text-white font-headline-md text-[14px] px-2 py-0.5 rotate-3 shadow-[2px_2px_0px_#000000]">HOT DROPS</span>
+</div>
+<a class="font-title-md text-title-md text-primary-container hover:text-tertiary-fixed flex items-center gap-1 transition-colors uppercase tracking-wider" href="#">
+<span>COLLECT ALL</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</a>
+</div>
+<!-- 3 Slanted Comic Issue Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter-desktop">
+<!-- Issue Cover 1: What's Up Danger -->
+<div class="bg-surface-container p-space-md rounded-lg shadow-[5px_5px_0px_#000000] hover:-translate-y-1 hover:shadow-[7px_7px_0px_#000000] transition-all flex flex-col justify-between group">
+<div class="relative overflow-hidden rounded bg-surface-container-lowest mb-space-md">
+<div class="h-64 w-full bg-cover bg-center group-hover:scale-105 transition-transform duration-300" data-alt="Cover illustration of an audio album inspired by hip-hop comics. Masked vigilante freefalling upside down against a backdrop of neon comic skyscrapers in deep navy and electric yellow." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC0C9CcJR-rVDJ65xDb-9TudQhVsAfsN2_UFofRNzGKf-UReb1L9fWDRKUPOilK0YD5v5qPPHRIE0fEK_tGE_HcUFB_qDSyEwVZ3Y6d9cBcWOPXcQJrMV5J2RJf2Vtl3zs9b8EFEazOB9XdiInb0syP4CkN5zwmvd3ntQMaNKASeGMB8mvgPqYLDuy0O2TzlPJcnHFbUQiGZiBtOxjpg9pRho6A7i8E-Mqw74CmKSQ')"></div>
+<!-- Issue Badge Header -->
+<div class="absolute top-2 left-2 flex items-center gap-1">
+<span class="bg-tertiary-fixed text-on-tertiary-fixed font-headline-md text-[18px] px-2 py-0.5 shadow-[2px_2px_0px_#000000] -rotate-3">#24</span>
+<span class="bg-black/80 text-primary-container font-label-sm text-label-sm px-1.5 py-0.5">TRAP BEATS</span>
+</div>
+<!-- Comic Burst Sensation -->
+<div class="absolute bottom-2 right-2 bg-secondary-container text-white font-headline-md text-[16px] px-2 py-0.5 shadow-[2px_2px_0px_#000000] rotate-6">
+            145 BPM!
+          </div>
+<!-- Quick Play Hover Overlay Button -->
+<button class="absolute inset-0 m-auto w-14 h-14 bg-primary-container text-on-primary-container rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 shadow-[3px_3px_0px_#000000] transition-all transform scale-75 group-hover:scale-100">
+<span class="material-symbols-outlined text-[32px]" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+</div>
+<div>
+<div class="flex items-center justify-between mb-1">
+<span class="font-headline-md text-headline-md text-primary tracking-wide uppercase truncate">WHAT'S UP DANGER</span>
+<span class="material-symbols-outlined text-secondary-container cursor-pointer">favorite</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">BLACKWAY &amp; BLACK CAVIAR</p>
+<div class="mt-space-md pt-space-sm flex items-center justify-between bg-surface-container-lowest px-2.5 py-1.5 rounded">
+<span class="font-label-sm text-label-sm text-tertiary-fixed font-bold">ARC ROTATION: A+</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">42.8K READS</span>
+</div>
+</div>
+</div>
+<!-- Issue Cover 2: Sunflower Grooves -->
+<div class="bg-surface-container p-space-md rounded-lg shadow-[5px_5px_0px_#000000] hover:-translate-y-1 hover:shadow-[7px_7px_0px_#000000] transition-all flex flex-col justify-between group">
+<div class="relative overflow-hidden rounded bg-surface-container-lowest mb-space-md">
+<div class="h-64 w-full bg-cover bg-center group-hover:scale-105 transition-transform duration-300" data-alt="Vibrant pop-art comic album cover featuring bright yellow sunflowers bursting with neon cyan psychedelic petals on dark halftone ink background, street art graffiti vibe." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCyARbClLo68GODLiWhXJGU7VUo_1WzsEK4a0YMpb3Zwa8HVhewlsFYdEWI5U5p5pe4cacs5Oxyy0k-CpS6mzeiP3r-a6HiTk96E8gZR2oXO2y0gSY6csdu7Gj_DauqWdp9yYGnro6SczF0V3c-nimMI5UMcHFI9jyX_fpg3kDNsdV0jHm1GiaHsV7mEjwiANUF2F8uURwdPw8XhTQzvbCxvw7QablKha3X4JfRRaY')"></div>
+<!-- Issue Badge Header -->
+<div class="absolute top-2 left-2 flex items-center gap-1">
+<span class="bg-primary-container text-on-primary-container font-headline-md text-[18px] px-2 py-0.5 shadow-[2px_2px_0px_#000000] rotate-2">#12</span>
+<span class="bg-black/80 text-tertiary-fixed font-label-sm text-label-sm px-1.5 py-0.5">CHILL HOP</span>
+</div>
+<!-- Comic Burst Sensation -->
+<div class="absolute bottom-2 right-2 bg-tertiary-fixed text-on-tertiary-fixed font-headline-md text-[16px] px-2 py-0.5 shadow-[2px_2px_0px_#000000] -rotate-3">
+            VIBE HIT!
+          </div>
+<button class="absolute inset-0 m-auto w-14 h-14 bg-tertiary-fixed text-on-tertiary-fixed rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 shadow-[3px_3px_0px_#000000] transition-all transform scale-75 group-hover:scale-100">
+<span class="material-symbols-outlined text-[32px]" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+</div>
+<div>
+<div class="flex items-center justify-between mb-1">
+<span class="font-headline-md text-headline-md text-primary tracking-wide uppercase truncate">SUNFLOWER GROOVES</span>
+<span class="material-symbols-outlined text-on-surface-variant hover:text-secondary-container cursor-pointer">favorite</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">SWAE LEE, METRO BOOMIN</p>
+<div class="mt-space-md pt-space-sm flex items-center justify-between bg-surface-container-lowest px-2.5 py-1.5 rounded">
+<span class="font-label-sm text-label-sm text-primary-container font-bold">PLATINUM TAPE</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">118.2K READS</span>
+</div>
+</div>
+</div>
+<!-- Issue Cover 3: Brooklyn Drift -->
+<div class="bg-surface-container p-space-md rounded-lg shadow-[5px_5px_0px_#000000] hover:-translate-y-1 hover:shadow-[7px_7px_0px_#000000] transition-all flex flex-col justify-between group">
+<div class="relative overflow-hidden rounded bg-surface-container-lowest mb-space-md">
+<div class="h-64 w-full bg-cover bg-center group-hover:scale-105 transition-transform duration-300" data-alt="Retro comic book panel showing spray cans, turntables and boomboxes emitting electric neon waves over Brooklyn bridge night skyline in heavy ink screenprint style." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDhRjQ5WqjJA11RoscoOnLhQC7vynllec3Nz7OuZ5kAVJe0BABzGAPHPxzgcW3DIpDsSYU0pswRJuUwb-otvejvyIltHRXe4YePtiHP2EWAoqqBo4WsdfMo7AOdewDMxCKc-31TEnlAvUXhjw4CBisbIMyY80chj_SHHfvvMojzOAEkCSRI1rhDm0Xe-rpMzRlpE_iTS3Y_fLRZvTR0S6HIjnX2jIn2RtfbprmHVuM')"></div>
+<!-- Issue Badge Header -->
+<div class="absolute top-2 left-2 flex items-center gap-1">
+<span class="bg-secondary-container text-white font-headline-md text-[18px] px-2 py-0.5 shadow-[2px_2px_0px_#000000] -rotate-2">#07</span>
+<span class="bg-black/80 text-white font-label-sm text-label-sm px-1.5 py-0.5">LO-FI DRIFT</span>
+</div>
+<!-- Comic Burst Sensation -->
+<div class="absolute bottom-2 right-2 bg-primary-container text-on-primary-container font-headline-md text-[16px] px-2 py-0.5 shadow-[2px_2px_0px_#000000] rotate-4">
+            BASS BOOST
+          </div>
+<button class="absolute inset-0 m-auto w-14 h-14 bg-secondary-container text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 shadow-[3px_3px_0px_#000000] transition-all transform scale-75 group-hover:scale-100">
+<span class="material-symbols-outlined text-[32px]" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+</div>
+<div>
+<div class="flex items-center justify-between mb-1">
+<span class="font-headline-md text-headline-md text-primary tracking-wide uppercase truncate">BROOKLYN DRIFT</span>
+<span class="material-symbols-outlined text-on-surface-variant hover:text-secondary-container cursor-pointer">favorite</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">DANIEL PEMBERTON, JADEN</p>
+<div class="mt-space-md pt-space-sm flex items-center justify-between bg-surface-container-lowest px-2.5 py-1.5 rounded">
+<span class="font-label-sm text-label-sm text-secondary-fixed font-bold">UNDERGROUND CLASSIC</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">89.1K READS</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Bottom Split Section: Top Charts 'The Hit Squad' (8 cols) & Mini Equalizer Console (4 cols) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter-desktop items-start">
+<!-- Top Charts: The Hit Squad (8 Columns) -->
+<section class="lg:col-span-8 flex flex-col gap-space-md">
+<!-- Section Header -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="bg-tertiary-fixed text-on-tertiary-fixed font-headline-md text-[20px] px-2.5 py-0.5 shadow-[3px_3px_0px_#000000] -rotate-3">
+            TOP CHARTS
+          </div>
+<h2 class="font-headline-lg text-headline-lg uppercase text-on-surface tracking-wide">
+            THE HIT SQUAD
+          </h2>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm uppercase text-on-surface-variant">SORT BY:</span>
+<button class="bg-surface-container px-3 py-1 font-title-md text-[13px] text-primary shadow-[2px_2px_0px_#000000] uppercase">
+            IMPACT SCORE ▼
+          </button>
+</div>
+</div>
+<!-- Comic Strip Track Rows -->
+<div class="bg-surface-container p-space-md rounded-lg shadow-[5px_5px_0px_#000000] flex flex-col gap-space-sm">
+<!-- Track #1 (Currently Active) -->
+<div class="bg-surface-container-highest p-space-sm rounded flex items-center justify-between gap-space-md shadow-[3px_3px_0px_#000000] group cursor-pointer">
+<!-- Rank & Thumbnail -->
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 bg-tertiary-fixed text-on-tertiary-fixed font-headline-md text-headline-md flex items-center justify-center shadow-[2px_2px_0px_#000000] -rotate-2">
+              01
+            </div>
+<div class="w-12 h-12 rounded bg-cover bg-center shadow-[2px_2px_0px_#000000] flex-shrink-0 relative overflow-hidden" data-alt="Graffiti tag art showing a radioactive spider symbol in glowing neon spraypaint against brick wall." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAcLDnGWdkk00diMuwlCZLbDJ1DbYRCkvHK86IR8uWpW2mEu1at5z0ZRBTIw5hb8OA231_iAYr0qhGh8o37phvLLPzlEMwsV8wd4nCPPMaxIHfaRsYMDpRvNDJH3tPRwEDW1o7JtTicN0CD9JHqVH_xsaiw75aTZ0J8NvS9bI5BehxXi4fzuln1G5MkonkyrBKSeXkTrk44U8y6aheC6Rg8Iy2ii0VfX73ZYPLm4a8')">
+<!-- Live Equalizer Animation -->
+<div class="absolute inset-0 bg-black/50 flex items-center justify-center gap-0.5">
+<div class="w-1 h-4 bg-primary-container animate-bounce"></div>
+<div class="w-1 h-6 bg-tertiary-fixed animate-pulse"></div>
+<div class="w-1 h-3 bg-secondary-container animate-bounce"></div>
+</div>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-title-md text-title-md text-primary truncate uppercase">ANNIHILATE</span>
+<span class="bg-secondary-container text-white text-[9px] font-bold px-1 uppercase">EXPLICIT</span>
+</div>
+<!-- Comic Speech Balloon Artist Name -->
+<div class="relative inline-block mt-0.5">
+<span class="bg-surface-container-lowest text-on-surface-variant font-label-sm text-[11px] px-2 py-0.5 rounded shadow-[1px_1px_0px_#000000]">
+                  METRO BOOMIN, SWAE LEE, LIL WAYNE
+                </span>
+</div>
+</div>
+</div>
+<!-- Sound FX Badge, Plays & Timing -->
+<div class="flex items-center gap-space-md">
+<!-- Comic FX badge -->
+<div class="bg-secondary-container text-white font-headline-md text-[14px] px-2 py-0.5 shadow-[2px_2px_0px_#000000] rotate-3 hidden sm:block">
+              BOOM! 160BPM
+            </div>
+<div class="text-right hidden sm:block">
+<span class="font-headline-md text-[17px] text-tertiary-fixed block leading-none">2.4M</span>
+<span class="font-label-sm text-[10px] text-on-surface-variant uppercase">PLAYS</span>
+</div>
+<span class="font-label-lg text-label-lg text-on-surface">03:51</span>
+<button class="w-8 h-8 bg-surface-container text-on-surface flex items-center justify-center shadow-[2px_2px_0px_#000000] group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Track #2 -->
+<div class="bg-surface-container-low hover:bg-surface-container-highest p-space-sm rounded flex items-center justify-between gap-space-md shadow-[2px_2px_0px_#000000] transition-colors group cursor-pointer">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 bg-surface-container text-on-surface font-headline-md text-headline-md flex items-center justify-center shadow-[2px_2px_0px_#000000]">
+              02
+            </div>
+<div class="w-12 h-12 rounded bg-cover bg-center shadow-[2px_2px_0px_#000000] flex-shrink-0" data-alt="Comic graphic novel style portrait of a futuristic DJ turntable with sparks flying out." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCkUb7zOOR-0t2HU2YMqWG6VgdUVM-8pr4k2o8ebTyTN7JXl2VXhn1oSNna5zcmcmf_gV99ky3DH4LNE2HUbxV995fQ8-qRjTONeZowDBwkl-SPF0W_oPj4DXUlTJaipNjh1lr7bpidhNan6Y4xNPWB_LijHvfVh79cXwDaVweTHEWnMVSHBgeb4X01j8Jo7BpBQS1DnkuvLT-oWH01gxRCgeV-nR5hvgoRablUZ18')"></div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-title-md text-title-md text-on-surface truncate uppercase group-hover:text-primary">HUMMINGBIRD</span>
+</div>
+<div class="relative inline-block mt-0.5">
+<span class="bg-surface-container-lowest text-on-surface-variant font-label-sm text-[11px] px-2 py-0.5 rounded shadow-[1px_1px_0px_#000000]">
+                  METRO BOOMIN, JAMES BLAKE
+                </span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-space-md">
+<div class="bg-primary-container text-on-primary-container font-headline-md text-[14px] px-2 py-0.5 shadow-[2px_2px_0px_#000000] -rotate-2 hidden sm:block">
+              ZAP! SYNTH
+            </div>
+<div class="text-right hidden sm:block">
+<span class="font-headline-md text-[17px] text-on-surface block leading-none">1.9M</span>
+<span class="font-label-sm text-[10px] text-on-surface-variant uppercase">PLAYS</span>
+</div>
+<span class="font-label-lg text-label-lg text-on-surface-variant">04:19</span>
+<button class="w-8 h-8 bg-surface-container text-on-surface flex items-center justify-center shadow-[2px_2px_0px_#000000] group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Track #3 -->
+<div class="bg-surface-container-low hover:bg-surface-container-highest p-space-sm rounded flex items-center justify-between gap-space-md shadow-[2px_2px_0px_#000000] transition-colors group cursor-pointer">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 bg-surface-container text-on-surface font-headline-md text-headline-md flex items-center justify-center shadow-[2px_2px_0px_#000000]">
+              03
+            </div>
+<div class="w-12 h-12 rounded bg-cover bg-center shadow-[2px_2px_0px_#000000] flex-shrink-0" data-alt="Pop-art comic close-up of high top sneakers dangling from telephone wire over an urban city background with Ben-Day screen tone." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAq4SzVlvJ0ZLb6hBLMPDZcv56eNfHc08ZTp_IJjUunlVpJFZJNiCZZkNpOHmq8QkrZZdbyCS6d87FHpJsSjwc-1ITTyfLwTOqpVl6zH7JFsE4sAzc96VLx-pwGOl_f2Ml2vpp9WjAR7QXdU31PPbDPE_A044pq9ocGD1w40fQ9wHlNiz6I4_QvyQHIkFbzETCw7lV2gk7_TdjmiJ6m91MQKQXKX3YEgdGmmYZ-0J4')"></div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-title-md text-title-md text-on-surface truncate uppercase group-hover:text-primary">CALLING</span>
+</div>
+<div class="relative inline-block mt-0.5">
+<span class="bg-surface-container-lowest text-on-surface-variant font-label-sm text-[11px] px-2 py-0.5 rounded shadow-[1px_1px_0px_#000000]">
+                  NAV, A BOOGIE WIT DA HOODIE
+                </span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-space-md">
+<div class="bg-tertiary-fixed text-on-tertiary-fixed font-headline-md text-[14px] px-2 py-0.5 shadow-[2px_2px_0px_#000000] rotate-2 hidden sm:block">
+              CRUNCH!
+            </div>
+<div class="text-right hidden sm:block">
+<span class="font-headline-md text-[17px] text-on-surface block leading-none">1.6M</span>
+<span class="font-label-sm text-[10px] text-on-surface-variant uppercase">PLAYS</span>
+</div>
+<span class="font-label-lg text-label-lg text-on-surface-variant">03:39</span>
+<button class="w-8 h-8 bg-surface-container text-on-surface flex items-center justify-center shadow-[2px_2px_0px_#000000] group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Track #4 -->
+<div class="bg-surface-container-low hover:bg-surface-container-highest p-space-sm rounded flex items-center justify-between gap-space-md shadow-[2px_2px_0px_#000000] transition-colors group cursor-pointer">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 bg-surface-container text-on-surface font-headline-md text-headline-md flex items-center justify-center shadow-[2px_2px_0px_#000000]">
+              04
+            </div>
+<div class="w-12 h-12 rounded bg-cover bg-center shadow-[2px_2px_0px_#000000] flex-shrink-0" data-alt="Comic book neon outline of a spider web morphing into sound wave frequencies, bright cyan glow on dark ink paper." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAHkcV31x2aPoWQAa34JPE5X2w68lQ-Iuw6zaLEzfpfvs2yrhIrvtX8f3Onz4R8WGDxHFGy5NIv4vZZMFtGitT6xIKyk5XCS_eLxu7Ll0fwwMNiBeO4RNlSpCVSPBbKhkosFwj2Sbw5_O3xoHeVuExQ3OJHwm_NlONfZnzhvBVW_UIe_73HE87-W-Ka3ZXtrkLuNEqAL7DxLASHVFSPhI6UsO_B-qGHb2sxMiDBIu0')"></div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-title-md text-title-md text-on-surface truncate uppercase group-hover:text-primary">SELF LOVE</span>
+</div>
+<div class="relative inline-block mt-0.5">
+<span class="bg-surface-container-lowest text-on-surface-variant font-label-sm text-[11px] px-2 py-0.5 rounded shadow-[1px_1px_0px_#000000]">
+                  COI LERAY, METRO BOOMIN
+                </span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-space-md">
+<div class="bg-secondary-container text-white font-headline-md text-[14px] px-2 py-0.5 shadow-[2px_2px_0px_#000000] -rotate-3 hidden sm:block">
+              PUNCH! 808
+            </div>
+<div class="text-right hidden sm:block">
+<span class="font-headline-md text-[17px] text-on-surface block leading-none">1.3M</span>
+<span class="font-label-sm text-[10px] text-on-surface-variant uppercase">PLAYS</span>
+</div>
+<span class="font-label-lg text-label-lg text-on-surface-variant">03:09</span>
+<button class="w-8 h-8 bg-surface-container text-on-surface flex items-center justify-center shadow-[2px_2px_0px_#000000] group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Track #5 -->
+<div class="bg-surface-container-low hover:bg-surface-container-highest p-space-sm rounded flex items-center justify-between gap-space-md shadow-[2px_2px_0px_#000000] transition-colors group cursor-pointer">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 bg-surface-container text-on-surface font-headline-md text-headline-md flex items-center justify-center shadow-[2px_2px_0px_#000000]">
+              05
+            </div>
+<div class="w-12 h-12 rounded bg-cover bg-center shadow-[2px_2px_0px_#000000] flex-shrink-0" data-alt="Retro comic art of a boombox blasting yellow comic sound speed lines and neon magenta notes onto city streets." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDcl0PaF44D1bsZ3yRio182kBaZSf0FTfy2vLeNKfjVqdrpKico_zclb0JpeDTpn48UyNbyM8b0pbZuWzQsrrxf4TRWaIZ1uF2u4VzB0tyZgx9ckmTqtYUSTMMx6Ok7r79joy15dBASfojK8DU4TLVmWGa61-XoWVJZQK_QrsPm4CDgxwPES00trUFJeeqcuubt-Xc_vhtUvUpqCiqww3-8HVoEAh7hC6ExQULXdFs')"></div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-title-md text-title-md text-on-surface truncate uppercase group-hover:text-primary">ALL THE WAY LIVE</span>
+</div>
+<div class="relative inline-block mt-0.5">
+<span class="bg-surface-container-lowest text-on-surface-variant font-label-sm text-[11px] px-2 py-0.5 rounded shadow-[1px_1px_0px_#000000]">
+                  FUTURE, LIL UZI VERT
+                </span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-space-md">
+<div class="bg-primary-container text-on-primary-container font-headline-md text-[14px] px-2 py-0.5 shadow-[2px_2px_0px_#000000] rotate-1 hidden sm:block">
+              SLAM!
+            </div>
+<div class="text-right hidden sm:block">
+<span class="font-headline-md text-[17px] text-on-surface block leading-none">950K</span>
+<span class="font-label-sm text-[10px] text-on-surface-variant uppercase">PLAYS</span>
+</div>
+<span class="font-label-lg text-label-lg text-on-surface-variant">04:05</span>
+<button class="w-8 h-8 bg-surface-container text-on-surface flex items-center justify-center shadow-[2px_2px_0px_#000000] group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Multiverse Audio Equalizer Mini-Console (4 Columns) -->
+<section class="lg:col-span-4 flex flex-col gap-space-md">
+<!-- Section Header -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="bg-secondary-container text-white font-headline-md text-[20px] px-2.5 py-0.5 shadow-[3px_3px_0px_#000000] rotate-2">
+            CONSOLE
+          </div>
+<h2 class="font-headline-lg text-headline-lg uppercase text-on-surface tracking-wide">
+            EQUALIZER FX
+          </h2>
+</div>
+<span class="material-symbols-outlined text-primary-container animate-spin">tune</span>
+</div>
+<!-- Retro Comic Tech Synthesizer Deck -->
+<div class="bg-surface-container p-space-md rounded-lg shadow-[5px_5px_0px_#000000] flex flex-col gap-space-md relative overflow-hidden">
+<!-- Top Sound FX Alert Badge -->
+<div class="flex items-center justify-between bg-surface-container-lowest p-space-sm rounded shadow-[2px_2px_0px_#000000]">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 bg-secondary-container rounded-full animate-ping"></div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary-container font-bold">BASS OVERLOAD</span>
+</div>
+<span class="bg-tertiary-fixed text-on-tertiary-fixed font-headline-md text-[14px] px-2 py-0.2 shadow-[1px_1px_0px_#000000] -rotate-3">
+            THUMP!
+          </span>
+</div>
+<!-- Halftone Graphic Volume VU Meters -->
+<div class="bg-surface-container-low p-space-sm rounded shadow-[3px_3px_0px_#000000]">
+<div class="flex justify-between items-center mb-1">
+<span class="font-label-sm text-[11px] uppercase font-bold text-on-surface">OUTPUT DECIBELS</span>
+<span class="font-label-sm text-[11px] font-bold text-primary-container">+4.2 dB</span>
+</div>
+<!-- Segmented Comic VU Meter Strip -->
+<div class="grid grid-cols-12 gap-1 h-5 bg-surface-container-lowest p-1 rounded shadow-inner">
+<div class="bg-primary-container shadow-[1px_1px_0px_#000000]"></div>
+<div class="bg-primary-container shadow-[1px_1px_0px_#000000]"></div>
+<div class="bg-primary-container shadow-[1px_1px_0px_#000000]"></div>
+<div class="bg-primary-container shadow-[1px_1px_0px_#000000]"></div>
+<div class="bg-primary-container shadow-[1px_1px_0px_#000000]"></div>
+<div class="bg-primary-container shadow-[1px_1px_0px_#000000]"></div>
+<div class="bg-tertiary-fixed shadow-[1px_1px_0px_#000000]"></div>
+<div class="bg-tertiary-fixed shadow-[1px_1px_0px_#000000]"></div>
+<div class="bg-tertiary-fixed shadow-[1px_1px_0px_#000000]"></div>
+<div class="bg-secondary-container shadow-[1px_1px_0px_#000000]"></div>
+<div class="bg-secondary-container shadow-[1px_1px_0px_#000000] animate-pulse"></div>
+<div class="bg-surface-container-highest"></div>
+</div>
+</div>
+<!-- Vintage Slider Knobs EQ Array -->
+<div class="bg-surface-container-low p-space-md rounded shadow-[3px_3px_0px_#000000]">
+<span class="font-title-md text-[13px] uppercase text-on-surface-variant block mb-space-sm tracking-wider">
+            MULTIVERSE FREQUENCIES
+          </span>
+<!-- 5 Equalizer Slider Channels -->
+<div class="grid grid-cols-5 gap-2 items-end h-36 pt-2 pb-1 bg-surface-container-lowest rounded shadow-inner px-2">
+<!-- Band 60Hz -->
+<div class="flex flex-col items-center h-full justify-between">
+<span class="font-label-sm text-[9px] text-tertiary-fixed font-bold">+6dB</span>
+<div class="relative w-2 h-24 bg-surface-container-highest rounded-full flex items-center justify-center">
+<div class="absolute bottom-0 w-full bg-tertiary-fixed rounded-full" style="height: 85%;"></div>
+<!-- Knob Handle -->
+<div class="absolute w-5 h-3 bg-tertiary-fixed rounded shadow-[2px_2px_0px_#000000] cursor-pointer" style="bottom: 80%;"></div>
+</div>
+<span class="font-label-sm text-[9px] text-on-surface-variant uppercase">60Hz</span>
+</div>
+<!-- Band 250Hz -->
+<div class="flex flex-col items-center h-full justify-between">
+<span class="font-label-sm text-[9px] text-primary-container font-bold">+2dB</span>
+<div class="relative w-2 h-24 bg-surface-container-highest rounded-full flex items-center justify-center">
+<div class="absolute bottom-0 w-full bg-primary-container rounded-full" style="height: 60%;"></div>
+<div class="absolute w-5 h-3 bg-primary-container rounded shadow-[2px_2px_0px_#000000] cursor-pointer" style="bottom: 55%;"></div>
+</div>
+<span class="font-label-sm text-[9px] text-on-surface-variant uppercase">250</span>
+</div>
+<!-- Band 1KHz -->
+<div class="flex flex-col items-center h-full justify-between">
+<span class="font-label-sm text-[9px] text-on-surface-variant font-bold">0dB</span>
+<div class="relative w-2 h-24 bg-surface-container-highest rounded-full flex items-center justify-center">
+<div class="absolute bottom-0 w-full bg-on-surface-variant rounded-full" style="height: 50%;"></div>
+<div class="absolute w-5 h-3 bg-white rounded shadow-[2px_2px_0px_#000000] cursor-pointer" style="bottom: 45%;"></div>
+</div>
+<span class="font-label-sm text-[9px] text-on-surface-variant uppercase">1K</span>
+</div>
+<!-- Band 4KHz -->
+<div class="flex flex-col items-center h-full justify-between">
+<span class="font-label-sm text-[9px] text-secondary-container font-bold">+4dB</span>
+<div class="relative w-2 h-24 bg-surface-container-highest rounded-full flex items-center justify-center">
+<div class="absolute bottom-0 w-full bg-secondary-container rounded-full" style="height: 75%;"></div>
+<div class="absolute w-5 h-3 bg-secondary-container rounded shadow-[2px_2px_0px_#000000] cursor-pointer" style="bottom: 70%;"></div>
+</div>
+<span class="font-label-sm text-[9px] text-on-surface-variant uppercase">4K</span>
+</div>
+<!-- Band 16KHz -->
+<div class="flex flex-col items-center h-full justify-between">
+<span class="font-label-sm text-[9px] text-primary-container font-bold">+5dB</span>
+<div class="relative w-2 h-24 bg-surface-container-highest rounded-full flex items-center justify-center">
+<div class="absolute bottom-0 w-full bg-primary-container rounded-full" style="height: 80%;"></div>
+<div class="absolute w-5 h-3 bg-primary-container rounded shadow-[2px_2px_0px_#000000] cursor-pointer" style="bottom: 75%;"></div>
+</div>
+<span class="font-label-sm text-[9px] text-on-surface-variant uppercase">16K</span>
+</div>
+</div>
+</div>
+<!-- Preset Comic Quick Chips -->
+<div class="flex flex-wrap gap-1.5">
+<button class="bg-primary-container text-on-primary-container font-headline-md text-[14px] px-2.5 py-1 shadow-[2px_2px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all">
+            SUB BOOM
+          </button>
+<button class="bg-surface-container-low text-on-surface font-headline-md text-[14px] px-2.5 py-1 shadow-[2px_2px_0px_#000000] hover:bg-surface-container-highest transition-all">
+            CRISP VOCAL
+          </button>
+<button class="bg-surface-container-low text-on-surface font-headline-md text-[14px] px-2.5 py-1 shadow-[2px_2px_0px_#000000] hover:bg-surface-container-highest transition-all">
+            LO-FI VINYL
+          </button>
+<button class="bg-secondary-container text-white font-headline-md text-[14px] px-2.5 py-1 shadow-[2px_2px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all">
+            ROOFTOP DROP
+          </button>
+</div>
+</div>
+</section>
+</div>
+</div>
+<script>
+  (function initDashboardInteractions() {
+    // Micro-interaction for slider adjustments
+    const eqHandles = document.querySelectorAll('.cursor-pointer');
+    eqHandles.forEach(handle => {
+      handle.addEventListener('click', function(e) {
+        e.stopPropagation();
+        this.classList.add('scale-125');
+        setTimeout(() => this.classList.remove('scale-125'), 180);
+      });
+    });
+  })();
+</script></main></div><div class="fixed bottom-0 left-0 right-0 h-24 bg-surface-container border-t-[3px] border-black z-50 flex items-center justify-between px-gutter-desktop shadow-[0_-4px_0px_#000000]"><div class="flex items-center gap-space-md w-72"><div class="w-14 h-14 bg-surface-container-highest border-[2px] border-black shadow-[3px_3px_0px_#000000] flex-shrink-0 flex items-center justify-center overflow-hidden"><span class="material-symbols-outlined text-primary text-[28px]">album</span></div><div class="overflow-hidden"><div class="flex items-center gap-1.5"><span class="font-title-md text-title-md uppercase text-on-surface truncate">SUNFLOWER - MULTIVERSE MIX</span><span class="bg-secondary-container text-white text-[9px] font-bold px-1 border-[1px] border-black">EXPLICIT</span></div><span class="font-body-sm text-body-sm text-on-surface-variant truncate block">POST MALONE, SWAE LEE</span></div><button class="text-on-surface-variant hover:text-secondary transition-colors"><span class="material-symbols-outlined text-[20px]">favorite</span></button></div><div class="flex flex-col items-center gap-1 max-w-xl w-full px-space-md"><div class="flex items-center gap-space-md"><button class="w-8 h-8 border-[2px] border-black bg-surface-container-low text-on-surface hover:bg-surface-container-high flex items-center justify-center shadow-[2px_2px_0px_#000000]"><span class="material-symbols-outlined text-[16px]">shuffle</span></button><button class="w-8 h-8 border-[2px] border-black bg-surface-container-low text-on-surface hover:bg-surface-container-high flex items-center justify-center shadow-[2px_2px_0px_#000000]"><span class="material-symbols-outlined text-[18px]">skip_previous</span></button><button class="w-11 h-11 border-[3px] border-black bg-primary-container text-on-primary-container flex items-center justify-center shadow-[3px_3px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[1px_1px_0px_#000000] transition-all"><span class="material-symbols-outlined text-[26px]">play_arrow</span></button><button class="w-8 h-8 border-[2px] border-black bg-surface-container-low text-on-surface hover:bg-surface-container-high flex items-center justify-center shadow-[2px_2px_0px_#000000]"><span class="material-symbols-outlined text-[18px]">skip_next</span></button><button class="w-8 h-8 border-[2px] border-black bg-surface-container-low text-on-surface hover:bg-surface-container-high flex items-center justify-center shadow-[2px_2px_0px_#000000]"><span class="material-symbols-outlined text-[16px]">repeat</span></button></div><div class="flex items-center gap-space-sm w-full"><span class="font-label-sm text-label-sm text-on-surface-variant">02:14</span><div class="flex-1 h-3 bg-surface-container-lowest border-[2px] border-black p-0.5 relative"><div class="h-full bg-primary-container border-r-[2px] border-black w-[45%]"></div></div><span class="font-label-sm text-label-sm text-on-surface-variant">03:38</span></div></div><div class="flex items-center gap-space-md w-72 justify-end"><div class="flex items-center gap-1.5 h-6 px-2 bg-surface-container-lowest border-[2px] border-black"><div class="w-1 h-3 bg-primary-container animate-pulse"></div><div class="w-1 h-5 bg-tertiary-fixed"></div><div class="w-1 h-2 bg-secondary-container animate-pulse"></div><div class="w-1 h-4 bg-primary-container"></div><div class="w-1 h-3 bg-primary-fixed-dim"></div></div><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-on-surface-variant text-[20px]">volume_up</span><div class="w-24 h-2.5 bg-surface-container-lowest border-[2px] border-black relative"><div class="h-full bg-tertiary-fixed border-r-[2px] border-black w-[70%]"></div></div></div><button class="text-on-surface-variant hover:text-on-surface"><span class="material-symbols-outlined text-[20px]">queue_music</span></button></div></div></body></html>
+
+<!-- ComicBeats Desktop - Now Playing & Lyrics Stage -->
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Space+Grotesk:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"tertiary-container":"#f3db00","surface-dim":"#12131a","error":"#ffb4ab","surface-bright":"#383941","on-primary-fixed-variant":"#004f54","secondary-fixed":"#ffdadb","on-error-container":"#ffdad6","surface-variant":"#34343c","on-surface":"#e3e1ec","primary-fixed":"#7df4ff","on-surface-variant":"#b9cacb","surface-tint":"#00dbe9","on-secondary-fixed-variant":"#91002d","on-tertiary-container":"#6b5f00","secondary-fixed-dim":"#ffb2b8","surface-container-low":"#1a1b22","inverse-surface":"#e3e1ec","outline":"#849495","surface-container":"#1e1f27","primary-fixed-dim":"#00dbe9","inverse-primary":"#006970","on-tertiary-fixed":"#201c00","outline-variant":"#3b494b","surface":"#12131a","surface-container-lowest":"#0d0e15","background":"#12131a","tertiary":"#fff6d1","on-secondary-container":"#5b0018","surface-container-highest":"#34343c","on-primary":"#00363a","on-background":"#e3e1ec","secondary":"#ffb2b8","surface-container-high":"#292931","inverse-on-surface":"#2f3038","on-tertiary":"#373100","on-error":"#690005","primary-container":"#00f0ff","secondary-container":"#ff506e","on-secondary":"#67001d","on-primary-container":"#006970","on-secondary-fixed":"#40000f","on-primary-fixed":"#002022","tertiary-fixed-dim":"#dec800","error-container":"#93000a","primary":"#dbfcff","on-tertiary-fixed-variant":"#504700","tertiary-fixed":"#fde400"},borderRadius:{DEFAULT:"0.25rem",lg:"0.5rem",xl:"0.75rem",full:"9999px"},spacing:{"space-sm":"0.5rem","space-xl":"2.5rem","space-md":"1rem","margin-desktop":"2.5rem","space-xs":"0.25rem","margin":"1rem","space-lg":"1.5rem","gutter-desktop":"1.5rem","gutter":"1rem"},fontFamily:{"label-lg":["Space Grotesk"],"headline-xl-mobile":["Bebas Neue"],"headline-lg-mobile":["Bebas Neue"],"body-md":["Space Grotesk"],"headline-xl":["Bebas Neue"],"body-sm":["Space Grotesk"],"headline-lg":["Bebas Neue"],"title-lg":["Space Grotesk"],"body-lg":["Space Grotesk"],"title-md":["Space Grotesk"],"label-sm":["Space Grotesk"],"headline-md":["Bebas Neue"]},fontSize:{"label-lg":["13px",{lineHeight:"16px",letterSpacing:"0.08em",fontWeight:"700"}],"headline-xl-mobile":["38px",{lineHeight:"40px",letterSpacing:"0.03em",fontWeight:"400"}],"headline-lg-mobile":["30px",{lineHeight:"32px",letterSpacing:"0.02em",fontWeight:"400"}],"body-md":["14px",{lineHeight:"20px",fontWeight:"400"}],"headline-xl":["56px",{lineHeight:"56px",letterSpacing:"0.04em",fontWeight:"400"}],"body-sm":["12px",{lineHeight:"16px",fontWeight:"400"}],"headline-lg":["40px",{lineHeight:"42px",letterSpacing:"0.03em",fontWeight:"400"}],"title-lg":["20px",{lineHeight:"26px",letterSpacing:"-0.01em",fontWeight:"700"}],"body-lg":["16px",{lineHeight:"24px",fontWeight:"400"}],"title-md":["16px",{lineHeight:"22px",fontWeight:"700"}],"label-sm":["10px",{lineHeight:"12px",letterSpacing:"0.1em",fontWeight:"700"}],"headline-md":["28px",{lineHeight:"30px",letterSpacing:"0.02em",fontWeight:"400"}]}}}};</script></head><body class="bg-surface-container-lowest text-on-surface font-body-md text-body-md antialiased selection:bg-primary-container selection:text-on-primary-container"><aside class="fixed left-0 top-0 bottom-24 w-72 bg-surface-container-low border-r-[3px] border-black z-40 flex flex-col justify-between p-space-md shadow-[4px_0px_0px_#000000]"><div class="flex flex-col gap-space-md"><div class="flex items-center justify-between p-space-sm bg-surface-container border-[2px] border-black shadow-[3px_3px_0px_#000000]"><div class="flex items-center gap-space-sm"><div class="w-9 h-9 bg-primary-container border-[2px] border-black flex items-center justify-center -rotate-3 shadow-[2px_2px_0px_#000000]"><span class="material-symbols-outlined text-on-primary-container font-black">bolt</span></div><div><span class="font-headline-md text-headline-md tracking-wider text-primary block leading-none">KAPOW!</span><span class="font-label-sm text-label-sm uppercase tracking-widest text-tertiary-fixed block leading-none">PULSE AUDIO</span></div></div><div class="bg-secondary-container text-white font-headline-md text-[13px] px-2 py-0.5 border-[2px] border-black rotate-6 shadow-[2px_2px_0px_#000000]">VOL. 01</div></div><nav class="flex flex-col gap-space-xs" data-active-classes="bg-primary-container text-on-primary-container shadow-[3px_3px_0px_#000000] translate-x-1 font-bold"><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded border-[2px] border-black bg-surface-container text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-transform duration-100" data-path="home" href="#"><span class="material-symbols-outlined text-[20px]">home</span><span class="font-title-md text-title-md uppercase tracking-wide">Home Base</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded border-[2px] border-black bg-surface-container text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-transform duration-100" data-path="explore" href="#"><span class="material-symbols-outlined text-[20px]">explore</span><span class="font-title-md text-title-md uppercase tracking-wide">Comics / Explore</span></a><a aria-current="page" class="flex items-center gap-space-sm px-space-md py-space-sm rounded border-[2px] border-black transition-transform duration-100 bg-primary-container text-on-primary-container shadow-[3px_3px_0px_#000000] translate-x-1 font-bold" data-path="top-charts" href="#"><span class="material-symbols-outlined text-[20px]">local_fire_department</span><span class="font-title-md text-title-md uppercase tracking-wide">Top Charts</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded border-[2px] border-black bg-surface-container text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-transform duration-100" data-path="vault" href="#"><span class="material-symbols-outlined text-[20px]">auto_stories</span><span class="font-title-md text-title-md uppercase tracking-wide">Issue Vault</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded border-[2px] border-black bg-surface-container text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-transform duration-100" data-path="radio-station" href="#"><span class="material-symbols-outlined text-[20px]">podcasts</span><span class="font-title-md text-title-md uppercase tracking-wide">Radio Station</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded border-[2px] border-black bg-surface-container text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-transform duration-100" data-path="equalizer-studio" href="#"><span class="material-symbols-outlined text-[20px]">graphic_eq</span><span class="font-title-md text-title-md uppercase tracking-wide">Equalizer Studio</span></a></nav></div><div class="p-space-sm bg-surface-container border-[2px] border-black shadow-[3px_3px_0px_#000000] flex items-center justify-between"><div class="flex items-center gap-space-sm"><div class="w-9 h-9 rounded-full bg-primary border-[2px] border-black flex items-center justify-center shadow-[1px_1px_0px_#000000]"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="flex flex-col"><span class="font-title-md text-[13px] leading-tight text-on-surface uppercase">MILES_X99</span><span class="font-label-sm text-label-sm text-primary-fixed">HERO TIER</span></div></div><button class="w-8 h-8 bg-surface-container-high border-[2px] border-black flex items-center justify-center text-on-surface hover:bg-primary-container hover:text-on-primary-container transition-colors shadow-[2px_2px_0px_#000000]"><span class="material-symbols-outlined text-[18px]">settings</span></button></div></aside><div class="pl-72 pb-24 min-h-screen"><header class="fixed top-0 left-72 right-0 h-16 bg-surface-container-low/95 backdrop-blur border-b-[3px] border-black z-30 flex items-center justify-between px-gutter-desktop shadow-[0_4px_0px_#000000]"><div class="flex items-center gap-space-md flex-1 max-w-xl"><div class="relative w-full"><span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span><input class="w-full h-10 pl-10 pr-space-md bg-surface-container border-[2px] border-black text-on-surface placeholder:text-on-surface-variant font-body-sm text-body-sm focus:outline-none focus:border-primary-container focus:shadow-[3px_3px_0px_#000000] transition-all" placeholder="Search multiverse tracks, comic scores, artists..." type="text"/></div></div><div class="flex items-center gap-space-md"><div class="bg-tertiary-fixed text-on-tertiary-fixed px-3 py-1 border-[2px] border-black font-headline-md text-[16px] tracking-wide -rotate-2 shadow-[2px_2px_0px_#000000]">STREAM ACTIVE</div><button class="w-10 h-10 bg-surface-container border-[2px] border-black flex items-center justify-center text-on-surface hover:bg-surface-container-high transition-transform active:translate-y-0.5 shadow-[2px_2px_0px_#000000]"><span class="material-symbols-outlined text-[20px]">notifications</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center border-[2px] border-black shadow-[2px_2px_0px_#000000]"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></header><main class="w-full pt-16 px-gutter-desktop bg-surface-container-lowest min-h-screen"><div class="flex flex-col w-full pb-12">
+<div class="w-full flex items-center justify-between pb-space-md pt-2">
+<div class="flex items-center gap-space-sm">
+<span class="bg-secondary-container text-on-secondary px-3 py-1 font-headline-md text-headline-md tracking-wider -rotate-2 shadow-xl border-0">
+        ISSUE #077 // LIVE BROADCAST
+      </span>
+<span class="bg-tertiary-fixed text-on-tertiary-fixed px-3 py-1 font-label-lg text-label-lg uppercase tracking-widest rotate-1 shadow-lg">
+        MULTIVERSE SYNC ACTIVE
+      </span>
+</div>
+<div class="flex items-center gap-space-sm">
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1.5 bg-surface-container px-3 py-1.5 shadow-md">
+<span class="w-2.5 h-2.5 rounded-full bg-primary-container animate-ping inline-block"></span>
+        STREAM ENGINE: SPIDER-NET v4.2
+      </span>
+</div>
+</div>
+<div class="w-full grid grid-cols-12 gap-gutter-desktop items-start">
+<div class="col-span-8 flex flex-col gap-space-lg">
+<div class="relative bg-surface-container-low p-space-lg shadow-xl overflow-hidden">
+<div class="absolute inset-0 opacity-10 pointer-events-none bg-[radial-gradient(#00f0ff_2px,transparent_2px)] [background-size:16px_16px]"></div>
+<svg class="absolute -right-16 -top-16 w-80 h-80 opacity-15 pointer-events-none text-primary-container" viewbox="0 0 200 200">
+<polygon fill="currentColor" points="100,10 115,80 185,60 135,110 190,160 120,150 100,200 80,150 10,160 65,110 15,60 85,80"></polygon>
+</svg>
+<div class="relative z-10 grid grid-cols-12 gap-space-lg items-center">
+<div class="col-span-5 relative group">
+<div class="absolute -inset-2 bg-gradient-to-tr from-secondary-container via-primary-container to-tertiary-fixed opacity-70 blur-md group-hover:opacity-100 transition duration-300"></div>
+<div class="relative bg-surface-container-highest p-2 shadow-2xl -rotate-2 transform group-hover:rotate-0 transition-transform duration-300">
+<div class="relative w-full aspect-square overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="Dynamic comic book pop-art style album cover featuring a hooded street spider hero perched on a neon-lit Brooklyn skyscraper water tower under a magenta and electric cyan glitch twilight sky, heavy halftone ink printing screen pattern, bold graffiti tag aesthetics." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDiWdD632ZwnGPwqkJqm3rwuv_aL4Tc5fe3nQuot6kLqQaib9HjaxxMaFD_AmoslWFI-Cfo81V-4BxY-nUdYi2bIjGaWJby3RS1QMXa8Y-sVrYwfBuF3Xm5vsne9mcRfw8UYWGPU8JKyzpmZQfaiKrbq1XkCv1_xoypjBURVq0MYv2DIM64sZP5RABWBSxp5v3E9XiCgvbqap1WPL3t1myCELvP3gUUyM6XMtCj3Pc"/>
+<div class="absolute top-2 left-2 bg-tertiary-fixed text-on-tertiary-fixed px-2 py-0.5 font-headline-md text-[14px] leading-tight shadow-md uppercase tracking-wider rotate-3">
+                  APPROVED BY MULTIVERSE
+                </div>
+<div class="absolute bottom-2 right-2 bg-secondary-container text-on-secondary px-2 py-0.5 font-headline-md text-headline-md shadow-md -rotate-6">
+                  VOL. 44
+                </div>
+</div>
+</div>
+<div class="absolute -bottom-3 -right-3 bg-primary-container text-on-primary-container px-3 py-1 shadow-lg rotate-6">
+<span class="font-headline-md text-[18px] tracking-wide block leading-none">THWIP!</span>
+</div>
+</div>
+<div class="col-span-7 flex flex-col gap-space-sm pl-2">
+<div class="flex flex-wrap gap-2">
+<span class="bg-secondary-container text-on-secondary px-2.5 py-0.5 font-label-sm text-label-sm uppercase tracking-wider shadow-sm">
+                BASS BOOST: 100%
+              </span>
+<span class="bg-primary-container text-on-primary-container px-2.5 py-0.5 font-label-sm text-label-sm uppercase tracking-wider shadow-sm">
+                MAX FIDELITY: 96kHz LOSSLESS
+              </span>
+<span class="bg-tertiary-fixed text-on-tertiary-fixed px-2.5 py-0.5 font-label-sm text-label-sm uppercase tracking-wider shadow-sm">
+                VIBE: IMMERSIVE
+              </span>
+</div>
+<div class="relative py-1">
+<span class="font-headline-xl text-headline-xl text-primary-fixed tracking-wider block uppercase select-none opacity-40 absolute -left-1 -top-0.5 blur-[1px]">
+                SUNFLOWER
+              </span>
+<span class="font-headline-xl text-headline-xl text-secondary-container tracking-wider block uppercase select-none opacity-40 absolute left-1 top-0.5 blur-[1px]">
+                SUNFLOWER
+              </span>
+<h1 class="relative font-headline-xl text-headline-xl text-primary tracking-wider uppercase leading-none drop-shadow-md">
+                SUNFLOWER
+              </h1>
+</div>
+<div class="flex items-center gap-space-sm">
+<span class="font-title-lg text-title-lg text-tertiary-fixed tracking-wide uppercase">
+                POST MALONE &amp; SWAE LEE
+              </span>
+<span class="text-on-surface-variant font-body-sm text-body-sm">• SPIDER-MAN: INTO THE MULTIVERSE OST</span>
+</div>
+<div class="bg-surface-container p-space-md shadow-md mt-2 flex flex-col gap-space-xs">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm uppercase text-on-surface-variant tracking-wider">Multiverse Audio Phase</span>
+<span class="font-label-sm text-label-sm text-primary-fixed">64% FREQUENCY HIT</span>
+</div>
+<div class="w-full h-3 bg-surface-container-lowest p-0.5 relative overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary-container via-secondary-container to-tertiary-fixed w-[64%] shadow-sm"></div>
+</div>
+<div class="flex items-center justify-between pt-1">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-container text-[18px]">equalizer</span>
+<span class="font-body-sm text-body-sm text-on-surface">Spatial Comic Array: 12 Panels Surround</span>
+</div>
+<button class="bg-primary-container text-on-primary-container px-2 py-0.5 font-label-sm text-label-sm uppercase tracking-widest hover:bg-primary-fixed transition-colors">
+                  BOOST DYNAMICS
+                </button>
+</div>
+</div>
+<div class="flex items-center gap-3 pt-2">
+<button class="bg-primary-container text-on-primary-container px-space-md py-2 shadow-lg hover:shadow-md transition-all flex items-center gap-2 font-headline-md text-headline-md tracking-wider">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+                REPLAY SEQUENCE
+              </button>
+<button class="bg-surface-container text-on-surface px-space-md py-2 shadow-lg hover:bg-surface-container-high transition-all flex items-center gap-2 font-title-md text-title-md uppercase">
+<span class="material-symbols-outlined text-[18px] text-secondary">favorite</span>
+                HERO STASH
+              </button>
+<button class="bg-surface-container text-on-surface px-3 py-2 shadow-lg hover:bg-surface-container-high transition-all flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">share</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low p-space-lg shadow-xl relative overflow-hidden">
+<div class="flex items-center justify-between pb-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 bg-secondary-container text-on-secondary flex items-center justify-center -rotate-3 shadow-md">
+<span class="material-symbols-outlined text-[18px]">chat</span>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface uppercase tracking-wide leading-none">
+                LIVE ACTION COMIC LYRIC STREAM
+              </h2>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">
+                TEMPORAL SYNC: TIMECODE 02:14.38
+              </span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="bg-surface-container px-2.5 py-1 text-on-surface-variant font-label-sm text-label-sm uppercase">SPEECH FX: ENGAGED</span>
+<span class="bg-surface-container px-2.5 py-1 text-primary-fixed font-label-sm text-label-sm uppercase">AUTO-SCROLL: ON</span>
+</div>
+</div>
+<div class="flex flex-col gap-space-md relative pt-2" id="lyrics-flow">
+<div class="flex items-start gap-space-md opacity-40 hover:opacity-75 transition-opacity">
+<div class="w-12 h-12 bg-surface-container-highest shrink-0 shadow-md p-1">
+<img class="w-full h-full object-cover" data-alt="Comic book avatar icon of street musician singer in halftone monochrome style with goggles" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4elgQowBvAeuPqK_70yDV2Dcd8CckeBzG0RbzoL4UUhP3ynu5Y7aJgksmZcRIetEeEWuK0KAAYsUz3tx_dvgzcruFyk6TX5KqAXDySZ6_0G4RKuSfgo6ZvwhnJS4PUlI9rtvy4IGjxqGz641gAZ2_N_fS08YCooyVrnOoS1nrA537oQbj9IxYsnT_AcqFk5LGTs__aOCfjQvuiENiGwgUTOVAncWEDz2f45A7qsI"/>
+</div>
+<div class="relative bg-surface-container p-space-md shadow-md max-w-lg">
+<div class="absolute -left-2 top-3 w-3 h-3 bg-surface-container rotate-45"></div>
+<p class="font-body-lg text-body-lg text-on-surface-variant italic">
+                "Ayy, ayy, ayy, ayy (ooh)..."
+              </p>
+<span class="font-label-sm text-label-sm text-on-surface-variant block pt-1 uppercase">01:58 • INTRO REPRISE</span>
+</div>
+</div>
+<div class="flex items-start gap-space-md relative">
+<div class="w-12 h-12 bg-primary-container text-on-primary-container shrink-0 shadow-lg p-1">
+<img class="w-full h-full object-cover" data-alt="High contrast pop-art comic illustration avatar of Swae Lee singing with microphone and bright yellow sunglasses" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB1o6_E5q1Z8KIRk4Xos091-EXEm7eWfj6McnCoVcS7l12UoSlhQDo6wdBes1nhbAtZn9YsvDKhXTlmb_rTP-nnLF6IGzVHDO7X9lHzcHuTnmLGvN9618uwAtTPew3020cXvVsWBL9jsEazFK-vXeitnei8exgBcstKt1W5p9JPCDUCew0qJE7hgvpk1WN5hgIHgHL1U2kITJ5-d0uL73xeKt0KN1SM_na_vril8DM"/>
+</div>
+<div class="relative bg-surface-container-highest p-space-md shadow-2xl max-w-xl">
+<div class="absolute -left-2 top-4 w-4 h-4 bg-surface-container-highest rotate-45"></div>
+<div class="flex items-center justify-between pb-1">
+<span class="font-label-sm text-label-sm text-primary-fixed uppercase tracking-wider">SWAE LEE (ACTIVE VERSE)</span>
+<span class="font-label-sm text-label-sm text-tertiary-fixed">NOW PLAYING</span>
+</div>
+<p class="font-title-lg text-title-lg text-on-surface uppercase tracking-tight leading-snug">
+                "Needless to say, I keep in check, she was a bad-bad, nevertheless..."
+              </p>
+</div>
+<div class="bg-secondary-container text-on-secondary px-3 py-1 font-headline-md text-headline-md shadow-xl rotate-12 -ml-2 -mt-2 animate-bounce">
+              BAM!
+            </div>
+</div>
+<div class="flex items-start justify-end gap-space-md relative pl-16">
+<div class="bg-tertiary-fixed text-on-tertiary-fixed px-3 py-1 font-headline-md text-headline-md shadow-xl -rotate-12 -mr-2 mt-2">
+              SNAP!
+            </div>
+<div class="relative bg-primary-container text-on-primary-container p-space-md shadow-2xl max-w-xl">
+<div class="absolute -right-2 top-4 w-4 h-4 bg-primary-container rotate-45"></div>
+<div class="flex items-center justify-between pb-1">
+<span class="font-label-sm text-label-sm text-on-primary-container uppercase tracking-wider font-bold">POST MALONE (HARMONY)</span>
+<span class="font-label-sm text-label-sm text-on-primary-fixed-variant">SYNC: 100%</span>
+</div>
+<p class="font-title-lg text-title-lg text-on-primary font-bold uppercase tracking-tight leading-snug">
+                "Callin' it quits now, baby, I'm a wreck! Crash at my place, baby, you're a wreck!"
+              </p>
+</div>
+<div class="w-12 h-12 bg-secondary-container shrink-0 shadow-lg p-1">
+<img class="w-full h-full object-cover" data-alt="Dynamic pop-art comic illustration avatar of Post Malone with facial ink and stylized spider-verse neon blue backlight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAW_4pRVntbpj_SdESIXN675WIpOYANcC0E6qGVVTh9ZAj3XEZqaC5Z_g_yADSyHHbesPgkY5KVLiufttH9zt4RB-rsVXUFqsUgz-NP-8U8OpEYnsNBfe1CrAlSImXyVLmovVK6ppLGKHtt3fDjksCDeCNPPBQnkBQJdbEgaREqBX3ESLoRuZ7MLYQY2eZ2CdmNdGsCBMO57e48Uk-ry5kNt3n7mOXNgw9EpPMnj1M"/>
+</div>
+</div>
+<div class="flex items-start gap-space-md opacity-40 hover:opacity-75 transition-opacity">
+<div class="w-12 h-12 bg-surface-container-highest shrink-0 shadow-md p-1">
+<img class="w-full h-full object-cover" data-alt="Stylized comic book speech placeholder silhouette with spider emblem backdrop in cyan and ink black" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCtOOAVy3xC25rEKLLEY6nu-O0om5Cui5vc9tzQalwSG1SBaSXz3cagP2JuWJZeDxaNg3QiIV9H8QA3ZyVpWH1KGCh-V__7EMHH7c-GNvIJpHMpbca-N_w_o71rd6b8f2biHN1t9DoP-nkH0UdIxc_Rc85ajFU8mRW0oeuquo_pf3c8s3cD7brG0p6pvSZ29X43skTyHPGsXyuGAu1haR6fsNsdgGWDwiXSQ5owIK8"/>
+</div>
+<div class="relative bg-surface-container p-space-md shadow-md max-w-lg">
+<div class="absolute -left-2 top-3 w-3 h-3 bg-surface-container rotate-45"></div>
+<p class="font-body-lg text-body-lg text-on-surface-variant italic">
+                "Thinkin' in a bad way, losin' your grip... Screamin' at my face, baby, don't trip..."
+              </p>
+<span class="font-label-sm text-label-sm text-on-surface-variant block pt-1 uppercase">02:30 • UPCOMING HOOK</span>
+</div>
+<div class="bg-surface-container-highest text-primary-fixed px-2 py-0.5 font-headline-md text-[14px] shadow-sm rotate-6">
+              WOOSH!
+            </div>
+</div>
+</div>
+<div class="mt-space-lg p-space-sm bg-surface-container flex items-center justify-between shadow-md">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary-container text-[20px]">translate</span>
+<span class="font-body-sm text-body-sm text-on-surface">Multiverse Dub Track: Earth-1610 (Original Vocal Layer)</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="bg-surface-container-high px-2 py-1 text-on-surface font-label-sm text-label-sm uppercase hover:bg-surface-bright transition-colors">Toggle Thought Bubbles</button>
+<button class="bg-surface-container-high px-2 py-1 text-on-surface font-label-sm text-label-sm uppercase hover:bg-surface-bright transition-colors">Export Comic Strip</button>
+</div>
+</div>
+</div>
+</div>
+<div class="col-span-4 flex flex-col gap-space-md">
+<div class="bg-surface-container-low p-space-md shadow-xl relative overflow-hidden">
+<div class="flex items-center justify-between pb-space-sm">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary-fixed text-[22px]">tune</span>
+<h3 class="font-headline-md text-headline-md text-on-surface uppercase tracking-wide">
+              AUDIO PRESET CHIPS
+            </h3>
+</div>
+<span class="bg-surface-container-highest text-tertiary-fixed text-label-sm font-label-sm px-2 py-0.5">FX ON</span>
+</div>
+<div class="grid grid-cols-1 gap-2 pt-1" id="filter-presets">
+<button class="flex items-center justify-between p-space-sm bg-surface-container text-left shadow-md hover:bg-surface-container-high transition-all group">
+<div class="flex items-center gap-space-sm">
+<span class="w-3 h-3 bg-secondary-container block shadow-sm group-hover:scale-125 transition-transform"></span>
+<div>
+<span class="font-title-md text-title-md uppercase text-on-surface block leading-tight">RADIOACTIVE 808</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant block">Sub-frequency rumble + punchy kicks</span>
+</div>
+</div>
+<span class="bg-secondary-container text-on-secondary text-label-sm font-label-sm px-1.5 py-0.5 uppercase shadow-sm">ACTIVE</span>
+</button>
+<button class="flex items-center justify-between p-space-sm bg-surface-container text-left shadow-md hover:bg-surface-container-high transition-all group">
+<div class="flex items-center gap-space-sm">
+<span class="w-3 h-3 bg-primary-container block shadow-sm group-hover:scale-125 transition-transform"></span>
+<div>
+<span class="font-title-md text-title-md uppercase text-on-surface block leading-tight">NEON RETRO</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant block">Analog saturation + wide stereofield</span>
+</div>
+</div>
+<span class="text-on-surface-variant text-label-sm font-label-sm uppercase">APPLY</span>
+</button>
+<button class="flex items-center justify-between p-space-sm bg-surface-container text-left shadow-md hover:bg-surface-container-high transition-all group">
+<div class="flex items-center gap-space-sm">
+<span class="w-3 h-3 bg-tertiary-fixed block shadow-sm group-hover:scale-125 transition-transform"></span>
+<div>
+<span class="font-title-md text-title-md uppercase text-on-surface block leading-tight">STREET CIPHER</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant block">Enhanced vocal presence + crisp snares</span>
+</div>
+</div>
+<span class="text-on-surface-variant text-label-sm font-label-sm uppercase">APPLY</span>
+</button>
+</div>
+</div>
+<div class="bg-surface-container-low p-space-md shadow-xl flex flex-col gap-space-md">
+<div class="flex items-center justify-between pb-1">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[22px]">auto_stories</span>
+<h3 class="font-headline-md text-headline-md text-on-surface uppercase tracking-wide">
+              THE COMIC VAULT QUEUE
+            </h3>
+</div>
+<span class="bg-primary-container text-on-primary-container text-label-sm font-label-sm px-2 py-0.5 font-bold shadow-sm">
+            4 ISSUES
+          </span>
+</div>
+<div class="flex flex-col gap-space-sm">
+<div class="p-space-sm bg-surface-container-high shadow-lg flex items-center justify-between group hover:bg-surface-variant transition-all">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="relative w-12 h-14 bg-surface-container-highest shrink-0 shadow-md overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Comic book cover illustration featuring neon red running speedster with speed lines and halftone dots in graphic novel comic style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDA4349QUaw7CpPKhQuyXsbXsUHDkTcuklr6c1PcnC731D_DiFZqWOP24XnL1UCnE63QqgoVRUKHiS8kkWDWAVDsbApPyVzFLWbPL_-05CVcvJiU0TSe6CQTaAXTJPnkVedDMTVnahrJins9Ep489dDCwiktL3dX78HjuqG6HuadcD0jotj4022xSCavZDTWgcj3Ml7ZWObyqeHphkzoE7_89BfAkYwRrrllic94qA"/>
+<span class="absolute bottom-0 right-0 bg-secondary-container text-on-secondary font-label-sm text-[9px] px-1 font-bold">#02</span>
+</div>
+<div class="min-w-0 flex flex-col">
+<span class="font-title-md text-title-md uppercase text-primary-fixed truncate">WHAT'S UP DANGER</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Blackway, Black Caviar</span>
+<span class="font-label-sm text-label-sm text-tertiary-fixed block pt-0.5">NEXT ON MULTIVERSE DECK</span>
+</div>
+</div>
+<div class="flex flex-col items-end gap-1 shrink-0 pl-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant">03:42</span>
+<button class="w-7 h-7 bg-primary-container text-on-primary-container flex items-center justify-center shadow-md hover:bg-primary transition-all">
+<span class="material-symbols-outlined text-[16px]">play_arrow</span>
+</button>
+</div>
+</div>
+<div class="p-space-sm bg-surface-container shadow-md flex items-center justify-between group hover:bg-surface-container-high transition-all">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="relative w-12 h-14 bg-surface-container-highest shrink-0 shadow-md overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Pop-art comic cover portrait of a hooded graffiti vigilante spray painting neon yellow spider emblem against brick wall" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDOeK9nduXnqIg-BXULJtbBwumviHtq8eRjz8IMpxbuTTBXb8X0ctzx2LjeQ0vsu4OC5bhBcB4LIt666Hk85BUfKEA-RKGTa9ZpjPiJzqj3G6_YxuEQY4cGc7FFaSHm1fwRl_belMRqF-y-O-2ozi7Q0n275ARhUx5Kvdn3rMko0Xr_B-4FM0w_XmcMCPYXmCPmJDSm-jt87KnSlq1BjfTLUF5kDs_G0JP5rZzqrM"/>
+<span class="absolute bottom-0 right-0 bg-primary-container text-on-primary-container font-label-sm text-[9px] px-1 font-bold">#03</span>
+</div>
+<div class="min-w-0 flex flex-col">
+<span class="font-title-md text-title-md uppercase text-on-surface truncate">INVINCIBLE (CYBER BEAT)</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Aminé, Duckwrth</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant block pt-0.5">EARTH-65 EDITION</span>
+</div>
+</div>
+<div class="flex flex-col items-end gap-1 shrink-0 pl-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant">03:16</span>
+<button class="w-7 h-7 bg-surface-container-highest text-on-surface flex items-center justify-center shadow-sm hover:bg-primary-container hover:text-on-primary-container transition-all">
+<span class="material-symbols-outlined text-[16px]">play_arrow</span>
+</button>
+</div>
+</div>
+<div class="p-space-sm bg-surface-container shadow-md flex items-center justify-between group hover:bg-surface-container-high transition-all">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="relative w-12 h-14 bg-surface-container-highest shrink-0 shadow-md overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Retro comic panel cover art featuring giant comic onomatopoeia letters ZAP with electric purple sparks and hero shadow" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBU7fms27SU2Tqhp39noR-XAAAxGcLcYMomzBVe56jCrWOlo5tcmyXyORAYXQbpGy10yF6r4Yq1KPOnEa5Et3XHST6jUbtwnQjPbJb-bGxcVBfLoOhIo4eYtftf3uXI0cZgH_rAMeB0gX8pERdSpe4WxGrwPmrUOX9rTnxwwv3QthP0YhznhqY3w-jKGNEKVFye5SpkprFvqdCcLTrQlah6G5wBHv_rxUly7WHEbjc"/>
+<span class="absolute bottom-0 right-0 bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-[9px] px-1 font-bold">#04</span>
+</div>
+<div class="min-w-0 flex flex-col">
+<span class="font-title-md text-title-md uppercase text-on-surface truncate">START A RIOT</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Duckwrth, Shaboozey</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant block pt-0.5">RAW PUNCH REMIX</span>
+</div>
+</div>
+<div class="flex flex-col items-end gap-1 shrink-0 pl-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant">02:51</span>
+<button class="w-7 h-7 bg-surface-container-highest text-on-surface flex items-center justify-center shadow-sm hover:bg-primary-container hover:text-on-primary-container transition-all">
+<span class="material-symbols-outlined text-[16px]">play_arrow</span>
+</button>
+</div>
+</div>
+<div class="p-space-sm bg-surface-container shadow-md flex items-center justify-between group hover:bg-surface-container-high transition-all">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="relative w-12 h-14 bg-surface-container-highest shrink-0 shadow-md overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Vintage silver-age comic book hero emblem cover with deep halftone dots, distressed print paper effects and dark red ink" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDMKkLTivX4Wz5cteONkS7XZzNymo1-euNUG-cIqlhvESA8r99UMmAQGF2UmFyFbJlgeSRNcupVdQVOv86XlazB6NwepnfWzk3uiXJD8U71AKqzHE3pUgXZkIvFyxwaWnO_i-0mFZw4emMyJFj0hLJo1CVwjxlEUjrVJZZlJub63CmALICDuzoVxx_JjwgOiA1XaQb6HgOeZtWbrXkEOOGF5leI27ngldnEOcdMXfI"/>
+<span class="absolute bottom-0 right-0 bg-surface-bright text-white font-label-sm text-[9px] px-1 font-bold">#05</span>
+</div>
+<div class="min-w-0 flex flex-col">
+<span class="font-title-md text-title-md uppercase text-on-surface truncate">FAMILIA (SPIDER-VERSE)</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Nicki Minaj, Anuel AA</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant block pt-0.5">QUEENS LATIN GROOVE</span>
+</div>
+</div>
+<div class="flex flex-col items-end gap-1 shrink-0 pl-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant">02:54</span>
+<button class="w-7 h-7 bg-surface-container-highest text-on-surface flex items-center justify-center shadow-sm hover:bg-primary-container hover:text-on-primary-container transition-all">
+<span class="material-symbols-outlined text-[16px]">play_arrow</span>
+</button>
+</div>
+</div>
+</div>
+<div class="p-space-sm bg-surface-container-highest shadow-md flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-container text-[18px]">bookmark_add</span>
+<span class="font-title-md text-title-md uppercase text-on-surface">ADD CURRENT ISSUE TO VAULT</span>
+</div>
+<button class="bg-tertiary-fixed text-on-tertiary-fixed px-3 py-1 font-headline-md text-headline-md tracking-wider shadow-sm hover:bg-tertiary-container transition-colors">
+            SAVE
+          </button>
+</div>
+</div>
+</div>
+</div>
+</div></main></div><div class="fixed bottom-0 left-0 right-0 h-24 bg-surface-container border-t-[3px] border-black z-50 flex items-center justify-between px-gutter-desktop shadow-[0_-4px_0px_#000000]"><div class="flex items-center gap-space-md w-72"><div class="w-14 h-14 bg-surface-container-highest border-[2px] border-black shadow-[3px_3px_0px_#000000] flex-shrink-0 flex items-center justify-center overflow-hidden"><span class="material-symbols-outlined text-primary text-[28px]">album</span></div><div class="overflow-hidden"><div class="flex items-center gap-1.5"><span class="font-title-md text-title-md uppercase text-on-surface truncate">SUNFLOWER - MULTIVERSE MIX</span><span class="bg-secondary-container text-white text-[9px] font-bold px-1 border-[1px] border-black">EXPLICIT</span></div><span class="font-body-sm text-body-sm text-on-surface-variant truncate block">POST MALONE, SWAE LEE</span></div><button class="text-on-surface-variant hover:text-secondary transition-colors"><span class="material-symbols-outlined text-[20px]">favorite</span></button></div><div class="flex flex-col items-center gap-1 max-w-xl w-full px-space-md"><div class="flex items-center gap-space-md"><button class="w-8 h-8 border-[2px] border-black bg-surface-container-low text-on-surface hover:bg-surface-container-high flex items-center justify-center shadow-[2px_2px_0px_#000000]"><span class="material-symbols-outlined text-[16px]">shuffle</span></button><button class="w-8 h-8 border-[2px] border-black bg-surface-container-low text-on-surface hover:bg-surface-container-high flex items-center justify-center shadow-[2px_2px_0px_#000000]"><span class="material-symbols-outlined text-[18px]">skip_previous</span></button><button class="w-11 h-11 border-[3px] border-black bg-primary-container text-on-primary-container flex items-center justify-center shadow-[3px_3px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[1px_1px_0px_#000000] transition-all"><span class="material-symbols-outlined text-[26px]">play_arrow</span></button><button class="w-8 h-8 border-[2px] border-black bg-surface-container-low text-on-surface hover:bg-surface-container-high flex items-center justify-center shadow-[2px_2px_0px_#000000]"><span class="material-symbols-outlined text-[18px]">skip_next</span></button><button class="w-8 h-8 border-[2px] border-black bg-surface-container-low text-on-surface hover:bg-surface-container-high flex items-center justify-center shadow-[2px_2px_0px_#000000]"><span class="material-symbols-outlined text-[16px]">repeat</span></button></div><div class="flex items-center gap-space-sm w-full"><span class="font-label-sm text-label-sm text-on-surface-variant">02:14</span><div class="flex-1 h-3 bg-surface-container-lowest border-[2px] border-black p-0.5 relative"><div class="h-full bg-primary-container border-r-[2px] border-black w-[45%]"></div></div><span class="font-label-sm text-label-sm text-on-surface-variant">03:38</span></div></div><div class="flex items-center gap-space-md w-72 justify-end"><div class="flex items-center gap-1.5 h-6 px-2 bg-surface-container-lowest border-[2px] border-black"><div class="w-1 h-3 bg-primary-container animate-pulse"></div><div class="w-1 h-5 bg-tertiary-fixed"></div><div class="w-1 h-2 bg-secondary-container animate-pulse"></div><div class="w-1 h-4 bg-primary-container"></div><div class="w-1 h-3 bg-primary-fixed-dim"></div></div><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-on-surface-variant text-[20px]">volume_up</span><div class="w-24 h-2.5 bg-surface-container-lowest border-[2px] border-black relative"><div class="h-full bg-tertiary-fixed border-r-[2px] border-black w-[70%]"></div></div></div><button class="text-on-surface-variant hover:text-on-surface"><span class="material-symbols-outlined text-[20px]">queue_music</span></button></div></div></body></html>
+
+<!-- ComicBeats Mobile - Home Groove -->
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_tab" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Space+Grotesk:wght@400;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "tertiary-container": "#f3db00", "surface-dim": "#12131a", "error": "#ffb4ab", "surface-bright": "#383941", "on-primary-fixed-variant": "#004f54", "secondary-fixed": "#ffdadb", "on-error-container": "#ffdad6", "surface-variant": "#34343c", "on-surface": "#e3e1ec", "primary-fixed": "#7df4ff", "on-surface-variant": "#b9cacb", "surface-tint": "#00dbe9", "on-secondary-fixed-variant": "#91002d", "on-tertiary-container": "#6b5f00", "secondary-fixed-dim": "#ffb2b8", "surface-container-low": "#1a1b22", "inverse-surface": "#e3e1ec", "outline": "#849495", "surface-container": "#1e1f27", "primary-fixed-dim": "#00dbe9", "inverse-primary": "#006970", "on-tertiary-fixed": "#201c00", "outline-variant": "#3b494b", "surface": "#12131a", "surface-container-lowest": "#0d0e15", "background": "#12131a", "tertiary": "#fff6d1", "on-secondary-container": "#5b0018", "surface-container-highest": "#34343c", "on-primary": "#00363a", "on-background": "#e3e1ec", "secondary": "#ffb2b8", "surface-container-high": "#292931", "inverse-on-surface": "#2f3038", "on-tertiary": "#373100", "on-error": "#690005", "primary-container": "#00f0ff", "secondary-container": "#ff506e", "on-secondary": "#67001d", "on-primary-container": "#006970", "on-secondary-fixed": "#40000f", "on-primary-fixed": "#002022", "tertiary-fixed-dim": "#dec800", "error-container": "#93000a", "primary": "#dbfcff", "on-tertiary-fixed-variant": "#504700", "tertiary-fixed": "#fde400" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-sm": "0.5rem", "space-xl": "2.5rem", "space-md": "1rem", "margin-desktop": "2.5rem", "space-xs": "0.25rem", "margin": "1rem", "space-lg": "1.5rem", "gutter-desktop": "1.5rem", "gutter": "1rem" }, "fontFamily": { "label-lg": ["Space Grotesk"], "headline-xl-mobile": ["Bebas Neue"], "headline-lg-mobile": ["Bebas Neue"], "body-md": ["Space Grotesk"], "headline-xl": ["Bebas Neue"], "body-sm": ["Space Grotesk"], "headline-lg": ["Bebas Neue"], "title-lg": ["Space Grotesk"], "body-lg": ["Space Grotesk"], "title-md": ["Space Grotesk"], "label-sm": ["Space Grotesk"], "headline-md": ["Bebas Neue"] }, "fontSize": { "label-lg": ["13px", { "lineHeight": "16px", "letterSpacing": "0.08em", "fontWeight": "700" }], "headline-xl-mobile": ["38px", { "lineHeight": "40px", "letterSpacing": "0.03em", "fontWeight": "400" }], "headline-lg-mobile": ["30px", { "lineHeight": "32px", "letterSpacing": "0.02em", "fontWeight": "400" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "headline-xl": ["56px", { "lineHeight": "56px", "letterSpacing": "0.04em", "fontWeight": "400" }], "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }], "headline-lg": ["40px", { "lineHeight": "42px", "letterSpacing": "0.03em", "fontWeight": "400" }], "title-lg": ["20px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "title-md": ["16px", { "lineHeight": "22px", "fontWeight": "700" }], "label-sm": ["10px", { "lineHeight": "12px", "letterSpacing": "0.1em", "fontWeight": "700" }], "headline-md": ["28px", { "lineHeight": "30px", "letterSpacing": "0.02em", "fontWeight": "400" }] } } } }</script><style>@layer base{html,body{width:100vw;margin:0;padding:0;background-color:#12131a;color:#e3e1ec;font-family:'Space Grotesk',sans-serif;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}@keyframes marquee{0%{transform:translateX(0%);}100%{transform:translateX(-50%);}}.animate-marquee{display:flex;width:200%;animation:marquee 10s linear infinite;}</style></head><body class="bg-surface text-on-surface min-h-screen flex flex-col relative selection:bg-primary-container selection:text-on-primary-container"><header class="fixed top-0 w-full z-50 pt-safe bg-surface/80 backdrop-blur-xl"><div class="h-16 px-margin flex items-center justify-between"><div class="flex items-center gap-space-sm"><div class="relative -rotate-3 bg-tertiary-fixed text-on-tertiary-fixed px-2 py-0.5 shadow-[2px_2px_0px_#000000]"><span class="font-headline-md text-headline-md tracking-wider leading-none select-none">KAPOW!</span></div><div class="flex flex-col"><h1 class="font-title-md text-title-md text-on-surface leading-tight tracking-tight uppercase">Home Groove</h1></div></div><div class="flex items-center gap-space-sm"><button aria-label="Notifications" class="relative w-11 h-11 flex items-center justify-center bg-secondary-container text-on-secondary rounded-lg shadow-[2px_2px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 transition-transform"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-primary-container rounded-full"></span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shadow-[1px_1px_0px_#000000]"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="flex flex-col relative w-full pt-16 pb-40 bg-surface px-margin min-h-screen"><div class="flex flex-col w-full space-y-space-lg">
+<!-- ISSUE #42 HEADLINER HERO PANEL -->
+<section class="relative w-full overflow-hidden rounded-xl bg-surface-container-high shadow-[4px_4px_0px_#000000]">
+<!-- Halftone dots background overlay via SVG pattern -->
+<div class="absolute inset-0 pointer-events-none opacity-20 z-10" style="background-image: radial-gradient(#00f0ff 1.5px, transparent 1.5px); background-size: 8px 8px;"></div>
+<div class="relative w-full h-72 overflow-hidden">
+<!-- Multiverse Cover Image -->
+<img class="w-full h-full object-cover select-none" data-alt="Dynamic pop-art comic book illustration of an urban Spider-Verse skyline with bold spray paint tags, chromatic aberration glitch lines, vibrant neon cyan and hot magenta halftone dots, bold ink brushwork, cinematic high contrast." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAYvDhu52DMX8pXIw6ifCWcf0uCI2dpEj5ilYXblCufp5eVIXZtAkIgVBgRAgxWdLPswF9nrIQUDpcv7Hz_SEZ_jZO4fn7f7bdHZodx3cxAbjjYagDAmEZeVglrf7YPHaberscShXE5zysFnYKi2QGX8G0hGnWh6TF1k_am3wgRGaekZB73pv7T0-dLEKvql-ollgTCI-gQTIDNfn_U1CepXKKQZKpV-0gTjJDTfyU"/>
+<!-- Linear ink gradient scrim for text readability -->
+<div class="absolute inset-0 bg-gradient-to-t from-surface via-surface/40 to-transparent z-10"></div>
+<!-- Comic Corner Stamp -->
+<div class="absolute top-3 left-3 z-20 -rotate-6 bg-secondary-container text-on-secondary px-2.5 py-1 rounded shadow-[2px_2px_0px_#000000] flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">bolt</span>
+<span class="font-label-sm text-label-sm uppercase tracking-widest">Earth-1610 Special</span>
+</div>
+<!-- Price Box Comic Motif -->
+<div class="absolute top-3 right-3 z-20 bg-surface-container-lowest text-primary px-2 py-1 rounded shadow-[2px_2px_0px_#000000] text-center">
+<span class="font-label-sm text-label-sm block text-on-surface-variant leading-none">OCT</span>
+<span class="font-headline-md text-headline-md leading-none text-primary-container">$0.75</span>
+</div>
+<!-- Content Ribbon at Base -->
+<div class="absolute bottom-3 inset-x-3 z-20 flex flex-col gap-2">
+<div class="inline-flex self-start bg-tertiary-fixed text-on-tertiary-fixed px-2 py-0.5 shadow-[2px_2px_0px_#000000] -rotate-1">
+<span class="font-label-lg text-label-lg uppercase tracking-wider">Today's Headliner: Issue #42</span>
+</div>
+<div class="flex items-end justify-between gap-2">
+<div class="flex-1 min-w-0">
+<h2 class="font-headline-xl-mobile text-headline-xl-mobile text-primary uppercase leading-none tracking-tight drop-shadow-[2px_2px_0px_#000000] truncate">
+              LEAP OF FAITH
+            </h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">
+              Original Multiverse Mix // Daniel Pemberton &amp; Metro
+            </p>
+</div>
+<!-- Punchy Comic CTA Button -->
+<button class="flex-shrink-0 flex items-center gap-1.5 bg-tertiary-fixed text-on-tertiary-fixed font-title-md text-title-md px-4 py-2.5 rounded-lg shadow-[3px_3px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_#000000] transition-all" id="heroPlayBtn">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+<span class="tracking-tight uppercase">READ &amp; PLAY</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- MULTIVERSE EQUALIZER / RADIOACTIVE RADAR -->
+<section class="w-full bg-surface-container-low rounded-xl p-space-md shadow-[3px_3px_0px_#000000] relative overflow-hidden">
+<!-- Dialogue Bubble Tag -->
+<div class="flex items-center justify-between mb-3">
+<div class="relative bg-secondary-container text-on-secondary px-3 py-1 rounded-lg shadow-[2px_2px_0px_#000000] -rotate-1">
+<span class="font-label-lg text-label-lg uppercase tracking-wider flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] animate-pulse">radar</span>
+          Frequency: Radioactive
+        </span>
+<!-- Speech Bubble Wedge Tail -->
+<div class="absolute -bottom-1.5 left-4 w-3 h-3 bg-secondary-container rotate-45"></div>
+</div>
+<span class="font-label-sm text-label-sm text-primary-container uppercase tracking-widest bg-surface-container px-2 py-0.5 rounded shadow-[1px_1px_0px_#000000]">
+        142.8 BPM // GLITCH ACTIVE
+      </span>
+</div>
+<!-- Comic Soundwave Equalizer Bars -->
+<div class="flex items-end justify-between h-14 gap-1 pt-2 px-1 select-none" id="soundwaveContainer">
+<div class="flex-1 bg-primary-container rounded-t-sm shadow-[1px_1px_0px_#000000] transition-all duration-150 h-6"></div>
+<div class="flex-1 bg-secondary-container rounded-t-sm shadow-[1px_1px_0px_#000000] transition-all duration-150 h-10"></div>
+<div class="flex-1 bg-tertiary-fixed rounded-t-sm shadow-[1px_1px_0px_#000000] transition-all duration-150 h-14"></div>
+<div class="flex-1 bg-primary-container rounded-t-sm shadow-[1px_1px_0px_#000000] transition-all duration-150 h-8"></div>
+<div class="flex-1 bg-secondary-container rounded-t-sm shadow-[1px_1px_0px_#000000] transition-all duration-150 h-12"></div>
+<div class="flex-1 bg-tertiary-fixed rounded-t-sm shadow-[1px_1px_0px_#000000] transition-all duration-150 h-7"></div>
+<div class="flex-1 bg-primary-container rounded-t-sm shadow-[1px_1px_0px_#000000] transition-all duration-150 h-13"></div>
+<div class="flex-1 bg-secondary-container rounded-t-sm shadow-[1px_1px_0px_#000000] transition-all duration-150 h-9"></div>
+<div class="flex-1 bg-tertiary-fixed rounded-t-sm shadow-[1px_1px_0px_#000000] transition-all duration-150 h-11"></div>
+<div class="flex-1 bg-primary-container rounded-t-sm shadow-[1px_1px_0px_#000000] transition-all duration-150 h-5"></div>
+<div class="flex-1 bg-secondary-container rounded-t-sm shadow-[1px_1px_0px_#000000] transition-all duration-150 h-14"></div>
+<div class="flex-1 bg-tertiary-fixed rounded-t-sm shadow-[1px_1px_0px_#000000] transition-all duration-150 h-8"></div>
+</div>
+</section>
+<!-- TOP RUNNING ISSUES CAROUSEL -->
+<section class="flex flex-col space-y-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-3 h-5 bg-tertiary-fixed shadow-[1px_1px_0px_#000000]"></div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface uppercase tracking-wide">
+          Top Running Issues
+        </h3>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Swipe Archive &gt;&gt;</span>
+</div>
+<!-- Horizontal Comic Cover Rack -->
+<div class="flex gap-space-md overflow-x-auto pb-2 pt-1 -mx-margin px-margin scrollbar-none snap-x snap-mandatory">
+<!-- Issue #88 -->
+<article class="flex-shrink-0 w-44 bg-surface-container rounded-xl p-2 flex flex-col shadow-[3px_3px_0px_#000000] snap-start relative group">
+<div class="relative w-full h-56 rounded-lg overflow-hidden bg-surface-variant shadow-[2px_2px_0px_#000000]">
+<img class="w-full h-full object-cover" data-alt="Retro comic book cover art featuring a masked heroic figure suspended upside down over Brooklyn with chromatic pop halftone texture and spraypaint graffiti accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAw756CHvkFtY0F6HRo2LfBJlUCmj3Z0iRc7MS3qrtRcp59nT13lztUzwT1VLRMRhrTgtRIhD-HXfLzJUihssw_-XntVWBEUSOEqPMQ-5RpCV4WP_QAJk5qOEkuDuewanCr2fVrRhz_c_rSzsmR9VQiAa9Na3dQMKmmdRBAbacOB7RnEERECKTCdqNf3JBstQvVLREN_y69RZSsLapJUZarhw2DyhMC8cdfWfXyhRE"/>
+<!-- Issue Badge -->
+<div class="absolute top-2 left-2 bg-primary-container text-on-primary-container px-2 py-0.5 rounded shadow-[1px_1px_0px_#000000] font-label-sm text-label-sm">
+            #88
+          </div>
+<!-- Corner Stamp -->
+<div class="absolute bottom-2 right-2 w-8 h-8 rounded-full bg-secondary-container text-on-secondary flex items-center justify-center shadow-[1px_1px_0px_#000000]">
+<span class="material-symbols-outlined text-[18px]">graphic_eq</span>
+</div>
+</div>
+<div class="pt-2 flex flex-col">
+<span class="font-title-md text-title-md text-on-surface truncate uppercase leading-tight">BROOKLYN DRIFT</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Vol 2 // 14 Chapters</span>
+</div>
+<!-- Faux Comic Barcode Footer -->
+<div class="mt-2 pt-1 flex items-center justify-between opacity-70 bg-surface-container-lowest px-1.5 py-0.5 rounded">
+<div class="flex gap-[2px] h-3 items-center">
+<span class="w-[2px] h-full bg-on-surface"></span>
+<span class="w-[1px] h-3 bg-on-surface"></span>
+<span class="w-[3px] h-full bg-on-surface"></span>
+<span class="w-[1px] h-2 bg-on-surface"></span>
+<span class="w-[2px] h-full bg-on-surface"></span>
+<span class="w-[4px] h-3 bg-on-surface"></span>
+</div>
+<span class="font-label-sm text-label-sm tracking-tighter text-on-surface">UPC-8802</span>
+</div>
+</article>
+<!-- Issue #404 -->
+<article class="flex-shrink-0 w-44 bg-surface-container rounded-xl p-2 flex flex-col shadow-[3px_3px_0px_#000000] snap-start relative group">
+<div class="relative w-full h-56 rounded-lg overflow-hidden bg-surface-variant shadow-[2px_2px_0px_#000000]">
+<img class="w-full h-full object-cover" data-alt="Futuristic cyberpunk comic book cover with an electric neon hero leaping across multidimensional energy portals in deep violet, cyan, and vibrant street colors." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBojFVW-JmdCH8ij8e97yAhgg8Nd78nLmGingwz8_3Ibv9vkxCSX5XrUY3orIda99pLe4Lx23qmQlbYaaZxcLLzIGDLPhcVOI628FleKlMR2eor2AtORw6V8nJZW1ei8dO-9a3vYFftFQz1J91av3hd7szM1M-O0Ef-5nw-QgfEvQpQzhdpek57TUkOcJ8T8ArvygjFx5niU9MlZVnnIkK-CWAOPNhiQTAtIwte-0Q"/>
+<!-- Issue Badge -->
+<div class="absolute top-2 left-2 bg-secondary-container text-on-secondary px-2 py-0.5 rounded shadow-[1px_1px_0px_#000000] font-label-sm text-label-sm">
+            #404
+          </div>
+<div class="absolute bottom-2 right-2 w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center shadow-[1px_1px_0px_#000000]">
+<span class="material-symbols-outlined text-[18px]">electric_bolt</span>
+</div>
+</div>
+<div class="pt-2 flex flex-col">
+<span class="font-title-md text-title-md text-on-surface truncate uppercase leading-tight">ANOMALY SOUNDS</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Earth-42 // Heavy Wave</span>
+</div>
+<!-- Faux Comic Barcode Footer -->
+<div class="mt-2 pt-1 flex items-center justify-between opacity-70 bg-surface-container-lowest px-1.5 py-0.5 rounded">
+<div class="flex gap-[2px] h-3 items-center">
+<span class="w-[1px] h-full bg-on-surface"></span>
+<span class="w-[3px] h-2 bg-on-surface"></span>
+<span class="w-[1px] h-full bg-on-surface"></span>
+<span class="w-[4px] h-3 bg-on-surface"></span>
+<span class="w-[2px] h-full bg-on-surface"></span>
+</div>
+<span class="font-label-sm text-label-sm tracking-tighter text-on-surface">UPC-404X</span>
+</div>
+</article>
+<!-- Issue #101 -->
+<article class="flex-shrink-0 w-44 bg-surface-container rounded-xl p-2 flex flex-col shadow-[3px_3px_0px_#000000] snap-start relative group">
+<div class="relative w-full h-56 rounded-lg overflow-hidden bg-surface-variant shadow-[2px_2px_0px_#000000]">
+<img class="w-full h-full object-cover" data-alt="Pop-art graphic comic cover showcasing neon drum machine pads, glowing headphones, and explosive onomatopoeia sound burst lettering in vibrant yellow and cyan." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9LslYP3WJwkEb4dxz-fl3P0vESYE-s0hYIra3A997rynYGQnyGsJhn-9R4MScmN1WTkapGcOBnRU-HVZRpeSFnJcJMi53IqxP3GKKnw6FcPgWkD6glMK5H4UqvY6gxg6ZC-45hDIotutV6Bj4JV7D2_OwKbx-5YcCkr0U0p1EoxgUoBcroWTA1AAl1ZgCkc9rI5M--3CD27PDzI21mxNUrCC58Vbfzd28KlzFU0c"/>
+<!-- Issue Badge -->
+<div class="absolute top-2 left-2 bg-tertiary-fixed text-on-tertiary-fixed px-2 py-0.5 rounded shadow-[1px_1px_0px_#000000] font-label-sm text-label-sm">
+            #101
+          </div>
+<div class="absolute bottom-2 right-2 w-8 h-8 rounded-full bg-tertiary-container text-on-tertiary-container flex items-center justify-center shadow-[1px_1px_0px_#000000]">
+<span class="material-symbols-outlined text-[18px]">radio</span>
+</div>
+</div>
+<div class="pt-2 flex flex-col">
+<span class="font-title-md text-title-md text-on-surface truncate uppercase leading-tight">RADIO WEB-HEAD</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Daily Bugle Records</span>
+</div>
+<!-- Faux Comic Barcode Footer -->
+<div class="mt-2 pt-1 flex items-center justify-between opacity-70 bg-surface-container-lowest px-1.5 py-0.5 rounded">
+<div class="flex gap-[2px] h-3 items-center">
+<span class="w-[3px] h-full bg-on-surface"></span>
+<span class="w-[1px] h-full bg-on-surface"></span>
+<span class="w-[2px] h-2 bg-on-surface"></span>
+<span class="w-[2px] h-full bg-on-surface"></span>
+<span class="w-[1px] h-3 bg-on-surface"></span>
+</div>
+<span class="font-label-sm text-label-sm tracking-tighter text-on-surface">UPC-101B</span>
+</div>
+</article>
+<!-- Issue #65 -->
+<article class="flex-shrink-0 w-44 bg-surface-container rounded-xl p-2 flex flex-col shadow-[3px_3px_0px_#000000] snap-start relative group">
+<div class="relative w-full h-56 rounded-lg overflow-hidden bg-surface-variant shadow-[2px_2px_0px_#000000]">
+<img class="w-full h-full object-cover" data-alt="Moody dark comic panel showing an alternate universe drummer with drumsticks in motion under dramatic neon pink stage backlights, Spider-Gwen color palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2a6j5ZIoDpQl72lCsayeH5XDfZ2yiBDOmN7KqxHTU0DScwt04MC-pZc17PwHbggrM0y8HFAiXxB2zdsqTvng3-uTpA4uvEYv-Fsx5h6wCo8uDcm4qHPhrnMZMN0xnF7mxlDWDXcW8sJa3XbVh520MK5NRWEb2REUIdQ8hGnCimRKfojAICP1YZKXGZ2OwBnEJ6F0aZ4LbZYAp0vpvuJuBIi7LKlkvii0AUpYsoIE"/>
+<!-- Issue Badge -->
+<div class="absolute top-2 left-2 bg-primary-container text-on-primary-container px-2 py-0.5 rounded shadow-[1px_1px_0px_#000000] font-label-sm text-label-sm">
+            #65
+          </div>
+<div class="absolute bottom-2 right-2 w-8 h-8 rounded-full bg-secondary-container text-on-secondary flex items-center justify-center shadow-[1px_1px_0px_#000000]">
+<span class="material-symbols-outlined text-[18px]">music_note</span>
+</div>
+</div>
+<div class="pt-2 flex flex-col">
+<span class="font-title-md text-title-md text-on-surface truncate uppercase leading-tight">MARY JANES: LIVE</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Earth-65 // Punk Riot</span>
+</div>
+<div class="mt-2 pt-1 flex items-center justify-between opacity-70 bg-surface-container-lowest px-1.5 py-0.5 rounded">
+<div class="flex gap-[2px] h-3 items-center">
+<span class="w-[2px] h-full bg-on-surface"></span>
+<span class="w-[2px] h-3 bg-on-surface"></span>
+<span class="w-[1px] h-full bg-on-surface"></span>
+<span class="w-[3px] h-2 bg-on-surface"></span>
+</div>
+<span class="font-label-sm text-label-sm tracking-tighter text-on-surface">UPC-065G</span>
+</div>
+</article>
+</div>
+</section>
+<!-- ACTION TRACKS FEED -->
+<section class="flex flex-col space-y-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-3 h-5 bg-secondary-container shadow-[1px_1px_0px_#000000]"></div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface uppercase tracking-wide">
+          Action Tracks
+        </h3>
+</div>
+<div class="bg-surface-variant px-2 py-0.5 rounded shadow-[1px_1px_0px_#000000]">
+<span class="font-label-sm text-label-sm text-primary-fixed-dim uppercase tracking-wider">4 Combat Anthems</span>
+</div>
+</div>
+<!-- Comic Panel Track Rows Container -->
+<div class="flex flex-col space-y-space-sm">
+<!-- Track 1: What's Up Danger -->
+<div class="track-row group relative bg-surface-container rounded-xl p-3 shadow-[3px_3px_0px_#000000] flex items-center justify-between gap-3 overflow-hidden active:translate-x-0.5 active:translate-y-0.5 transition-all cursor-pointer" data-track="What's Up Danger - Black Caviar">
+<div class="flex items-center gap-3 min-w-0 flex-1">
+<!-- Thumbnail with Action Number -->
+<div class="relative w-12 h-12 rounded-lg bg-surface-variant flex-shrink-0 shadow-[1px_1px_0px_#000000] overflow-hidden flex items-center justify-center">
+<span class="font-headline-md text-headline-md text-primary-container">01</span>
+<div class="absolute inset-0 bg-primary-container/10"></div>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-title-md text-title-md text-on-surface uppercase truncate leading-snug">
+                What's Up Danger
+              </span>
+<!-- Burst Badge -->
+<span class="font-label-sm text-label-sm bg-secondary-container text-on-secondary px-1.5 py-0.2 rounded shadow-[1px_1px_0px_#000000] -rotate-3 select-none flex-shrink-0">
+                MAX BASS!
+              </span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">
+              Black Caviar, Blackway // 3:42
+            </span>
+</div>
+</div>
+<!-- Comic Action Stamp Play Button -->
+<button aria-label="Play What's Up Danger" class="action-play-btn w-10 h-10 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center flex-shrink-0 shadow-[2px_2px_0px_#000000] active:shadow-[0px_0px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 transition-transform">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+</div>
+<!-- Track 2: Sunflower -->
+<div class="track-row group relative bg-surface-container rounded-xl p-3 shadow-[3px_3px_0px_#000000] flex items-center justify-between gap-3 overflow-hidden active:translate-x-0.5 active:translate-y-0.5 transition-all cursor-pointer" data-track="Sunflower - Post Malone, Swae Lee">
+<div class="flex items-center gap-3 min-w-0 flex-1">
+<div class="relative w-12 h-12 rounded-lg bg-surface-variant flex-shrink-0 shadow-[1px_1px_0px_#000000] overflow-hidden flex items-center justify-center">
+<span class="font-headline-md text-headline-md text-tertiary-fixed">02</span>
+<div class="absolute inset-0 bg-tertiary-fixed/10"></div>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-title-md text-title-md text-on-surface uppercase truncate leading-snug">
+                Sunflower
+              </span>
+<!-- Burst Badge -->
+<span class="font-label-sm text-label-sm bg-tertiary-fixed text-on-tertiary-fixed px-1.5 py-0.2 rounded shadow-[1px_1px_0px_#000000] rotate-2 select-none flex-shrink-0">
+                CHILL DROP!
+              </span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">
+              Post Malone, Swae Lee // 2:38
+            </span>
+</div>
+</div>
+<button aria-label="Play Sunflower" class="action-play-btn w-10 h-10 rounded-full bg-tertiary-fixed text-on-tertiary-fixed flex items-center justify-center flex-shrink-0 shadow-[2px_2px_0px_#000000] active:shadow-[0px_0px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 transition-transform">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+</div>
+<!-- Track 3: Scared of the Dark -->
+<div class="track-row group relative bg-surface-container rounded-xl p-3 shadow-[3px_3px_0px_#000000] flex items-center justify-between gap-3 overflow-hidden active:translate-x-0.5 active:translate-y-0.5 transition-all cursor-pointer" data-track="Scared of the Dark - Lil Wayne">
+<div class="flex items-center gap-3 min-w-0 flex-1">
+<div class="relative w-12 h-12 rounded-lg bg-surface-variant flex-shrink-0 shadow-[1px_1px_0px_#000000] overflow-hidden flex items-center justify-center">
+<span class="font-headline-md text-headline-md text-secondary">03</span>
+<div class="absolute inset-0 bg-secondary-container/10"></div>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-title-md text-title-md text-on-surface uppercase truncate leading-snug">
+                Scared of the Dark
+              </span>
+<!-- Burst Badge -->
+<span class="font-label-sm text-label-sm bg-surface-container-highest text-primary-fixed px-1.5 py-0.2 rounded shadow-[1px_1px_0px_#000000] -rotate-2 select-none flex-shrink-0">
+                DARK ARC
+              </span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">
+              Lil Wayne, Ty Dolla $ign, XXX // 3:50
+            </span>
+</div>
+</div>
+<button aria-label="Play Scared of the Dark" class="action-play-btn w-10 h-10 rounded-full bg-secondary-container text-on-secondary flex items-center justify-center flex-shrink-0 shadow-[2px_2px_0px_#000000] active:shadow-[0px_0px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 transition-transform">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+</div>
+<!-- Track 4: Elevate -->
+<div class="track-row group relative bg-surface-container rounded-xl p-3 shadow-[3px_3px_0px_#000000] flex items-center justify-between gap-3 overflow-hidden active:translate-x-0.5 active:translate-y-0.5 transition-all cursor-pointer" data-track="Elevate - DJ Khalil">
+<div class="flex items-center gap-3 min-w-0 flex-1">
+<div class="relative w-12 h-12 rounded-lg bg-surface-variant flex-shrink-0 shadow-[1px_1px_0px_#000000] overflow-hidden flex items-center justify-center">
+<span class="font-headline-md text-headline-md text-primary">04</span>
+<div class="absolute inset-0 bg-primary-container/10"></div>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-title-md text-title-md text-on-surface uppercase truncate leading-snug">
+                Elevate
+              </span>
+<!-- Burst Badge -->
+<span class="font-label-sm text-label-sm bg-primary-container text-on-primary-container px-1.5 py-0.2 rounded shadow-[1px_1px_0px_#000000] rotate-3 select-none flex-shrink-0">
+                HYPE!
+              </span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">
+              DJ Khalil, Denzel Curry, YBN // 3:39
+            </span>
+</div>
+</div>
+<button aria-label="Play Elevate" class="action-play-btn w-10 h-10 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center flex-shrink-0 shadow-[2px_2px_0px_#000000] active:shadow-[0px_0px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 transition-transform">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+</div>
+</div>
+</section>
+<!-- COMIC NARRATIVE SOUND EFFECT STRIP (POP-ART DELIGHT) -->
+<section class="relative w-full bg-surface-container-high rounded-xl p-space-md shadow-[3px_3px_0px_#000000] flex items-center justify-between overflow-hidden">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-lg bg-tertiary-fixed text-on-tertiary-fixed flex items-center justify-center shadow-[2px_2px_0px_#000000] -rotate-3 select-none">
+<span class="font-headline-md text-headline-md leading-none">THWIP!</span>
+</div>
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-on-surface uppercase leading-none">MULTIVERSE SYNTH CRUNCH</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Custom Sound FX Pack Attached</span>
+</div>
+</div>
+<button class="px-3 py-1.5 bg-surface-container text-primary-container font-label-lg text-label-lg uppercase rounded shadow-[2px_2px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 transition-all">
+      EQUIP
+    </button>
+</section>
+</div>
+<script>
+  (function () {
+    // Soundwave visualizer bar bounce simulation
+    const bars = document.querySelectorAll('#soundwaveContainer > div');
+    if (bars.length > 0) {
+      setInterval(() => {
+        bars.forEach(bar => {
+          const heights = ['h-4', 'h-6', 'h-8', 'h-10', 'h-12', 'h-14'];
+          // Remove old height classes
+          heights.forEach(h => bar.classList.remove(h));
+          // Pick randomized lively height
+          const randomH = heights[Math.floor(Math.random() * heights.length)];
+          bar.classList.add(randomH);
+        });
+      }, 260);
+    }
+
+    // Interactive Comic Audio Play Trigger
+    const trackRows = document.querySelectorAll('.track-row');
+    trackRows.forEach(row => {
+      row.addEventListener('click', (e) => {
+        const btn = row.querySelector('.action-play-btn span');
+        if (btn) {
+          const isPlaying = btn.textContent === 'pause';
+          document.querySelectorAll('.action-play-btn span').forEach(s => s.textContent = 'play_arrow');
+          if (!isPlaying) {
+            btn.textContent = 'pause';
+            row.classList.add('bg-surface-container-highest');
+          } else {
+            btn.textContent = 'play_arrow';
+            row.classList.remove('bg-surface-container-highest');
+          }
+        }
+      });
+    });
+
+    const heroBtn = document.getElementById('heroPlayBtn');
+    if (heroBtn) {
+      heroBtn.addEventListener('click', () => {
+        const icon = heroBtn.querySelector('.material-symbols-outlined');
+        if (icon) {
+          icon.textContent = icon.textContent === 'pause' ? 'play_arrow' : 'pause';
+        }
+      });
+    }
+  })();
+</script></main><div class="fixed bottom-20 inset-x-0 z-40 px-margin pointer-events-none"><div class="pointer-events-auto bg-surface-container-high rounded-xl p-2 shadow-[3px_3px_0px_#000000] flex items-center gap-3 backdrop-blur-xl"><div class="w-10 h-10 bg-primary-container rounded-lg flex-shrink-0 flex items-center justify-center overflow-hidden shadow-[1px_1px_0px_#000000]"><span class="material-symbols-outlined text-on-primary-container text-[22px]">graphic_eq</span></div><div class="flex-1 overflow-hidden"><div class="animate-marquee whitespace-nowrap"><span class="font-title-md text-title-md text-primary-container mr-4">DIMENSION JUMP // MILES MORALES // BEATS FROM EARTH-1610</span><span class="font-title-md text-title-md text-primary-container mr-4">DIMENSION JUMP // MILES MORALES // BEATS FROM EARTH-1610</span></div><div class="flex items-center gap-2"><span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Now Jamming</span><div class="h-1 flex-1 bg-surface-variant rounded-full overflow-hidden"><div class="h-full w-2/3 bg-tertiary-fixed"></div></div></div></div><button aria-label="Play or Pause" class="w-11 h-11 rounded-lg bg-tertiary-fixed text-on-tertiary-fixed flex items-center justify-center shadow-[2px_2px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 transition-transform flex-shrink-0"><span class="material-symbols-outlined text-[24px]">play_arrow</span></button></div></div><nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface/90 backdrop-blur-xl shadow-[0_-2px_12px_rgba(0,0,0,0.5)]" data-active-classes="text-primary-container font-bold translate-y-[-2px]"><div class="flex justify-around items-center h-20 px-space-xs"><a aria-current="page" class="flex flex-col items-center justify-center min-w-[44px] min-h-[44px] px-2 py-1 transition-all text-primary-container font-bold translate-y-[-2px]" data-path="home-groove" href="#"><span class="material-symbols-outlined text-[24px]">grid_view</span><span class="font-label-sm text-label-sm uppercase mt-1">Home</span></a><a class="flex flex-col items-center justify-center min-w-[44px] min-h-[44px] px-2 py-1 text-on-surface-variant hover:text-on-surface transition-all" data-path="sound-multiverse" href="#"><span class="material-symbols-outlined text-[24px]">explore</span><span class="font-label-sm text-label-sm uppercase mt-1">Explore</span></a><a class="flex flex-col items-center justify-center min-w-[44px] min-h-[44px] px-2 py-1 text-on-surface-variant hover:text-on-surface transition-all" data-path="comic-vault" href="#"><span class="material-symbols-outlined text-[24px]">local_library</span><span class="font-label-sm text-label-sm uppercase mt-1">Vault</span></a><a class="flex flex-col items-center justify-center min-w-[44px] min-h-[44px] px-2 py-1 text-on-surface-variant hover:text-on-surface transition-all" data-path="action-equalizer" href="#"><span class="material-symbols-outlined text-[24px]">tune</span><span class="font-label-sm text-label-sm uppercase mt-1">Action EQ</span></a></div></nav></body></html>
+
+<!-- ComicBeats Mobile - Action Stage Player -->
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_stack" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Space+Grotesk:wght@400;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "tertiary-container": "#f3db00", "surface-dim": "#12131a", "error": "#ffb4ab", "surface-bright": "#383941", "on-primary-fixed-variant": "#004f54", "secondary-fixed": "#ffdadb", "on-error-container": "#ffdad6", "surface-variant": "#34343c", "on-surface": "#e3e1ec", "primary-fixed": "#7df4ff", "on-surface-variant": "#b9cacb", "surface-tint": "#00dbe9", "on-secondary-fixed-variant": "#91002d", "on-tertiary-container": "#6b5f00", "secondary-fixed-dim": "#ffb2b8", "surface-container-low": "#1a1b22", "inverse-surface": "#e3e1ec", "outline": "#849495", "surface-container": "#1e1f27", "primary-fixed-dim": "#00dbe9", "inverse-primary": "#006970", "on-tertiary-fixed": "#201c00", "outline-variant": "#3b494b", "surface": "#12131a", "surface-container-lowest": "#0d0e15", "background": "#12131a", "tertiary": "#fff6d1", "on-secondary-container": "#5b0018", "surface-container-highest": "#34343c", "on-primary": "#00363a", "on-background": "#e3e1ec", "secondary": "#ffb2b8", "surface-container-high": "#292931", "inverse-on-surface": "#2f3038", "on-tertiary": "#373100", "on-error": "#690005", "primary-container": "#00f0ff", "secondary-container": "#ff506e", "on-secondary": "#67001d", "on-primary-container": "#006970", "on-secondary-fixed": "#40000f", "on-primary-fixed": "#002022", "tertiary-fixed-dim": "#dec800", "error-container": "#93000a", "primary": "#dbfcff", "on-tertiary-fixed-variant": "#504700", "tertiary-fixed": "#fde400" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-sm": "0.5rem", "space-xl": "2.5rem", "space-md": "1rem", "margin-desktop": "2.5rem", "space-xs": "0.25rem", "margin": "1rem", "space-lg": "1.5rem", "gutter-desktop": "1.5rem", "gutter": "1rem" }, "fontFamily": { "label-lg": ["Space Grotesk"], "headline-xl-mobile": ["Bebas Neue"], "headline-lg-mobile": ["Bebas Neue"], "body-md": ["Space Grotesk"], "headline-xl": ["Bebas Neue"], "body-sm": ["Space Grotesk"], "headline-lg": ["Bebas Neue"], "title-lg": ["Space Grotesk"], "body-lg": ["Space Grotesk"], "title-md": ["Space Grotesk"], "label-sm": ["Space Grotesk"], "headline-md": ["Bebas Neue"] }, "fontSize": { "label-lg": ["13px", { "lineHeight": "16px", "letterSpacing": "0.08em", "fontWeight": "700" }], "headline-xl-mobile": ["38px", { "lineHeight": "40px", "letterSpacing": "0.03em", "fontWeight": "400" }], "headline-lg-mobile": ["30px", { "lineHeight": "32px", "letterSpacing": "0.02em", "fontWeight": "400" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "headline-xl": ["56px", { "lineHeight": "56px", "letterSpacing": "0.04em", "fontWeight": "400" }], "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }], "headline-lg": ["40px", { "lineHeight": "42px", "letterSpacing": "0.03em", "fontWeight": "400" }], "title-lg": ["20px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "title-md": ["16px", { "lineHeight": "22px", "fontWeight": "700" }], "label-sm": ["10px", { "lineHeight": "12px", "letterSpacing": "0.1em", "fontWeight": "700" }], "headline-md": ["28px", { "lineHeight": "30px", "letterSpacing": "0.02em", "fontWeight": "400" }] } } } }</script><style>@layer base{html,body{width:100vw;margin:0;padding:0;background-color:#12131a;color:#e3e1ec;font-family:'Space Grotesk',sans-serif;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style></head><body class="bg-surface text-on-surface min-h-screen flex flex-col relative selection:bg-secondary-container selection:text-on-secondary-container"><header class="fixed top-0 w-full z-50 pt-safe bg-surface/80 backdrop-blur-xl"><div class="h-16 px-margin flex items-center justify-between"><div class="flex items-center gap-space-sm"><button aria-label="Go Back" class="w-11 h-11 flex items-center justify-center bg-surface-container rounded-lg text-primary-container shadow-[2px_2px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 transition-transform" onclick="history.back()"><span class="material-symbols-outlined text-[24px]">arrow_back</span></button><h1 class="font-headline-md text-headline-md tracking-wide text-on-surface uppercase truncate">Full Player Stage</h1></div><div class="flex items-center gap-space-sm"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shadow-[1px_1px_0px_#000000]"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="flex flex-col relative w-full pt-16 bg-surface px-margin pb-safe min-h-screen"><div class="flex flex-col w-full pb-8 select-none">
+<!-- Top Bar Context Ribbon -->
+<div class="flex items-center justify-between gap-space-sm mb-4">
+<div class="inline-flex items-center gap-2 bg-surface-container-highest px-3 py-1.5 rounded-lg shadow-[3px_3px_0px_#000000] -rotate-1">
+<span class="inline-block w-2.5 h-2.5 rounded-full bg-secondary-container animate-pulse"></span>
+<span class="font-label-sm text-label-sm text-primary-container tracking-widest uppercase">ISSUE #04 // NOW SPINNING</span>
+</div>
+<div class="flex items-center gap-2">
+<button aria-label="Bookmark this track" class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-secondary-fixed shadow-[3px_3px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 transition-transform" id="like-btn">
+<span class="material-symbols-outlined text-[20px]" id="like-icon" style="font-variation-settings: 'FILL' 1;">bookmark_add</span>
+</button>
+<button aria-label="Share panel" class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-tertiary-container shadow-[3px_3px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 transition-transform">
+<span class="material-symbols-outlined text-[20px]">share</span>
+</button>
+</div>
+</div>
+<!-- Central Comic Hero Cover Panel -->
+<div class="relative w-full aspect-square max-w-[340px] mx-auto my-2 flex items-center justify-center">
+<!-- Sound Burst Graphic (POW!) behind art -->
+<div class="absolute -top-3 -right-2 z-20 pointer-events-none transform rotate-12 scale-105">
+<div class="relative bg-tertiary-container text-on-tertiary-container px-3 py-1 shadow-[3px_3px_0px_#000000] rounded-sm flex items-center gap-1">
+<span class="font-headline-md text-headline-md tracking-wider">POW!</span>
+<span class="material-symbols-outlined text-[18px]">bolt</span>
+</div>
+</div>
+<!-- Multi-layered Comic Frame Backdrop -->
+<div class="absolute inset-0 bg-secondary-container rounded-xl transform -rotate-2 shadow-[6px_6px_0px_#000000]"></div>
+<div class="absolute inset-0 bg-primary-container rounded-xl transform rotate-1 shadow-[4px_4px_0px_#000000]"></div>
+<!-- Main Cover Art Surface -->
+<div class="relative z-10 w-full h-full bg-surface-container-lowest rounded-xl overflow-hidden shadow-[5px_5px_0px_#000000] flex flex-col justify-end">
+<img class="absolute inset-0 w-full h-full object-cover" data-alt="Pop-art comic book album cover art featuring a masked superhero leaping dynamically through an electric neon multiverse skyline. Screen-tone halftone dots, vivid cyan and magenta lighting, dramatic black ink hatching lines, high contrast street art aesthetic, cinematic street graffiti, graphic novel panel illustration." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrhrQCpsD97HMqbI6-CO97W9xzL8E_0SuafEBlDwibHBEertxKp0sLGUecSyJOKQLAJDwOrLyCL82v5Ho_Ut9KWotzXe4XIJRBYqQ4BSGW4GqU0eEiEQS3Nw3JezOL80w8OYUWxiJUnWTtKP0zKf2knzcc0RbZO8VkBXsah9AaG5qvM9LOt2z5lNVKyY0YSiDHDPZthlzokWTx_ZMV6WFmIj0H0WsVaLGYyop_jGQ"/>
+<!-- Halftone Screen Texture Overlay Simulation via CSS Gradient Pattern -->
+<div class="absolute inset-0 opacity-25 pointer-events-none bg-[radial-gradient(#00f0ff_1.5px,transparent_1.5px)] [background-size:8px_8px]"></div>
+<!-- Ink-bleed Gradient Scrim -->
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-surface-container-lowest/30 to-transparent"></div>
+<!-- Comic Corner Issue Badge -->
+<div class="absolute top-2 left-2 z-20 bg-surface text-primary-container px-2 py-0.5 rounded shadow-[2px_2px_0px_#000000] flex items-center gap-1">
+<span class="font-label-sm text-label-sm">VOL. 02</span>
+<span class="font-label-sm text-label-sm text-secondary-fixed">● STEREO</span>
+</div>
+<!-- Comic Speech Bubble Lyric Snip Overlay -->
+<div class="relative z-20 m-3 p-2.5 bg-surface-bright text-on-surface rounded-lg shadow-[3px_3px_0px_#000000] transform -rotate-1">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-container text-[18px]">record_voice_over</span>
+<p class="font-title-md text-title-md text-primary tracking-wide italic truncate">"CAN'T STOP ME NOW... CAN'T SLOW ME DOWN!"</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Track Title & Metadata Speech Strip -->
+<div class="w-full mt-3 flex flex-col gap-1.5">
+<div class="flex items-start justify-between gap-2">
+<div class="min-w-0 flex-1">
+<h2 class="font-headline-xl-mobile text-headline-xl-mobile text-primary-container tracking-wider uppercase drop-shadow-[2px_2px_0px_#000000] truncate">
+          WHAT'S UP DANGER
+        </h2>
+<!-- Artist Narrative Banner -->
+<div class="inline-flex items-center gap-1.5 bg-surface-container-high px-2.5 py-1 rounded shadow-[2px_2px_0px_#000000] mt-0.5">
+<span class="material-symbols-outlined text-secondary-container text-[16px]">groups</span>
+<span class="font-title-md text-title-md text-on-surface tracking-normal truncate">Black Caviar &amp; Blackway</span>
+</div>
+</div>
+<div class="bg-secondary-container text-on-secondary-container font-headline-md text-headline-md px-2 py-0.5 rounded shadow-[3px_3px_0px_#000000] transform rotate-3 shrink-0">
+        138 BPM
+      </div>
+</div>
+<!-- Quick Comic Reaction Bursts / Sound Badges -->
+<div class="flex items-center gap-2 mt-2 overflow-x-auto pb-1 scrollbar-none">
+<button class="reaction-badge inline-flex items-center gap-1 bg-surface-container-highest text-tertiary-container px-3 py-1 rounded shadow-[2px_2px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 transition-transform" onclick="triggerBurst(this, '🔥')">
+<span class="font-label-lg text-label-lg uppercase">🔥 LIT!</span>
+<span class="reaction-count font-body-sm text-body-sm text-on-surface-variant font-bold">14.2K</span>
+</button>
+<button class="reaction-badge inline-flex items-center gap-1 bg-surface-container-highest text-secondary-fixed px-3 py-1 rounded shadow-[2px_2px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 transition-transform" onclick="triggerBurst(this, '💥')">
+<span class="font-label-lg text-label-lg uppercase">💥 BOOM!</span>
+<span class="reaction-count font-body-sm text-body-sm text-on-surface-variant font-bold">8.9K</span>
+</button>
+<button class="reaction-badge inline-flex items-center gap-1 bg-surface-container-highest text-primary-fixed px-3 py-1 rounded shadow-[2px_2px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 transition-transform" onclick="triggerBurst(this, '⚡')">
+<span class="font-label-lg text-label-lg uppercase">⚡ HYPED</span>
+<span class="reaction-count font-body-sm text-body-sm text-on-surface-variant font-bold">21.5K</span>
+</button>
+</div>
+</div>
+<!-- Comic Zap Scrubber & Timestamp Boxes -->
+<div class="w-full mt-4 flex flex-col gap-2">
+<!-- Interactive Track Progress Range Container -->
+<div class="relative w-full py-2 flex items-center cursor-pointer" id="scrubber-wrapper">
+<!-- Comic Soundwave Graphic representation behind -->
+<div class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-8 flex items-center justify-between px-1 opacity-20 pointer-events-none">
+<div class="w-1 h-3 bg-primary-container rounded"></div>
+<div class="w-1 h-5 bg-primary-container rounded"></div>
+<div class="w-1 h-7 bg-primary-container rounded"></div>
+<div class="w-1 h-4 bg-primary-container rounded"></div>
+<div class="w-1 h-6 bg-primary-container rounded"></div>
+<div class="w-1 h-8 bg-primary-container rounded"></div>
+<div class="w-1 h-5 bg-primary-container rounded"></div>
+<div class="w-1 h-7 bg-primary-container rounded"></div>
+<div class="w-1 h-4 bg-primary-container rounded"></div>
+<div class="w-1 h-2 bg-primary-container rounded"></div>
+<div class="w-1 h-6 bg-primary-container rounded"></div>
+<div class="w-1 h-8 bg-primary-container rounded"></div>
+<div class="w-1 h-5 bg-primary-container rounded"></div>
+<div class="w-1 h-3 bg-primary-container rounded"></div>
+<div class="w-1 h-7 bg-primary-container rounded"></div>
+<div class="w-1 h-4 bg-primary-container rounded"></div>
+<div class="w-1 h-6 bg-primary-container rounded"></div>
+<div class="w-1 h-3 bg-primary-container rounded"></div>
+</div>
+<!-- Background Scrubber Bar -->
+<div class="relative w-full h-3 bg-surface-container-highest rounded-full overflow-hidden shadow-[2px_2px_0px_#000000]">
+<!-- Zap Progress fill -->
+<div class="h-full bg-primary-container shadow-[inset_0_-2px_0px_rgba(0,0,0,0.3)] transition-all duration-75" id="scrubber-fill" style="width: 48%;"></div>
+</div>
+<!-- Lightning Bolt Scrubber Head Pip -->
+<div class="absolute left-[48%] -translate-x-1/2 w-8 h-8 rounded-full bg-tertiary-container text-on-tertiary-container shadow-[3px_3px_0px_#000000] flex items-center justify-center transform hover:scale-110 active:scale-95 transition-transform" id="scrubber-pip" style="touch-action: none;">
+<span class="material-symbols-outlined text-[18px]">bolt</span>
+</div>
+</div>
+<!-- Timestamp Panels -->
+<div class="flex items-center justify-between w-full px-1">
+<div class="bg-surface-container px-2 py-0.5 rounded shadow-[2px_2px_0px_#000000]">
+<span class="font-label-sm text-label-sm text-primary-container" id="curr-time">01:45</span>
+</div>
+<div class="flex items-center gap-1.5 text-on-surface-variant font-label-sm text-label-sm">
+<span class="inline-block w-1.5 h-1.5 rounded-full bg-tertiary-container"></span>
+<span>MULTIVERSE FEED</span>
+</div>
+<div class="bg-surface-container px-2 py-0.5 rounded shadow-[2px_2px_0px_#000000]">
+<span class="font-label-sm text-label-sm text-on-surface-variant">03:42</span>
+</div>
+</div>
+</div>
+<!-- Comic Action Playback Controls -->
+<div class="w-full mt-4 flex items-center justify-center gap-4">
+<!-- Shuffle / Alternate Reality Button -->
+<button aria-label="Shuffle multiverse tracks" class="w-11 h-11 rounded-lg bg-surface-container flex items-center justify-center text-on-surface shadow-[3px_3px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 transition-transform">
+<span class="material-symbols-outlined text-[22px]">shuffle</span>
+</button>
+<!-- Prev Comic Button -->
+<button aria-label="Previous track" class="w-12 h-12 rounded-lg bg-surface-container-high text-primary flex items-center justify-center shadow-[3px_3px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 transition-transform">
+<span class="material-symbols-outlined text-[28px]">fast_rewind</span>
+</button>
+<!-- Main Slam Action Play/Pause Burst Centerpiece -->
+<div class="relative flex items-center justify-center">
+<!-- Burst Speech Ribbon Tag -->
+<div class="absolute -top-3 z-20 bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded-full shadow-[2px_2px_0px_#000000] transform -rotate-6">
+<span class="font-label-sm text-label-sm font-bold tracking-wider">SLAM TO PAUSE!</span>
+</div>
+<button aria-label="Play or Pause" class="w-20 h-20 rounded-2xl bg-primary-container text-on-primary-container flex items-center justify-center shadow-[5px_5px_0px_#000000] active:shadow-[1px_1px_0px_#000000] active:translate-x-1 active:translate-y-1 transition-all" id="play-pause-btn">
+<span class="material-symbols-outlined text-[44px]" id="play-pause-icon" style="font-variation-settings: 'FILL' 1;">pause</span>
+</button>
+</div>
+<!-- Next Comic Button -->
+<button aria-label="Next track" class="w-12 h-12 rounded-lg bg-surface-container-high text-primary flex items-center justify-center shadow-[3px_3px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 transition-transform">
+<span class="material-symbols-outlined text-[28px]">fast_forward</span>
+</button>
+<!-- Loop / Dimension Button -->
+<button aria-label="Loop universe" class="w-11 h-11 rounded-lg bg-surface-container flex items-center justify-center text-primary-container shadow-[3px_3px_0px_#000000] active:translate-x-0.5 active:translate-y-0.5 transition-transform">
+<span class="material-symbols-outlined text-[22px]">repeat</span>
+</button>
+</div>
+<!-- Bottom Audio Stage Drawer: Multiverse DSP -->
+<div class="w-full mt-6 bg-surface-container-low rounded-xl p-4 shadow-[4px_4px_0px_#000000] relative">
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary-container text-[20px]">equalizer</span>
+<h3 class="font-headline-md text-headline-md text-on-surface tracking-wide uppercase">MULTIVERSE DSP</h3>
+</div>
+<div class="bg-surface-container-highest px-2 py-0.5 rounded text-tertiary-container font-label-sm text-label-sm shadow-[2px_2px_0px_#000000]">
+        STAGE V4.2
+      </div>
+</div>
+<!-- Dual Comic Equalizer Control Modules -->
+<div class="grid grid-cols-2 gap-3">
+<!-- Knob 1: Bass Crunch -->
+<div class="bg-surface-container p-3 rounded-lg shadow-[3px_3px_0px_#000000] flex flex-col items-center">
+<div class="flex items-center justify-between w-full mb-2">
+<span class="font-label-sm text-label-sm text-primary uppercase">BASS CRUNCH</span>
+<span class="font-label-sm text-label-sm text-tertiary-container bg-surface px-1.5 py-0.5 rounded" id="bass-val">+8dB</span>
+</div>
+<div class="relative w-16 h-16 flex items-center justify-center my-1">
+<!-- Circular Dial Representation -->
+<svg class="w-16 h-16 transform -rotate-90" viewbox="0 0 36 36">
+<path class="text-surface-variant" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="4"></path>
+<path class="text-primary-container" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="75, 100" stroke-linecap="round" stroke-width="4"></path>
+</svg>
+<button class="absolute w-10 h-10 rounded-full bg-surface-bright flex items-center justify-center shadow-[2px_2px_0px_#000000] active:scale-90 transition-transform" onclick="adjustKnob('bass-val', 2)">
+<span class="material-symbols-outlined text-primary-container text-[20px]">graphic_eq</span>
+</button>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant mt-1">Tap to punch</span>
+</div>
+<!-- Knob 2: Sub-Woofer Zap -->
+<div class="bg-surface-container p-3 rounded-lg shadow-[3px_3px_0px_#000000] flex flex-col items-center">
+<div class="flex items-center justify-between w-full mb-2">
+<span class="font-label-sm text-label-sm text-secondary uppercase">SUB ZAP</span>
+<span class="font-label-sm text-label-sm text-secondary-fixed bg-surface px-1.5 py-0.5 rounded" id="zap-val">94%</span>
+</div>
+<div class="relative w-16 h-16 flex items-center justify-center my-1">
+<!-- Circular Dial Representation -->
+<svg class="w-16 h-16 transform -rotate-90" viewbox="0 0 36 36">
+<path class="text-surface-variant" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="4"></path>
+<path class="text-secondary-container" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="90, 100" stroke-linecap="round" stroke-width="4"></path>
+</svg>
+<button class="absolute w-10 h-10 rounded-full bg-surface-bright flex items-center justify-center shadow-[2px_2px_0px_#000000] active:scale-90 transition-transform" onclick="adjustKnob('zap-val', 5)">
+<span class="material-symbols-outlined text-secondary-container text-[20px]">bolt</span>
+</button>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant mt-1">Tap to ignite</span>
+</div>
+</div>
+<!-- Connected Comic Output Strip -->
+<div class="mt-3 bg-surface p-2.5 rounded-lg flex items-center justify-between shadow-[2px_2px_0px_#000000]">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-fixed-dim text-[18px]">headphones</span>
+<span class="font-label-sm text-label-sm text-on-surface truncate">SPIDER-BEATS PRO (SPATIAL 3D)</span>
+</div>
+<span class="font-label-sm text-label-sm text-primary-container">ACTIVE</span>
+</div>
+</div>
+</div>
+<script>
+  // Play / Pause Micro-Interaction
+  let isPlaying = true;
+  const playBtn = document.getElementById('play-pause-btn');
+  const playIcon = document.getElementById('play-pause-icon');
+  
+  if (playBtn && playIcon) {
+    playBtn.addEventListener('click', () => {
+      isPlaying = !isPlaying;
+      playIcon.innerText = isPlaying ? 'pause' : 'play_arrow';
+    });
+  }
+
+  // Bookmark Toggle
+  const likeBtn = document.getElementById('like-btn');
+  const likeIcon = document.getElementById('like-icon');
+  let isSaved = true;
+
+  if (likeBtn && likeIcon) {
+    likeBtn.addEventListener('click', () => {
+      isSaved = !isSaved;
+      likeIcon.innerText = isSaved ? 'bookmark_added' : 'bookmark_border';
+    });
+  }
+
+  // Reaction Burst Pop Interaction
+  function triggerBurst(buttonEl, emoji) {
+    const counter = buttonEl.querySelector('.reaction-count');
+    if (counter) {
+      let countText = counter.innerText.replace('K', '');
+      let currentVal = parseFloat(countText);
+      counter.innerText = (currentVal + 0.1).toFixed(1) + 'K';
+    }
+    
+    // Quick pop feedback
+    buttonEl.classList.add('scale-110');
+    setTimeout(() => {
+      buttonEl.classList.remove('scale-110');
+    }, 150);
+  }
+
+  // DSP Quick Knob Tweaker
+  function adjustKnob(elementId, step) {
+    const el = document.getElementById(elementId);
+    if (!el) return;
+    if (elementId === 'bass-val') {
+      let current = parseInt(el.innerText) || 8;
+      let next = current >= 14 ? 2 : current + step;
+      el.innerText = '+' + next + 'dB';
+    } else {
+      let current = parseInt(el.innerText) || 90;
+      let next = current >= 99 ? 75 : current + step;
+      el.innerText = next + '%';
+    }
+  }
+
+  // Scrubber interactive touch/click drag
+  const scrubberWrap = document.getElementById('scrubber-wrapper');
+  const scrubberFill = document.getElementById('scrubber-fill');
+  const scrubberPip = document.getElementById('scrubber-pip');
+  const currTimeEl = document.getElementById('curr-time');
+
+  if (scrubberWrap && scrubberFill && scrubberPip) {
+    const updateScrub = (clientX) => {
+      const rect = scrubberWrap.getBoundingClientRect();
+      const pos = Math.max(0, Math.min(clientX - rect.left, rect.width));
+      const percentage = (pos / rect.width) * 100;
+      
+      scrubberFill.style.width = percentage + '%';
+      scrubberPip.style.left = percentage + '%';
+
+      // Total seconds: 222 (3:42)
+      const currentSeconds = Math.floor((percentage / 100) * 222);
+      const mins = Math.floor(currentSeconds / 60);
+      const secs = currentSeconds % 60;
+      if (currTimeEl) {
+        currTimeEl.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+      }
+    };
+
+    scrubberWrap.addEventListener('click', (e) => updateScrub(e.clientX));
+
+    let isDragging = false;
+    scrubberPip.addEventListener('pointerdown', (e) => {
+      isDragging = true;
+      scrubberPip.setPointerCapture(e.pointerId);
+    });
+
+    window.addEventListener('pointermove', (e) => {
+      if (isDragging) updateScrub(e.clientX);
+    });
+
+    window.addEventListener('pointerup', () => {
+      isDragging = false;
+    });
+  }
+</script></main></body></html>

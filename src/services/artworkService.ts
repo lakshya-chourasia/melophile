@@ -1,30 +1,24 @@
 /**
- * Ultra-Fast Multi-Tier Album Artwork Service via free Apple / iTunes Search API
- * 
- * Multi-Tier Caching Architecture:
- * 1. L1 Memory Cache: 0ms instant synchronous Map lookup.
- * 2. In-Flight Request Coalescing: Deduplicates concurrent requests for the same track.
- * 3. L2 IndexedDB Store: High-capacity persistent asynchronous storage with 30-day TTL.
- * 4. L2 LocalStorage Fallback: Resilient storage for environments where IndexedDB is blocked.
- * 5. Image Byte Pre-decoding: Pre-decodes image textures in browser cache for 0ms visual render.
- * 6. Rate Limiting: Minimum 3000ms request spacing (~20 calls/min) with exponential backoff on 429/403.
- * 
- * Credit: Album artwork provided by Apple / iTunes Search API
+ * Ultra-Fast Multi-API Studio Poster Service (Apple WebP + Deezer Edge + Spotify + Unsplash)
+ *
+ * Architecture:
+ * 1. L1 Memory Cache + Decoded GPU Registry: 0ms synchronous lookup & instant Frame-0 paint.
+ * 2. L2 IndexedDB + localStorage (v5): 30-day persistence (skipped on miss once hydrated).
+ * 3. Responsive Edge Rewriting: Serves ~20KB 400x400 WebP for cards and ~44KB 600x600 WebP for hero posters.
+ * 4. 10ms Micro-Batching + Single-Flight Deduplication + Negative Miss Cache.
  */
 
-export const DEFAULT_ARTWORK_FALLBACK =
-  'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&auto=format&fit=crop&q=80';
+export const DEFAULT_ARTWORK_FALLBACK = '';
 
-const LOCAL_STORAGE_KEY = 'soundstream_artwork_v4';
-const INDEXED_DB_NAME = 'soundstream_artwork_db';
+const LOCAL_STORAGE_KEY = 'soundstream_artwork_v11';
+const INDEXED_DB_NAME = 'soundstream_artwork_db_v11';
 const INDEXED_DB_STORE = 'artworks';
 const INDEXED_DB_VERSION = 1;
-const TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 Days Cache TTL
-const MAX_REQUESTS_PER_MINUTE = 20;
-const MIN_INTERVAL_MS = Math.ceil(60000 / MAX_REQUESTS_PER_MINUTE); // ~3000ms
-const MAX_RETRIES = 3;
+const TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 Days
+const MISS_TTL_MS = 20 * 1000; // 20s short negative cache so transient misses recover quickly
+const MICRO_BATCH_DELAY_MS = 10;
+const MAX_BATCH_SIZE = 40;
 
-// Cache entry record
 interface CacheRecord {
   url: string;
   timestamp: number;
@@ -33,18 +27,105 @@ interface CacheRecord {
   artistName?: string;
 }
 
-// L1: In-memory cache
 const memoryCache = new Map<string, CacheRecord>();
-
-// In-Flight Promise Map (Single-Flight Deduplication)
+const missCache = new Map<string, number>();
 const inFlightRequests = new Map<string, Promise<string>>();
+const decodedImageUrls = new Set<string>();
+let idbHydrated = false;
 
-// Cache statistics
 let totalHits = 0;
 let totalMisses = 0;
 
+const BAD_SAAVN_COVER_SLUG_RE =
+  /\b(?:with[-_ ]love|love[-_ ]forever|broken[-_ ]strings|yours[-_ ]truly|best[-_ ]of|hit[-_ ]songs|bollywood[-_ ]hits|jukebox|instrumental|karaoke|soothing[-_ ]songs|happy[-_ ]vibes|mashup|compilation|playlist|non[-_ ]?stop|lofi|lo[-_ ]fi|slowed|sped[-_ ]up|all[-_ ]time[-_ ]best|romantic[-_ ]classics|nightcore|breakcore|ringtone|8d)\b/i;
+
+export function isHighResStudioPoster(url?: string | null): boolean {
+  if (!url) return false;
+  // Never accept playlist artwork, artist portraits, or compilation/instrumental knockoffs as song covers
+  if (
+    url.includes('dzcdn.net') &&
+    (url.includes('/images/playlist/') || url.includes('/images/artist/'))
+  ) {
+    return false;
+  }
+  if (url.includes('saavncdn.com')) {
+    const slug = url.split('/').pop() || '';
+    if (BAD_SAAVN_COVER_SLUG_RE.test(slug)) return false;
+  }
+  return (
+    url.includes('dzcdn.net') ||
+    url.includes('mzstatic.com') ||
+    url.includes('scdn.co') ||
+    url.includes('coverartarchive.org') ||
+    url.includes('archive.org') ||
+    url.includes('saavncdn.com') ||
+    url.includes('theaudiodb.com')
+  );
+}
+
+/**
+ * Rewrites high-res CDN URLs into fast, edge-cached WebP / right-sized variants:
+ * - Apple mzstatic: 400x400bb.webp (~20KB, ~14ms) for cards, 600x600bb.webp (~44KB) for hero
+ * - Deezer dzcdn: 500x500-000000-80-0-0.jpg (~25KB, edge-cached) for cards
+ * - Unsplash: w=480&q=75&auto=format&fit=crop for cards, w=720&q=80 for hero
+ */
+export function optimizePosterUrl(url: string, size: 'card' | 'hero' = 'card'): string {
+  if (!url) return '';
+  if (url.includes('mzstatic.com')) {
+    const dim = size === 'hero' ? '600x600bb.webp' : '400x400bb.webp';
+    return url.replace(/\/\d+x\d+bb\.(jpg|jpeg|png|webp)$/i, `/${dim}`);
+  }
+  if (url.includes('dzcdn.net')) {
+    const target = size === 'hero' ? '1000x1000-000000-80-0-0.jpg' : '500x500-000000-80-0-0.jpg';
+    return url.replace(/\/\d+x\d+-\d+-\d+-\d+-\d+\.jpg/i, `/${target}`);
+  }
+  if (url.includes('images.unsplash.com/photo-')) {
+    const base = url.split('?')[0];
+    return size === 'hero'
+      ? `${base}?auto=format&fit=crop&w=720&q=80`
+      : `${base}?auto=format&fit=crop&w=480&q=75`;
+  }
+  return url;
+}
+
+export function markImageDecoded(url?: string | null): void {
+  if (!url) return;
+  decodedImageUrls.add(url);
+  if (decodedImageUrls.size > 1200) {
+    const first = decodedImageUrls.values().next().value;
+    if (first) decodedImageUrls.delete(first);
+  }
+}
+
+export function isImageDecoded(url?: string | null): boolean {
+  return Boolean(url && decodedImageUrls.has(url));
+}
+
+export function isYouTubeThumbnailUrl(url?: string | null): boolean {
+  if (!url) return false;
+  return (
+    url.includes('ytimg.com') ||
+    url.includes('youtube.com') ||
+    url.includes('ggpht.com')
+  );
+}
+
+export function hasVerifiedSquareCover(track?: {
+  id?: string;
+  title?: string;
+  artist?: string;
+  thumbnail?: string;
+  hasSquareArtwork?: boolean;
+} | null): boolean {
+  if (!track) return false;
+  if (isHighResStudioPoster(track.thumbnail)) return true;
+  if (track.hasSquareArtwork === false) return false;
+  const cached = getCachedArtworkSync(track.title || '', track.artist || '', track.id);
+  return isHighResStudioPoster(cached);
+}
+
 /* ─────────────────────────────────────────────────────────────
-   L2 CACHING: INDEXEDDB PERSISTENCE (High Capacity, Non-blocking)
+   L2 CACHING: INDEXEDDB + LOCALSTORAGE
 ───────────────────────────────────────────────────────────── */
 let dbPromise: Promise<IDBDatabase | null> | null = null;
 
@@ -63,12 +144,8 @@ function getIndexedDB(): Promise<IDBDatabase | null> {
           }
         };
         req.onsuccess = () => resolve(req.result);
-        req.onerror = () => {
-          console.warn('[ArtworkCache] IndexedDB open error, falling back to localStorage');
-          resolve(null);
-        };
-      } catch (err) {
-        console.warn('[ArtworkCache] IndexedDB init exception:', err);
+        req.onerror = () => resolve(null);
+      } catch {
         resolve(null);
       }
     });
@@ -80,7 +157,6 @@ async function getFromIndexedDB(key: string): Promise<string | null> {
   try {
     const db = await getIndexedDB();
     if (!db) return null;
-
     return new Promise((resolve) => {
       try {
         const tx = db.transaction(INDEXED_DB_STORE, 'readonly');
@@ -88,12 +164,9 @@ async function getFromIndexedDB(key: string): Promise<string | null> {
         const req = store.get(key);
         req.onsuccess = () => {
           const record: (CacheRecord & { key: string }) | undefined = req.result;
-          if (record && record.url) {
-            // Check TTL expiration (30 days)
-            if (Date.now() - record.timestamp < TTL_MS) {
-              resolve(record.url);
-              return;
-            }
+          if (record?.url && Date.now() - record.timestamp < TTL_MS && isHighResStudioPoster(record.url)) {
+            resolve(record.url);
+            return;
           }
           resolve(null);
         };
@@ -108,13 +181,12 @@ async function getFromIndexedDB(key: string): Promise<string | null> {
 }
 
 async function saveToIndexedDB(key: string, url: string, title?: string, artist?: string): Promise<void> {
+  if (!isHighResStudioPoster(url)) return;
   try {
     const db = await getIndexedDB();
     if (!db) return;
-
     const tx = db.transaction(INDEXED_DB_STORE, 'readwrite');
-    const store = tx.objectStore(INDEXED_DB_STORE);
-    store.put({
+    tx.objectStore(INDEXED_DB_STORE).put({
       key,
       url,
       timestamp: Date.now(),
@@ -122,58 +194,17 @@ async function saveToIndexedDB(key: string, url: string, title?: string, artist?
       trackTitle: title,
       artistName: artist,
     });
-  } catch (err) {
-    // Non-fatal, memory & localStorage handle fallback
-  }
+  } catch {}
 }
-
-/* ─────────────────────────────────────────────────────────────
-   L2 CACHING: LOCALSTORAGE SYNC & HYDRATION
-───────────────────────────────────────────────────────────── */
-function initHydrateCache(): void {
-  if (typeof window === 'undefined') return;
-
-  // 1. Synchronously hydrate from localStorage for 0ms initial paint
-  try {
-    const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
-    if (stored) {
-      const parsed: Record<string, CacheRecord | string> = JSON.parse(stored);
-      Object.entries(parsed).forEach(([k, val]) => {
-        const record: CacheRecord =
-          typeof val === 'string'
-            ? { url: val, timestamp: Date.now(), hits: 1 }
-            : val;
-
-        if (Date.now() - record.timestamp < TTL_MS) {
-          memoryCache.set(k.toLowerCase(), record);
-        }
-      });
-    }
-  } catch (err) {
-    console.warn('[ArtworkCache] Could not read localStorage cache:', err);
-  }
-
-  // 2. Asynchronously load all persisted records from IndexedDB into memoryCache
-  getIndexDBRecords().then((records) => {
-    records.forEach(({ key, url, timestamp, hits }) => {
-      if (url && (!memoryCache.has(key) || (memoryCache.get(key)?.hits || 0) < hits)) {
-        memoryCache.set(key.toLowerCase(), { url, timestamp, hits });
-      }
-    });
-  });
-}
-initHydrateCache();
 
 async function getIndexDBRecords(): Promise<Array<{ key: string; url: string; timestamp: number; hits: number }>> {
   try {
     const db = await getIndexedDB();
     if (!db) return [];
-
     return new Promise((resolve) => {
       try {
         const tx = db.transaction(INDEXED_DB_STORE, 'readonly');
-        const store = tx.objectStore(INDEXED_DB_STORE);
-        const req = store.getAll();
+        const req = tx.objectStore(INDEXED_DB_STORE).getAll();
         req.onsuccess = () => resolve(req.result || []);
         req.onerror = () => resolve([]);
       } catch {
@@ -185,52 +216,119 @@ async function getIndexDBRecords(): Promise<Array<{ key: string; url: string; ti
   }
 }
 
-// Debounced flush of memoryCache to localStorage (keeps top 500 items)
-let persistTimer: any = null;
+function initHydrateCache(): void {
+  if (typeof window === 'undefined') return;
+  try {
+    const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (stored) {
+      const parsed: Record<string, CacheRecord | string> = JSON.parse(stored);
+      Object.entries(parsed).forEach(([k, val]) => {
+        const record: CacheRecord =
+          typeof val === 'string' ? { url: val, timestamp: Date.now(), hits: 1 } : val;
+        if (Date.now() - record.timestamp < TTL_MS && isHighResStudioPoster(record.url)) {
+          memoryCache.set(k.toLowerCase(), record);
+        }
+      });
+    }
+  } catch {}
+
+  getIndexDBRecords()
+    .then((records) => {
+      records.forEach(({ key, url, timestamp, hits }) => {
+        if (url && isHighResStudioPoster(url) && (!memoryCache.has(key) || (memoryCache.get(key)?.hits || 0) < hits)) {
+          memoryCache.set(key.toLowerCase(), { url, timestamp, hits });
+        }
+      });
+    })
+    .finally(() => {
+      idbHydrated = true;
+    });
+}
+initHydrateCache();
+
+let persistTimer: ReturnType<typeof setTimeout> | null = null;
 function persistToLocalStorage(): void {
   if (typeof window === 'undefined') return;
   if (persistTimer) clearTimeout(persistTimer);
   persistTimer = setTimeout(() => {
     try {
       const obj: Record<string, CacheRecord> = {};
-      const sortedEntries = Array.from(memoryCache.entries())
+      Array.from(memoryCache.entries())
+        .filter(([, v]) => isHighResStudioPoster(v.url))
         .sort((a, b) => b[1].hits - a[1].hits)
-        .slice(0, 500);
-
-      sortedEntries.forEach(([k, v]) => {
-        obj[k] = v;
-      });
+        .slice(0, 600)
+        .forEach(([k, v]) => {
+          obj[k] = v;
+        });
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(obj));
-    } catch (err) {
-      console.warn('[ArtworkCache] LocalStorage sync warning:', err);
-    }
-  }, 1000);
+    } catch {}
+  }, 800);
 }
 
-/* ─────────────────────────────────────────────────────────────
-   L3 BROWSER PRE-DECODING (Zero Visual Glitch)
-───────────────────────────────────────────────────────────── */
-function preDecodeImage(url: string): void {
+export function preDecodeImage(url: string, size: 'card' | 'hero' = 'card'): void {
   if (typeof window === 'undefined' || !url || url.startsWith('data:')) return;
+  const target = optimizePosterUrl(url, size);
+  if (decodedImageUrls.has(target)) return;
   try {
     const img = new Image();
     img.decoding = 'async';
-    img.src = url;
+    img.referrerPolicy = 'no-referrer';
+    img.onload = () => markImageDecoded(target);
+    img.src = target;
     if (typeof img.decode === 'function') {
-      img.decode().catch(() => {});
+      img
+        .decode()
+        .then(() => markImageDecoded(target))
+        .catch(() => {});
     }
   } catch {}
 }
 
+/**
+ * Immediately warms L1 memory cache & triggers browser WebP pre-decode for tracks
+ * returning from /api/universe, /api/search, or /api/recommendations so posters paint on Frame 0.
+ */
+export function primeArtworkUrls(
+  tracks: Array<{ id?: string; title?: string; artist?: string; thumbnail?: string }>,
+  limit = 20
+): void {
+  if (typeof window === 'undefined' || !Array.isArray(tracks)) return;
+  let warmed = 0;
+  for (const t of tracks) {
+    if (!t?.thumbnail || !isHighResStudioPoster(t.thumbnail)) continue;
+    const cleanT = cleanTitleForSearch(t.title || '');
+    const cleanA = cleanArtistForSearch(t.artist || '');
+    const titleArtistKey = `${cleanT}::${cleanA}`.toLowerCase();
+    const record: CacheRecord = {
+      url: t.thumbnail,
+      timestamp: Date.now(),
+      hits: 1,
+      trackTitle: t.title,
+      artistName: t.artist,
+    };
+    if (cleanT && !memoryCache.has(titleArtistKey)) {
+      memoryCache.set(titleArtistKey, record);
+    }
+    if (t.id && !t.id.startsWith('http')) {
+      const idKey = `id::${t.id}`.toLowerCase();
+      if (!memoryCache.has(idKey)) memoryCache.set(idKey, record);
+    }
+    if (warmed < limit) {
+      preDecodeImage(t.thumbnail, warmed < 2 ? 'hero' : 'card');
+      warmed++;
+    }
+  }
+}
+
 /* ─────────────────────────────────────────────────────────────
-   SEARCH TITLE & ARTIST STRING NORMALIZERS
+   TITLE & ARTIST NORMALIZERS
 ───────────────────────────────────────────────────────────── */
 export function cleanTitleForSearch(rawTitle: string): string {
   if (!rawTitle) return '';
   return rawTitle
-    .replace(/\s*[\(\[]\s*(?:official\s*(?:music\s*)?)?(?:video|audio|lyric\s*video|hd|4k|remaster(?:ed)?(?:\s*\d+)?|visualizer|lyrics?|extended\s*mix)\s*[\)\]]/gi, '')
+    .replace(/\s*[\(\[]\s*(?:official\s*(?:music\s*)?)?(?:video|audio|lyric(?:al)?\s*video|hd|4k|8k|uhd|remaster(?:ed)?(?:\s*\d+)?|visualizer|lyrics?|extended\s*mix|full\s*(?:song|video)|nsfw|explicit|clean|film\s*version|dance\s*mix)\s*[\)\]]/gi, '')
     .replace(/\s*\|.*$/, '')
-    .replace(/\s*-\s*official\s*(?:music\s*)?video/gi, '')
+    .replace(/\s*-\s*official\s*(?:music\s*)?(?:video|audio|lyric).*$/i, '')
     .replace(/\s*ft\.?.*$/i, '')
     .replace(/\s*feat\.?.*$/i, '')
     .trim();
@@ -239,18 +337,13 @@ export function cleanTitleForSearch(rawTitle: string): string {
 export function cleanArtistForSearch(rawArtist: string): string {
   if (!rawArtist) return '';
 
-  // 1. Check for stage/band moniker inside parentheses (e.g. "Christopher Comstock (Marshmello)" -> "Marshmello")
   const monikerMatch = rawArtist.match(/\(([^)]+)\)/);
   if (monikerMatch && monikerMatch[1].trim()) {
     const moniker = monikerMatch[1].trim();
-    // Exclude record labels, publisher tags, and technical annotations
     const isExcluded = /(?:records?|entertainment|label|sony|warner|universal|music|ent|prod|topic|official|remaster|deluxe|live|audio|video|explicit|version)/i.test(moniker);
-    if (!isExcluded) {
-      return moniker;
-    }
+    if (!isExcluded) return moniker;
   }
 
-  // 2. Known singer real-name aliases for streaming catalog lookups
   const lower = rawArtist.trim().toLowerCase();
   if (lower.includes('edward christopher sheeran')) return 'Ed Sheeran';
   if (lower.includes('harry edward styles')) return 'Harry Styles';
@@ -265,106 +358,102 @@ export function cleanArtistForSearch(rawArtist: string): string {
     .trim();
 }
 
-function stringSimilarity(s1: string, s2: string): number {
-  const norm1 = s1.toLowerCase().replace(/[^a-z0-9]/g, ' ').trim();
-  const norm2 = s2.toLowerCase().replace(/[^a-z0-9]/g, ' ').trim();
+/* ─────────────────────────────────────────────────────────────
+   AUTOMATIC 10ms MICRO-BATCHING -> POST /api/batch-artwork
+───────────────────────────────────────────────────────────── */
+interface PendingBatchItem {
+  key: string;
+  title: string;
+  artist: string;
+  videoId: string;
+  resolve: (url: string | null) => void;
+}
 
-  if (norm1 === norm2) return 1.0;
-  if (!norm1 || !norm2) return 0.0;
-  if (norm1.includes(norm2) || norm2.includes(norm1)) return 0.85;
+let pendingBatch: PendingBatchItem[] = [];
+let batchFlushTimer: ReturnType<typeof setTimeout> | null = null;
 
-  const words1 = new Set(norm1.split(/\s+/));
-  const words2 = new Set(norm2.split(/\s+/));
-  let intersection = 0;
-  words1.forEach((w) => {
-    if (words2.has(w)) intersection++;
+async function flushMicroBatch(): Promise<void> {
+  batchFlushTimer = null;
+  if (pendingBatch.length === 0) return;
+
+  const batch = pendingBatch.splice(0, MAX_BATCH_SIZE);
+  if (pendingBatch.length > 0) {
+    batchFlushTimer = setTimeout(flushMicroBatch, 4);
+  }
+
+  try {
+    const res = await fetch('/api/batch-artwork', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        items: batch.map((b) => ({
+          key: b.key,
+          title: b.title,
+          artist: b.artist,
+          videoId: b.videoId,
+        })),
+      }),
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      const artworks: Record<string, string> = data.artworks || data.results || {};
+      batch.forEach((item) => {
+        item.resolve(artworks[item.key] || null);
+      });
+      return;
+    }
+  } catch (err) {
+    console.warn('[ArtworkService] Batch poster fetch error:', err);
+  }
+
+  // Fallback to individual single-track endpoint if batch failed
+  await Promise.all(
+    batch.map(async (item) => {
+      try {
+        const singleRes = await fetch(
+          `/api/highres-artwork?track=${encodeURIComponent(item.title)}&artist=${encodeURIComponent(item.artist)}&videoId=${encodeURIComponent(item.videoId)}`
+        );
+        if (singleRes.ok) {
+          const singleData = await singleRes.json();
+          item.resolve(singleData.artworkUrl || null);
+          return;
+        }
+      } catch {}
+      item.resolve(null);
+    })
+  );
+}
+
+function enqueueBatchLookup(key: string, title: string, artist: string, videoId: string): Promise<string | null> {
+  return new Promise((resolve) => {
+    pendingBatch.push({ key, title, artist, videoId, resolve });
+    if (pendingBatch.length >= MAX_BATCH_SIZE) {
+      if (batchFlushTimer) {
+        clearTimeout(batchFlushTimer);
+        batchFlushTimer = null;
+      }
+      flushMicroBatch();
+    } else if (!batchFlushTimer) {
+      batchFlushTimer = setTimeout(flushMicroBatch, MICRO_BATCH_DELAY_MS);
+    }
   });
-
-  const union = new Set([...words1, ...words2]).size;
-  return union > 0 ? intersection / union : 0;
 }
 
 /* ─────────────────────────────────────────────────────────────
-   RATE-LIMITED QUEUE WITH RETRY & EXPONENTIAL BACKOFF
+   PUBLIC API
 ───────────────────────────────────────────────────────────── */
-interface QueuedRequest {
-  fn: () => Promise<any>;
-  resolve: (value: any) => void;
-  reject: (reason?: any) => void;
+export function isArtworkKnownMissSync(title: string, artist?: string): boolean {
+  const cleanT = cleanTitleForSearch(title);
+  const cleanA = cleanArtistForSearch(artist || '');
+  const key = `${cleanT}::${cleanA}`.toLowerCase();
+  const until = missCache.get(key);
+  if (!until) return false;
+  if (Date.now() < until) return true;
+  missCache.delete(key);
+  return false;
 }
 
-const requestQueue: QueuedRequest[] = [];
-let isProcessingQueue = false;
-let lastRequestTime = 0;
-
-async function processQueue(): Promise<void> {
-  if (isProcessingQueue || requestQueue.length === 0) return;
-  isProcessingQueue = true;
-
-  while (requestQueue.length > 0) {
-    const item = requestQueue.shift();
-    if (!item) break;
-
-    const now = Date.now();
-    const elapsed = now - lastRequestTime;
-    if (elapsed < MIN_INTERVAL_MS) {
-      await new Promise((r) => setTimeout(r, MIN_INTERVAL_MS - elapsed));
-    }
-    lastRequestTime = Date.now();
-
-    try {
-      const result = await item.fn();
-      item.resolve(result);
-    } catch (err) {
-      item.reject(err);
-    }
-  }
-
-  isProcessingQueue = false;
-}
-
-function enqueueRequest<T>(fn: () => Promise<T>): Promise<T> {
-  return new Promise<T>((resolve, reject) => {
-    requestQueue.push({ fn, resolve, reject });
-    processQueue();
-  });
-}
-
-async function fetchWithRetry(url: string, retries = MAX_RETRIES): Promise<any> {
-  for (let attempt = 0; attempt <= retries; attempt++) {
-    try {
-      const res = await fetch(url);
-      if (res.status === 429 || res.status === 403) {
-        if (attempt === retries) throw new Error(`iTunes rate limit exceeded (HTTP ${res.status})`);
-        const delay = Math.pow(2, attempt) * 1500;
-        await new Promise((r) => setTimeout(r, delay));
-        continue;
-      }
-      if (!res.ok) {
-        throw new Error(`iTunes returned HTTP ${res.status}`);
-      }
-      return await res.json();
-    } catch (err) {
-      if (attempt === retries) throw err;
-      const delay = Math.pow(2, attempt) * 1000;
-      await new Promise((r) => setTimeout(r, delay));
-    }
-  }
-}
-
-/* ─────────────────────────────────────────────────────────────
-   MAIN REUSABLE GETARTWORK FUNCTION (Coalesced, Multi-Tier Cached)
-───────────────────────────────────────────────────────────── */
-/**
- * Discover and fetch studio high-resolution artwork via Apple iTunes Search API
- * with 3-tier caching (L1 Memory, L2 IndexedDB/localStorage), single-flight deduplication,
- * rate limiting, and resolution upgrading.
- * 
- * @param title Track song title
- * @param artist Artist name
- * @param trackId Optional unique track ID or fallback thumbnail
- * @returns High-resolution 600x600bb (or 1000x1000bb) studio artwork URL
- */
 export async function getArtwork(
   title: string,
   artist: string,
@@ -372,49 +461,46 @@ export async function getArtwork(
 ): Promise<string> {
   const cleanT = cleanTitleForSearch(title);
   const cleanA = cleanArtistForSearch(artist);
+  const videoId = trackId && !trackId.startsWith('http') ? trackId : '';
 
   const titleArtistKey = `${cleanT}::${cleanA}`.toLowerCase();
-  const trackIdKey = trackId ? `id::${trackId}`.toLowerCase() : null;
+  const trackIdKey = videoId ? `id::${videoId}`.toLowerCase() : null;
 
-  // 1. Check L1 Memory Cache (0ms synchronous lookup)
+  // 1. L1 Memory Cache (0ms)
   if (cleanT && memoryCache.has(titleArtistKey)) {
     const record = memoryCache.get(titleArtistKey)!;
     record.hits++;
     totalHits++;
-    preDecodeImage(record.url);
     return record.url;
   }
   if (trackIdKey && memoryCache.has(trackIdKey)) {
     const record = memoryCache.get(trackIdKey)!;
     record.hits++;
     totalHits++;
-    preDecodeImage(record.url);
     return record.url;
   }
 
-  // 2. Check L2 IndexedDB Storage (Asynchronous cache check before dispatching network request)
-  if (cleanT) {
+  // Fast negative-miss short circuit (0ms -> renders motion-blur fallback immediately)
+  const missedUntil = missCache.get(titleArtistKey);
+  if (missedUntil && Date.now() < missedUntil) {
+    return '';
+  }
+
+  // 2. L2 IndexedDB Cache (only while startup hydration is still running)
+  if (cleanT && !idbHydrated) {
     const idbUrl = await getFromIndexedDB(titleArtistKey);
     if (idbUrl) {
       memoryCache.set(titleArtistKey, { url: idbUrl, timestamp: Date.now(), hits: 1 });
+      if (trackIdKey) memoryCache.set(trackIdKey, { url: idbUrl, timestamp: Date.now(), hits: 1 });
       totalHits++;
-      preDecodeImage(idbUrl);
+      preDecodeImage(idbUrl, 'card');
       return idbUrl;
     }
   }
 
-  // Fallback candidate if network lookup fails
-  const localFallback =
-    trackId && trackId.startsWith('http')
-      ? trackId
-      : trackId
-      ? `https://i.ytimg.com/vi/${trackId}/hqdefault.jpg`
-      : DEFAULT_ARTWORK_FALLBACK;
+  if (!cleanT && !cleanA) return '';
 
-  if (!cleanT) return localFallback;
-
-  // 3. Single-Flight In-Flight Request Coalescing
-  // If this exact track is already being fetched, reuse the in-flight Promise!
+  // 3. Single-Flight Request Coalescing
   if (inFlightRequests.has(titleArtistKey)) {
     return inFlightRequests.get(titleArtistKey)!;
   }
@@ -423,126 +509,43 @@ export async function getArtwork(
 
   const requestPromise = (async () => {
     try {
-      let matchedArtwork: string | null = null;
+      const resolvedUrl = await enqueueBatchLookup(titleArtistKey, cleanT, cleanA, videoId);
+      const finalUrl = resolvedUrl && isHighResStudioPoster(resolvedUrl) ? resolvedUrl : '';
 
-      // Source 1: Apple iTunes Search API (Free, high-res 600x600 studio art)
-      try {
-        const query = `${cleanT} ${cleanA}`.trim();
-        const searchUrl = `https://itunes.apple.com/search?term=${encodeURIComponent(query)}&media=music&entity=song&limit=1`;
-
-        const data = await enqueueRequest(() => fetchWithRetry(searchUrl));
-
-        if (data && data.results && data.results.length > 0) {
-          const top = data.results[0];
-          const itunesArtist = top.artistName || '';
-          const similarity = stringSimilarity(cleanA, itunesArtist);
-
-          if (similarity >= 0.35 || !cleanA || cleanA.toLowerCase().includes('unknown')) {
-            matchedArtwork = top.artworkUrl100 || null;
-          } else {
-            // Fuzzy match fallback with limit=5
-            const broaderUrl = `https://itunes.apple.com/search?term=${encodeURIComponent(cleanT)}&media=music&entity=song&limit=5`;
-            try {
-              const broaderData = await enqueueRequest(() => fetchWithRetry(broaderUrl));
-              if (broaderData && broaderData.results && broaderData.results.length > 0) {
-                let bestScore = -1;
-                let bestResult = broaderData.results[0];
-
-                for (const r of broaderData.results) {
-                  const score = stringSimilarity(cleanA, r.artistName || '');
-                  if (score > bestScore) {
-                    bestScore = score;
-                    bestResult = r;
-                  }
-                }
-                matchedArtwork = bestResult.artworkUrl100 || null;
-              }
-            } catch {
-              matchedArtwork = top.artworkUrl100 || null;
-            }
-          }
-        }
-      } catch (itunesErr) {
-        console.warn(`[ArtworkService] iTunes search attempt failed for "${cleanT}":`, itunesErr);
-      }
-
-      // Source 2: Deezer Public Music API & Backend Proxy (Free lossless 1000x1000 cover_xl)
-      if (!matchedArtwork) {
-        try {
-          const proxyUrl = `/api/highres-artwork?track=${encodeURIComponent(cleanT)}&artist=${encodeURIComponent(cleanA)}&videoId=${encodeURIComponent(trackId || '')}`;
-          const proxyRes = await fetch(proxyUrl);
-          if (proxyRes.ok) {
-            const proxyData = await proxyRes.json();
-            if (proxyData.artworkUrl) {
-              matchedArtwork = proxyData.artworkUrl;
-            }
-          }
-        } catch (deezerErr) {
-          console.warn(`[ArtworkService] Deezer/proxy search failed for "${cleanT}":`, deezerErr);
-        }
-      }
-
-      // Source 3: MusicBrainz / Cover Art Archive (Open source catalog)
-      if (!matchedArtwork) {
-        try {
-          const mbUrl = `https://musicbrainz.org/ws/2/recording/?query=recording:${encodeURIComponent(cleanT)}+artist:${encodeURIComponent(cleanA)}&fmt=json&limit=1`;
-          const mbRes = await fetch(mbUrl, {
-            headers: { 'User-Agent': 'SoundStream/2.0 (music@soundstream.app)' },
-          });
-          if (mbRes.ok) {
-            const mbData = await mbRes.json();
-            const release = mbData.recordings?.[0]?.releases?.[0];
-            if (release && release.id) {
-              matchedArtwork = `https://coverartarchive.org/release/${release.id}/front-500.jpg`;
-            }
-          }
-        } catch {}
-      }
-
-      if (matchedArtwork) {
-        // Upgrade iTunes resolution from 100x100 to 600x600bb if applicable
-        const highRes = matchedArtwork.includes('100x100bb')
-          ? matchedArtwork.replace(/\/\d+x\d+bb\./, '/600x600bb.')
-          : matchedArtwork;
-
+      if (finalUrl) {
         const record: CacheRecord = {
-          url: highRes,
+          url: finalUrl,
           timestamp: Date.now(),
           hits: 1,
           trackTitle: title,
           artistName: artist,
         };
 
-        // Cache into L1 Memory Cache
         memoryCache.set(titleArtistKey, record);
         if (trackIdKey) memoryCache.set(trackIdKey, record);
+        missCache.delete(titleArtistKey);
 
-        // Persist to L2 IndexedDB and LocalStorage
-        saveToIndexedDB(titleArtistKey, highRes, title, artist);
-        if (trackIdKey) saveToIndexedDB(trackIdKey, highRes, title, artist);
+        saveToIndexedDB(titleArtistKey, finalUrl, title, artist);
+        if (trackIdKey) saveToIndexedDB(trackIdKey, finalUrl, title, artist);
         persistToLocalStorage();
 
-        // L3: Pre-decode image texture into browser memory
-        preDecodeImage(highRes);
-
-        return highRes;
+        preDecodeImage(finalUrl, 'card');
+        return finalUrl;
       }
+      missCache.set(titleArtistKey, Date.now() + MISS_TTL_MS);
     } catch (err) {
-      console.warn(`[ArtworkService] Multi-API artwork discovery failed for "${cleanT}":`, err);
+      console.warn(`[ArtworkService] Poster lookup failed for "${cleanT}":`, err);
     } finally {
       inFlightRequests.delete(titleArtistKey);
     }
 
-    return localFallback;
+    return '';
   })();
 
   inFlightRequests.set(titleArtistKey, requestPromise);
   return requestPromise;
 }
 
-/**
- * Instant synchronous lookup in L1 memory cache (0ms latency, zero flicker)
- */
 export function getCachedArtworkSync(
   title: string,
   artist?: string,
@@ -551,7 +554,7 @@ export function getCachedArtworkSync(
   const cleanT = cleanTitleForSearch(title);
   const cleanA = cleanArtistForSearch(artist || '');
   const titleArtistKey = `${cleanT}::${cleanA}`.toLowerCase();
-  const trackIdKey = trackId ? `id::${trackId}`.toLowerCase() : null;
+  const trackIdKey = trackId && !trackId.startsWith('http') ? `id::${trackId}`.toLowerCase() : null;
 
   if (cleanT && memoryCache.has(titleArtistKey)) {
     return memoryCache.get(titleArtistKey)!.url;
@@ -562,33 +565,30 @@ export function getCachedArtworkSync(
   return null;
 }
 
-/**
- * Prefetch artwork for upcoming tracks in background queue
- */
 export function prefetchArtwork(
-  tracks: Array<{ title: string; artist?: string; id?: string }>,
-  limit = 12
+  tracks: Array<{ title: string; artist?: string; id?: string; thumbnail?: string }>,
+  limit = 28
 ): void {
   if (!Array.isArray(tracks) || tracks.length === 0) return;
 
-  const nextTracks = tracks.slice(0, limit);
-  nextTracks.forEach((track) => {
+  primeArtworkUrls(tracks, limit);
+
+  tracks.slice(0, limit).forEach((track) => {
+    if (track.thumbnail && isHighResStudioPoster(track.thumbnail)) return;
     const cleanT = cleanTitleForSearch(track.title);
     const cleanA = cleanArtistForSearch(track.artist || '');
     const key = `${cleanT}::${cleanA}`.toLowerCase();
-
-    if (!memoryCache.has(key)) {
+    if (cleanT && !memoryCache.has(key) && !isArtworkKnownMissSync(track.title, track.artist)) {
       getArtwork(track.title, track.artist || '', track.id).catch(() => {});
     }
   });
 }
 
-/**
- * Clear all cache tiers (Memory, LocalStorage, IndexedDB)
- */
 export async function clearArtworkCache(): Promise<void> {
   memoryCache.clear();
+  missCache.clear();
   inFlightRequests.clear();
+  decodedImageUrls.clear();
   totalHits = 0;
   totalMisses = 0;
 
@@ -600,16 +600,10 @@ export async function clearArtworkCache(): Promise<void> {
         const tx = db.transaction(INDEXED_DB_STORE, 'readwrite');
         tx.objectStore(INDEXED_DB_STORE).clear();
       }
-      console.info('[ArtworkCache] Multi-tier artwork cache cleared.');
-    } catch (err) {
-      console.warn('[ArtworkCache] Error clearing cache:', err);
-    }
+    } catch {}
   }
 }
 
-/**
- * Get comprehensive cache diagnostics
- */
 export function getArtworkCacheStats(): {
   memorySize: number;
   totalHits: number;

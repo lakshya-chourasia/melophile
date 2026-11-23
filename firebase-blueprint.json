@@ -1,0 +1,274 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Private user account profile and computed music taste preferences stored per authenticated user.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Firebase Auth UID matching the document ID."
+        },
+        "displayName": {
+          "type": "string",
+          "maxLength": 120,
+          "description": "User display name from Google profile."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "maxLength": 254,
+          "description": "User email address (PII, owner-read only)."
+        },
+        "photoURL": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "Google account avatar URL."
+        },
+        "topArtists": {
+          "type": "array",
+          "description": "Bounded list (max 12) of the user's top listened/liked artists used to personalize recommendations."
+        },
+        "topGenres": {
+          "type": "array",
+          "description": "Bounded list (max 10) of the user's top music taste tags/genres."
+        },
+        "totalPlays": {
+          "type": "integer",
+          "description": "Cumulative count of songs played by the user."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the profile was first created."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the profile was last updated."
+        }
+      },
+      "required": [
+        "uid",
+        "displayName",
+        "topArtists",
+        "topGenres",
+        "totalPlays",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "SavedTrack": {
+      "title": "SavedTrack",
+      "description": "A song favorited/liked by the user, persisted across sessions and devices.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Owner Firebase Auth UID."
+        },
+        "trackId": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Unique track video ID matching the document ID."
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Proper cleaned song name."
+        },
+        "artist": {
+          "type": "string",
+          "maxLength": 160,
+          "description": "Artist or singer name."
+        },
+        "duration": {
+          "type": "string",
+          "maxLength": 32,
+          "description": "Formatted track duration string."
+        },
+        "durationSec": {
+          "type": "number",
+          "description": "Track duration in seconds."
+        },
+        "thumbnail": {
+          "type": "string",
+          "maxLength": 600,
+          "description": "Verified studio album cover URL."
+        },
+        "views": {
+          "type": "string",
+          "maxLength": 60,
+          "description": "Optional formatted view count."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the song was favorited."
+        }
+      },
+      "required": [
+        "uid",
+        "trackId",
+        "title",
+        "artist",
+        "duration",
+        "durationSec",
+        "thumbnail",
+        "createdAt"
+      ]
+    },
+    "ListenEvent": {
+      "title": "ListenEvent",
+      "description": "Per-track listening history and play-count signal used to compute music taste and personalized recommendations.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Owner Firebase Auth UID."
+        },
+        "trackId": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Unique track video ID matching the document ID."
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Proper cleaned song name."
+        },
+        "artist": {
+          "type": "string",
+          "maxLength": 160,
+          "description": "Artist or singer name."
+        },
+        "genreTag": {
+          "type": "string",
+          "maxLength": 60,
+          "description": "Detected mood/genre tag for the track."
+        },
+        "duration": {
+          "type": "string",
+          "maxLength": 32,
+          "description": "Formatted track duration string."
+        },
+        "durationSec": {
+          "type": "number",
+          "description": "Track duration in seconds."
+        },
+        "thumbnail": {
+          "type": "string",
+          "maxLength": 600,
+          "description": "Verified studio album cover URL."
+        },
+        "playCount": {
+          "type": "integer",
+          "description": "Number of times the user has played this track."
+        },
+        "lastPlayedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of the most recent play."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of the first play."
+        }
+      },
+      "required": [
+        "uid",
+        "trackId",
+        "title",
+        "artist",
+        "genreTag",
+        "duration",
+        "durationSec",
+        "thumbnail",
+        "playCount",
+        "lastPlayedAt",
+        "createdAt"
+      ]
+    },
+    "UserPlaylist": {
+      "title": "UserPlaylist",
+      "description": "Custom user-created playlist stored in the user's private library.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Owner Firebase Auth UID."
+        },
+        "playlistId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Playlist document ID."
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "description": "User-defined playlist name."
+        },
+        "trackIds": {
+          "type": "array",
+          "description": "Bounded list (max 50) of track IDs inside the playlist."
+        },
+        "trackCount": {
+          "type": "integer",
+          "description": "Number of tracks in the playlist."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when playlist was created."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when playlist was last modified."
+        }
+      },
+      "required": [
+        "uid",
+        "playlistId",
+        "name",
+        "trackIds",
+        "trackCount",
+        "createdAt",
+        "updatedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Owner-private user profile, PII, and computed music taste preferences."
+    },
+    "/users/{userId}/favorites/{trackId}": {
+      "schema": { "$ref": "#/entities/SavedTrack" },
+      "description": "User's favorited/liked songs subcollection."
+    },
+    "/users/{userId}/history/{eventId}": {
+      "schema": { "$ref": "#/entities/ListenEvent" },
+      "description": "User's per-track listening history and play counts for taste recommendations."
+    },
+    "/users/{userId}/playlists/{playlistId}": {
+      "schema": { "$ref": "#/entities/UserPlaylist" },
+      "description": "User's custom saved playlists."
+    }
+  }
+}

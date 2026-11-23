@@ -25,8 +25,8 @@ export default defineConfig(() => {
           short_name: 'Melophile',
           description:
             'A distraction-free music & cinema player with instant search, live synchronized lyrics, and full Android background playback.',
-          theme_color: '#09090B',
-          background_color: '#09090B',
+          theme_color: '#0d0e15',
+          background_color: '#0d0e15',
           display: 'standalone',
           orientation: 'any',
           start_url: '/',
@@ -54,8 +54,9 @@ export default defineConfig(() => {
           ],
         },
         workbox: {
+          maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
           globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
-          navigateFallbackDenylist: [/^\/api\//],
+          navigateFallbackDenylist: [/^\/api\//, /^\/__\/auth/],
           runtimeCaching: [
             {
               urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,

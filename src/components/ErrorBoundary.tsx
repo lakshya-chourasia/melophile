@@ -26,25 +26,37 @@ export class ErrorBoundary extends Component<Props, State> {
   public render() {
     if (this.state.hasError) {
       return (
-        <div className="h-screen w-screen bg-[#080808] text-white flex flex-col items-center justify-center p-6 text-center select-none font-sans">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-yellow-300 via-yellow-400 to-amber-500 flex items-center justify-center shadow-[0_0_25px_rgba(250,204,21,0.5)] mb-4">
-            <span className="font-display font-black text-black text-2xl tracking-tighter">M</span>
+        <div className="h-[100dvh] w-full bg-[#0d0e15] text-[#e3e1ec] flex flex-col items-center justify-center p-6 text-center select-none font-sans">
+          <div className="w-16 h-16 bg-[#fde400] border-[3px] border-black shadow-[4px_4px_0px_#000000] flex items-center justify-center mb-5 -rotate-3">
+            <span className="font-display font-black text-[#201c00] text-3xl tracking-tight">M</span>
           </div>
-          <h1 className="text-xl font-black text-white tracking-tight mb-2">Something interrupted Melophile</h1>
-          <p className="text-xs text-white/60 max-w-sm mb-6 leading-relaxed">
-            {this.state.error?.message || 'A visual render glitch occurred. Clearing cached local state and reloading.'}
+          <h1 className="font-display text-3xl text-white uppercase tracking-wide mb-2">
+            Something interrupted Melophile
+          </h1>
+          <p className="text-xs sm:text-sm text-[#b9cacb] max-w-sm mb-6 leading-relaxed">
+            {this.state.error?.message || 'A visual render glitch occurred. Try reloading to continue listening.'}
           </p>
-          <button
-            onClick={() => {
-              try {
-                localStorage.clear();
-              } catch {}
-              window.location.reload();
-            }}
-            className="px-6 py-2.5 rounded-full bg-yellow-400 hover:bg-yellow-300 text-black font-extrabold text-xs tracking-wider uppercase shadow-[0_0_15px_rgba(250,204,21,0.4)] cursor-pointer active:scale-95 transition-all"
-          >
-            Reset & Reload Melophile
-          </button>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <button
+              type="button"
+              onClick={() => window.location.reload()}
+              className="min-h-[44px] px-6 py-2.5 bg-[#00f0ff] hover:bg-[#5ef6ff] text-[#00363a] border-2 border-black shadow-[4px_4px_0px_#000000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none font-display text-base tracking-wider uppercase cursor-pointer transition-all"
+            >
+              Reload Melophile
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                try {
+                  localStorage.clear();
+                } catch {}
+                window.location.reload();
+              }}
+              className="min-h-[44px] px-5 py-2.5 bg-[#1e1f27] hover:bg-[#292931] text-[#e3e1ec] border-2 border-black shadow-[3px_3px_0px_#000000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none font-display text-sm tracking-wider uppercase cursor-pointer transition-all"
+            >
+              Reset Cache &amp; Reload
+            </button>
+          </div>
         </div>
       );
     }

@@ -619,13 +619,24 @@ export default function App() {
   const searchReqIdRef = useRef<number>(0);
   const searchCacheRef = useRef<Map<string, Track[]>>(new Map());
 
-  // 0ms instant local catalog matching before live network results return
+  // 0ms instant local catalog matching (word-order-independent, relevance-ranked) before live network results return
+  const lastSearchQueryRef = useRef<string>('');
   const findLocalInstantMatches = useCallback(
     (q: string): Track[] => {
-      const needle = q.trim().toLowerCase();
+      const norm = (s: string) =>
+        (s || '')
+          .normalize('NFKD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .toLowerCase()
+          .replace(/[^a-z0-9\u0900-\u097f]+/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim();
+
+      const needle = norm(q);
       if (needle.length < 2) return [];
+      const tokens = needle.split(' ').filter((t) => t.length >= 2);
       const seen = new Set<string>();
-      const matches: Track[] = [];
+      const scored: Array<{ track: Track; score: number }> = [];
       const pool: Track[] = [
         ...favorites,
         ...featuredTracks,
@@ -634,27 +645,47 @@ export default function App() {
         ...queue,
         ...genres.flatMap((g) => g.tracks || []),
       ];
+
       for (const t of pool) {
         if (!t?.id || seen.has(t.id) || restrictedVideoIds.has(t.id)) continue;
-        const hay = `${t.title || ''} ${t.artist || ''}`.toLowerCase();
-        if (hay.includes(needle)) {
-          seen.add(t.id);
-          matches.push(t);
-          if (matches.length >= 12) break;
+        const nTitle = norm(t.title || '');
+        const nArtist = norm(t.artist || '');
+        const hay = `${nTitle} ${nArtist}`;
+
+        let score = 0;
+        if (nTitle === needle) score = 150;
+        else if (nTitle.startsWith(needle)) score = 110;
+        else if (nArtist === needle) score = 100;
+        else if (hay.includes(needle)) score = 80;
+        else if (tokens.length > 1 && tokens.every((tok) => hay.includes(tok))) {
+          score = 70;
+        } else {
+          continue;
         }
+
+        if (t.hasSquareArtwork) score += 10;
+        seen.add(t.id);
+        scored.push({ track: t, score });
       }
-      return deduplicateTracksBySong(matches, needle);
+
+      scored.sort((a, b) => b.score - a.score);
+      return deduplicateTracksBySong(
+        scored.slice(0, 14).map((s) => s.track),
+        needle
+      );
     },
     [favorites, featuredTracks, genres, popularTracks, queue, recommendations, restrictedVideoIds]
   );
 
-  // Realtime Abortable Music Search (0ms cache/local hits + fast live fetch + silent artwork promotion)
+  // Realtime Abortable Music Search (0ms cache/local hits + fast YTM live fetch + silent artwork promotion)
   const handleSearch = useCallback(
     async (q: string) => {
       const trimmed = q.trim();
       if (!trimmed) return;
 
-      const cacheKey = trimmed.toLowerCase();
+      const cacheKey = trimmed.toLowerCase().replace(/\s+/g, ' ');
+      const prevKey = lastSearchQueryRef.current;
+      lastSearchQueryRef.current = cacheKey;
       setSearchQuery(trimmed);
       setActiveView('discover');
 
@@ -679,6 +710,9 @@ export default function App() {
       const localMatches = findLocalInstantMatches(trimmed);
       if (localMatches.length > 0) {
         setSearchResults(localMatches);
+      } else if (prevKey && !cacheKey.startsWith(prevKey) && !prevKey.startsWith(cacheKey)) {
+        // Clear unrelated previous query results immediately so stale tracks never flash
+        setSearchResults([]);
       }
 
       setIsSearching(true);
@@ -697,9 +731,9 @@ export default function App() {
         setSearchResults(tracks);
         setIsSearching(false);
 
-        // Cache client-side (keep latest 60 queries)
+        // Cache client-side (keep latest 100 queries)
         searchCacheRef.current.set(cacheKey, tracks);
-        if (searchCacheRef.current.size > 60) {
+        if (searchCacheRef.current.size > 100) {
           const oldest = searchCacheRef.current.keys().next().value;
           if (oldest) searchCacheRef.current.delete(oldest);
         }

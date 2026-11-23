@@ -767,6 +767,448 @@ function cleanProperSongTitle(
   };
 }
 
+function isYtmSquareCoverUrl(url: string): boolean {
+  if (!url) return false;
+  return (
+    (url.includes('lh3.googleusercontent.com') || url.includes('yt3.googleusercontent.com')) &&
+    /=w(\d+)-h\1(?:-|$)/i.test(url)
+  );
+}
+
+function upgradeYtmSquareCoverUrl(url: string): string {
+  if (!url) return '';
+  if (isYtmSquareCoverUrl(url)) {
+    return url.replace(/=w\d+-h\d+[^&]*/i, '=w600-h600-l90-rj');
+  }
+  return url;
+}
+
+function parsePlayCount(text: string): number {
+  if (!text) return 0;
+  const cleaned = text.replace(/,/g, '').trim();
+  const m = cleaned.match(/(\d+(?:\.\d+)?)\s*([KMB])?/i);
+  if (!m) return 0;
+  const num = parseFloat(m[1]);
+  if (!Number.isFinite(num)) return 0;
+  const unit = (m[2] || '').toUpperCase();
+  if (unit === 'B') return Math.round(num * 1_000_000_000);
+  if (unit === 'M') return Math.round(num * 1_000_000);
+  if (unit === 'K') return Math.round(num * 1_000);
+  return Math.round(num);
+}
+
+const SEARCH_NOISE_COVER_RE =
+  /\b(karaoke|originally\s+performed\s+by|tribute\s+to|piano\s+cover|guitar\s+cover|violin\s+cover|cello\s+cover|drum\s+cover|sitar\s+cover|flute\s+cover|harp\s+cover|sax\s+cover|rock\s+metal\s+cover|metal\s+cover|orchestral\s+cover|epic\s+version|vocals\s+only|arabic\s+version|bossa\s+nova|lullaby|music\s+box|8[\s-]?bit|ringtone|backing\s+track|instrumental\s+version|slowed\s*(?:\+|&|and)?\s*reverb|sped\s*up|nightcore|8d\s+audio|lo[\s-]?fi\s+flip|dance\s+fitness|zumba|workout\s+mix|looping\s+station|jimmy\s+fallon|tonight\s+show|kidz\s+bop|parody|1\s+hour|10\s+hours|20\s+minute\s+loop|jukebox|non[\s-]?stop|best\s+of\s+.*hits|full\s+album|shock\s+everyone|two\s+kids\s+sing|mmv|amv|david\s+garrett\s+edition)\b/i;
+
+const SEARCH_NOISE_ARTIST_RE =
+  /\b(karaoke|tribute|bossa\s+nova|metal\s+universe|zoom\s+karaoke|zzang\s+karaoke|kidz\s+bop|lullaby|piano\s+guys|tonight\s+show|jimmy\s+fallon|dj\s+raphi|7cloudsnation|lafzify|nasheedio|music\s+box|fh\s+studios|sr\s+lofi|abt\s+lofi|rousseau|maestro\s+ziikos|uiia\s+cat|violin\s+phonix|first\s+to\s+eleven|brave\s+order)\b/i;
+
+const SEARCH_USER_WANTS_ALT_RE =
+  /\b(remix|cover|karaoke|slowed|reverb|sped\s*up|lofi|lo-?fi|acoustic|live|unplugged|instrumental|nightcore|8d|mashup|piano|guitar|orchestral|metal|house|bossa|arabic|version|extended|loop)\b/i;
+
+function normalizeMatchText(str: string): string {
+  return (str || '')
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/['’`]/g, '')
+    .replace(/[^a-z0-9\u0900-\u097f\u0600-\u06ff\u3040-\u30ff\u4e00-\u9faf\uac00-\ud7af]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function parseYtmResponsiveItem(r: any, sourceKind: 'ytm-song' | 'ytm-card' | 'ytm-video', rankIndex: number): any | null {
+  if (!r) return null;
+  const videoId =
+    r.playlistItemData?.videoId ||
+    r.overlay?.musicItemThumbnailOverlayRenderer?.content?.musicPlayButtonRenderer?.playNavigationEndpoint?.watchEndpoint?.videoId ||
+    r.flexColumns?.[0]?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.[0]?.navigationEndpoint?.watchEndpoint?.videoId;
+
+  if (!videoId || typeof videoId !== 'string' || videoId.length !== 11) return null;
+  if (KNOWN_RESTRICTED_IDS.has(videoId)) return null;
+
+  const rawTitle = (r.flexColumns?.[0]?.musicResponsiveListItemFlexColumnRenderer?.text?.runs || [])
+    .map((x: any) => x.text || '')
+    .join('')
+    .trim();
+  if (!rawTitle) return null;
+
+  const col1Runs: any[] = r.flexColumns?.[1]?.musicResponsiveListItemFlexColumnRenderer?.text?.runs || [];
+  const col2Runs: any[] = r.flexColumns?.[2]?.musicResponsiveListItemFlexColumnRenderer?.text?.runs || [];
+
+  const artistParts: string[] = [];
+  let album = '';
+  let duration = '';
+  let viewsText = col2Runs.map((x: any) => x.text || '').join('').trim();
+
+  for (const run of col1Runs) {
+    const txt = (run?.text || '').trim();
+    if (!txt || txt === '•' || txt === '·') continue;
+    const pageType =
+      run?.navigationEndpoint?.browseEndpoint?.browseEndpointContextSupportedConfigs?.browseEndpointContextMusicConfig?.pageType;
+    if (pageType === 'MUSIC_PAGE_TYPE_ARTIST') {
+      artistParts.push(txt);
+    } else if (pageType === 'MUSIC_PAGE_TYPE_ALBUM') {
+      if (!album) album = txt;
+    } else if (/^\d{1,2}:\d{2}(?::\d{2})?$/.test(txt)) {
+      duration = txt;
+    } else if (/\b(?:plays|views)\b/i.test(txt)) {
+      if (!viewsText) viewsText = txt;
+    }
+  }
+
+  // Fallback artist extraction when InnerTube omits pageType (e.g. unlinked artist runs)
+  if (artistParts.length === 0) {
+    const segments = col1Runs
+      .map((x: any) => x.text || '')
+      .join('')
+      .split(/\s*[•·]\s*/)
+      .map((s: string) => s.trim())
+      .filter(Boolean);
+    for (const seg of segments) {
+      if (/^(?:song|video|episode|single|album|ep)$/i.test(seg)) continue;
+      if (/^\d{1,2}:\d{2}(?::\d{2})?$/.test(seg)) {
+        if (!duration) duration = seg;
+        continue;
+      }
+      if (/\b(?:plays|views|monthly|subscribers)\b/i.test(seg)) {
+        if (!viewsText) viewsText = seg;
+        continue;
+      }
+      if (/^(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d+/i.test(seg)) continue;
+      artistParts.push(seg);
+      break;
+    }
+  }
+
+  const rawArtist = artistParts.join(', ').replace(/\s*,\s*&\s*/g, ' & ').trim() || 'Artist';
+  const durationSec = parseDurationSec(duration);
+  const playsCount = parsePlayCount(viewsText);
+
+  const thumbs: any[] = r.thumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnails || [];
+  const bestThumb = thumbs[thumbs.length - 1]?.url || '';
+  const hasSquare = isYtmSquareCoverUrl(bestThumb);
+  const thumbnail = hasSquare
+    ? upgradeYtmSquareCoverUrl(bestThumb)
+    : `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+
+  const cleaned = cleanProperSongTitle(rawTitle, rawArtist);
+  const title = cleaned.title || rawTitle;
+
+  const isNoiseUpload =
+    SEARCH_NOISE_COVER_RE.test(rawTitle) ||
+    SEARCH_NOISE_COVER_RE.test(album) ||
+    SEARCH_NOISE_ARTIST_RE.test(rawArtist);
+
+  return {
+    id: videoId,
+    title,
+    rawTitle,
+    artist: rawArtist,
+    duration: duration || '0:00',
+    durationSec,
+    views: viewsText,
+    playsCount,
+    thumbnail,
+    videoThumbnail: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
+    hasSquareArtwork: hasSquare,
+    isOfficial: !isNoiseUpload && (sourceKind === 'ytm-song' || playsCount >= 500_000),
+    sourceKind,
+    rankIndex,
+    ...(album ? { artworkAlbumHint: album } : {}),
+    ...(rawArtist ? { artworkArtistHint: rawArtist } : {}),
+  };
+}
+
+async function fetchYtmSearchRaw(query: string, params?: string, timeoutMs = 2800): Promise<any | null> {
+  try {
+    const body: Record<string, any> = {
+      context: {
+        client: {
+          clientName: 'WEB_REMIX',
+          clientVersion: '1.20241106.01.00',
+          hl: 'en',
+          gl: 'US',
+        },
+      },
+      query,
+    };
+    if (params) body.params = params;
+
+    const res = await fetch('https://music.youtube.com/youtubei/v1/search?prettyPrint=false', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+        Origin: 'https://music.youtube.com',
+        Referer: 'https://music.youtube.com/',
+      },
+      body: JSON.stringify(body),
+      signal: AbortSignal.timeout(timeoutMs),
+    });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
+async function searchYouTubeMusicInnerTube(rawQuery: string): Promise<any[]> {
+  // Parallel call: Official Songs catalog + Unfiltered Top Card (gives Top Result + artist top songs in ~450-550ms!)
+  const [songsJson, topJson] = await Promise.all([
+    fetchYtmSearchRaw(rawQuery, 'EgWKAQIIAWoMEAMQBBAJEAoQBRAV', 2800),
+    fetchYtmSearchRaw(rawQuery, undefined, 2400),
+  ]);
+
+  const candidates: any[] = [];
+  const seenIds = new Set<string>();
+
+  const pushCandidate = (item: any | null) => {
+    if (!item || !item.id || seenIds.has(item.id)) return;
+    seenIds.add(item.id);
+    candidates.push(item);
+  };
+
+  // 1. Parse Top Card & its featured artist/related tracks first (when Top Card is an Artist or Top Song)
+  const topSections =
+    topJson?.contents?.tabbedSearchResultsRenderer?.tabs?.[0]?.tabRenderer?.content?.sectionListRenderer?.contents || [];
+  let topCardArtist = '';
+  for (const sec of topSections) {
+    const card = sec.musicCardShelfRenderer;
+    if (!card) continue;
+    const cardTitle = (card.title?.runs || []).map((x: any) => x.text || '').join('').trim();
+    const cardSubRuns: any[] = card.subtitle?.runs || [];
+    const cardSubText = cardSubRuns.map((x: any) => x.text || '').join('').trim();
+    const isArtistCard = /^artist\b/i.test(cardSubText);
+    if (isArtistCard && cardTitle) {
+      topCardArtist = cardTitle;
+    }
+
+    const cardVid = card.title?.runs?.[0]?.navigationEndpoint?.watchEndpoint?.videoId;
+    if (cardVid && cardVid.length === 11 && !KNOWN_RESTRICTED_IDS.has(cardVid)) {
+      const thumbs: any[] = card.thumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnails || [];
+      const bestThumb = thumbs[thumbs.length - 1]?.url || '';
+      const hasSquare = isYtmSquareCoverUrl(bestThumb);
+      const segments = cardSubText.split(/\s*[•·]\s*/).map((s: string) => s.trim()).filter(Boolean);
+      const artistSeg = segments.find((s: string) => !/^(?:song|video|episode)$/i.test(s) && !/^\d{1,2}:\d{2}/.test(s) && !/\b(?:views|plays)\b/i.test(s)) || '';
+      const durSeg = segments.find((s: string) => /^\d{1,2}:\d{2}(?::\d{2})?$/.test(s)) || '';
+      const viewsSeg = segments.find((s: string) => /\b(?:views|plays)\b/i.test(s)) || '';
+      const cleaned = cleanProperSongTitle(cardTitle, artistSeg);
+      pushCandidate({
+        id: cardVid,
+        title: cleaned.title || cardTitle,
+        rawTitle: cardTitle,
+        artist: artistSeg || cleaned.artistFromTitle || 'Artist',
+        duration: durSeg || '0:00',
+        durationSec: parseDurationSec(durSeg),
+        views: viewsSeg,
+        playsCount: parsePlayCount(viewsSeg),
+        thumbnail: hasSquare ? upgradeYtmSquareCoverUrl(bestThumb) : `https://i.ytimg.com/vi/${cardVid}/hqdefault.jpg`,
+        videoThumbnail: `https://i.ytimg.com/vi/${cardVid}/hqdefault.jpg`,
+        hasSquareArtwork: hasSquare,
+        isOfficial: !SEARCH_NOISE_COVER_RE.test(cardTitle),
+        sourceKind: hasSquare ? 'ytm-song' : 'ytm-card',
+        rankIndex: 0,
+        ...(artistSeg ? { artworkArtistHint: artistSeg } : {}),
+      });
+    }
+
+    // Parse card children (e.g., for Artist search "Arijit Singh" -> top hits like "Apna Bana Le", "Salamat")
+    const cardChildren: any[] = card.contents || [];
+    cardChildren.forEach((child, idx) => {
+      const parsed = parseYtmResponsiveItem(child?.musicResponsiveListItemRenderer, 'ytm-card', idx + 1);
+      if (parsed) {
+        if (topCardArtist && (!parsed.artist || parsed.artist === 'Artist')) {
+          parsed.artist = topCardArtist;
+          parsed.artworkArtistHint = topCardArtist;
+        }
+        pushCandidate(parsed);
+      }
+    });
+  }
+
+  // 2. Parse Official Songs shelf (up to 20 studio songs with exact artist, album, playsCount, and square cover)
+  const songSections =
+    songsJson?.contents?.tabbedSearchResultsRenderer?.tabs?.[0]?.tabRenderer?.content?.sectionListRenderer?.contents || [];
+  let songRank = 0;
+  for (const sec of songSections) {
+    const shelf = sec.musicShelfRenderer;
+    if (!shelf?.contents) continue;
+    for (const item of shelf.contents) {
+      const parsed = parseYtmResponsiveItem(item?.musicResponsiveListItemRenderer, 'ytm-song', songRank++);
+      if (parsed) pushCandidate(parsed);
+    }
+  }
+
+  return candidates;
+}
+
+function rankAndFilterSearchTracks(candidates: any[], rawQuery: string, limit = 15): any[] {
+  if (!Array.isArray(candidates) || candidates.length === 0) return [];
+  const normQ = normalizeMatchText(rawQuery);
+  const queryTokens = normQ.split(' ').filter((t) => t.length >= 2);
+  const userWantsAlt = SEARCH_USER_WANTS_ALT_RE.test(rawQuery || '');
+
+  // Pre-filter obvious karaoke / cover / parody / fitness / compilation junk unless user explicitly asked for it
+  const cleanedCandidates = candidates.filter((t) => {
+    if (!t?.id || KNOWN_RESTRICTED_IDS.has(t.id)) return false;
+    const rawTitle = t.rawTitle || t.title || '';
+    const artist = t.artist || '';
+    const album = t.artworkAlbumHint || '';
+    const dur = t.durationSec || 0;
+
+    // Drop very short clips (< 45s) or huge jukeboxes/compilations (> 12 min)
+    if (dur > 0 && (dur < 45 || dur > 720)) return false;
+
+    if (!userWantsAlt) {
+      if (SEARCH_NOISE_COVER_RE.test(rawTitle) || SEARCH_NOISE_COVER_RE.test(album) || SEARCH_NOISE_ARTIST_RE.test(artist)) {
+        return false;
+      }
+      // Drop cover/remix/slowed/karaoke variants when not asked for
+      if (/\b(?:cover|karaoke|slowed|reverb|sped\s*up|nightcore|remix|lofi|lo-?fi|unplugged|8d|mashup|parody|instrumental)\b/i.test(rawTitle)) {
+        return false;
+      }
+      // Drop songs whose title is literally identical to the artist name (mangled YouTube scrape artifact)
+      if (
+        t.sourceKind !== 'ytm-song' &&
+        normalizeMatchText(t.title) === normalizeMatchText(artist) &&
+        normalizeMatchText(t.title) !== normQ
+      ) {
+        return false;
+      }
+    }
+    return true;
+  });
+
+  const pool = cleanedCandidates.length > 0 ? cleanedCandidates : candidates;
+
+  // Track the highest play count per normalized titleKey so blockbuster originals (e.g. 3.7B plays)
+  // always suppress lower-play covers with the exact same title even when the user had a typo in their query.
+  const maxPlaysByTitleKey = new Map<string, number>();
+  let globalMaxPlays = 0;
+  for (const t of pool) {
+    const tKey = normalizeSearchTitleForDedup(t.title || '', rawQuery);
+    const plays = t.playsCount || parsePlayCount(t.views || '');
+    if (plays > globalMaxPlays) globalMaxPlays = plays;
+    if (tKey) {
+      const prev = maxPlaysByTitleKey.get(tKey) || 0;
+      if (plays > prev) maxPlaysByTitleKey.set(tKey, plays);
+    }
+  }
+
+  const pruned = pool.filter((t) => {
+    if (userWantsAlt) return true;
+    const tKey = normalizeSearchTitleForDedup(t.title || '', rawQuery);
+    const plays = t.playsCount || parsePlayCount(t.views || '');
+    const titleMaxPlays = tKey ? maxPlaysByTitleKey.get(tKey) || 0 : 0;
+    // If a massive blockbuster (>= 10M plays) owns this exact song title, drop covers with < 15% of its plays
+    if (titleMaxPlays >= 10_000_000 && plays > 0 && plays < titleMaxPlays * 0.15) {
+      return false;
+    }
+    return true;
+  });
+
+  // Score every candidate for relevance + authority + studio quality
+  const scored = pruned.map((t, idx) => {
+    const normTitle = normalizeMatchText(t.title || '');
+    const normArtist = normalizeMatchText(t.artist || '');
+    const normAlbum = normalizeMatchText(t.artworkAlbumHint || '');
+    const rawTitleLower = (t.rawTitle || t.title || '').toLowerCase();
+    const plays = t.playsCount || parsePlayCount(t.views || '');
+
+    let score = 0;
+
+    // 1. Exact combined "title + artist" or "artist + title" match (highest precision!)
+    const combinedTA = `${normTitle} ${normArtist}`.trim();
+    const combinedAT = `${normArtist} ${normTitle}`.trim();
+    const isExactCombined =
+      Boolean(normQ) &&
+      Boolean(normTitle) &&
+      Boolean(normArtist) &&
+      (combinedTA === normQ || combinedAT === normQ);
+
+    // Detect cover uploads that embed the real artist's name inside parentheses in the title
+    // while the actual track artist is someone else (e.g. "Shape of You (Ed Sheeran)" by "Rousseau")
+    const parenArtistMatch = rawTitleLower.match(/\(([^)]{3,40})\)/);
+    const parenInsideNorm = parenArtistMatch ? normalizeMatchText(parenArtistMatch[1]) : '';
+    const isCoverWithArtistInParens =
+      !userWantsAlt &&
+      Boolean(parenInsideNorm) &&
+      Boolean(normQ) &&
+      normQ.includes(parenInsideNorm) &&
+      !normArtist.includes(parenInsideNorm) &&
+      !/\b(?:feat|ft|from|remaster|deluxe|radio|album|single|pt|part)\b/i.test(parenInsideNorm);
+
+    if (isExactCombined) {
+      score += 210;
+    } else if (normQ && normTitle === normQ && !isCoverWithArtistInParens) {
+      score += 155;
+    } else if (normQ && normTitle.startsWith(normQ)) {
+      score += 95;
+    } else if (normQ && normTitle.includes(normQ)) {
+      score += 65;
+    }
+
+    if (isCoverWithArtistInParens) {
+      score -= 130;
+    }
+
+    if (normQ && normArtist === normQ) {
+      score += 135;
+    } else if (normQ && (normArtist.includes(normQ) || (normQ.includes(normArtist) && normArtist.length >= 4))) {
+      score += 80;
+    }
+
+    // 2. Multi-token query match coverage (handles "shape of you ed sheeran", "tum hi ho arijit", etc.)
+    if (queryTokens.length > 0) {
+      let titleHits = 0;
+      let artistHits = 0;
+      let anyHits = 0;
+      for (const tok of queryTokens) {
+        const inTitle = normTitle.includes(tok);
+        const inArtist = normArtist.includes(tok);
+        if (inTitle) titleHits++;
+        if (inArtist) artistHits++;
+        if (inTitle || inArtist || normAlbum.includes(tok)) anyHits++;
+      }
+      const coverage = anyHits / queryTokens.length;
+      score += coverage * 85;
+      if (anyHits === queryTokens.length) score += 35;
+      if (titleHits > 0 && artistHits > 0) score += 55; // Both song & credited artist matched!
+    }
+
+    // 3. Popularity authority (strong logarithmic play/view count so real hits crush knockoffs & parodies)
+    if (plays > 0) {
+      score += Math.min(82, Math.log10(Math.max(10, plays)) * 8.5);
+    }
+    if (globalMaxPlays >= 50_000_000 && plays > 0 && plays < 200_000 && normTitle !== normQ) {
+      score -= 45;
+    }
+
+    // 4. Studio audio + official square artwork preference
+    if (t.sourceKind === 'ytm-song') score += 38;
+    if (t.hasSquareArtwork) score += 28;
+    if (t.isOfficial) score += 20;
+
+    // 5. Healthy single-track duration
+    const dur = t.durationSec || 0;
+    if (dur >= 95 && dur <= 450) score += 12;
+
+    // 6. Mild preference for engine's original top rank
+    const engineRank = typeof t.rankIndex === 'number' ? t.rankIndex : idx;
+    score += Math.max(0, 16 - engineRank * 1.1);
+
+    // Strip internal ranking metadata before returning to client
+    const { rawTitle: _rt, playsCount: _pc, sourceKind: _sk, rankIndex: _ri, ...cleanTrack } = t;
+    return { track: cleanTrack, score };
+  });
+
+  scored.sort((a, b) => b.score - a.score);
+  const ranked = scored.map((s) => s.track);
+  return deduplicateSearchTracks(ranked, rawQuery).slice(0, limit);
+}
+
 async function scrapeYouTubeMusic(
   rawQuery: string,
   options: {
@@ -1103,10 +1545,14 @@ function deduplicateSearchTracks(tracks: any[], searchQuery = ''): any[] {
     if (!queryWantsAlt && !isAlt) {
       score += 24;
     }
+    const plays = parsePlayCount(t.views || '');
+    if (plays > 0) {
+      score += Math.min(65, Math.log10(Math.max(10, plays)) * 6.8);
+    }
     const dur = t.durationSec || 0;
     if (dur >= 100 && dur <= 460) score += 10;
     if (!SEARCH_DEDUP_GENERIC_ARTIST_RE.test(t.artist || '')) score += 12;
-    score += Math.max(0, 5 - idx * 0.2);
+    score += Math.max(0, 8 - idx * 0.35);
     return score;
   };
 
@@ -1613,17 +2059,18 @@ async function startServer() {
   const searchCache = new Map<string, { tracks: any[]; expiresAt: number }>();
   const searchInFlight = new Map<string, Promise<any[]>>();
 
-  // API 2c: Realtime Search Autocomplete Suggestions (cached)
+  // API 2c: Realtime Search Autocomplete Suggestions (cached & cleaned of video clutter)
   app.get('/api/suggest', async (req: Request, res: Response) => {
     const q = sanitizeText(req.query.q, 100);
     if (!q) {
       return res.json({ suggestions: [] });
     }
 
-    const key = q.toLowerCase();
+    const key = q.toLowerCase().replace(/\s+/g, ' ').trim();
     const now = Date.now();
     const cached = suggestCache.get(key);
     if (cached && cached.expiresAt > now) {
+      res.setHeader('Cache-Control', 'public, max-age=120');
       return res.json({ suggestions: cached.value });
     }
 
@@ -1631,9 +2078,9 @@ async function startServer() {
       const suggestUrl = `https://suggestqueries.google.com/complete/search?client=firefox&ds=yt&q=${encodeURIComponent(q)}`;
       const response = await fetch(suggestUrl, {
         headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
         },
-        signal: AbortSignal.timeout(1500),
+        signal: AbortSignal.timeout(1200),
       });
 
       if (!response.ok) {
@@ -1641,33 +2088,50 @@ async function startServer() {
       }
 
       const data = await response.json();
-      const suggestions = Array.isArray(data[1]) ? data[1].slice(0, 6) : [];
-      suggestCache.set(key, { value: suggestions, expiresAt: now + 5 * 60 * 1000 });
-      if (suggestCache.size > 300) {
+      const rawList: string[] = Array.isArray(data[1]) ? data[1] : [];
+      const seen = new Set<string>();
+      const suggestions: string[] = [];
+      for (const item of rawList) {
+        if (typeof item !== 'string') continue;
+        // Strip noisy YouTube search modifiers unless user specifically typed them
+        const cleaned = item
+          .replace(/\b(?:official\s+music\s+video|official\s+video|official\s+audio|full\s+song|video\s+song|hd|4k|status|whatsapp\s+status|ringtone)\b/gi, '')
+          .replace(/\s+/g, ' ')
+          .trim();
+        const lower = cleaned.toLowerCase();
+        if (!cleaned || lower === key || seen.has(lower)) continue;
+        seen.add(lower);
+        suggestions.push(cleaned);
+        if (suggestions.length >= 6) break;
+      }
+
+      suggestCache.set(key, { value: suggestions, expiresAt: now + 10 * 60 * 1000 });
+      if (suggestCache.size > 400) {
         const oldest = suggestCache.keys().next().value;
         if (oldest) suggestCache.delete(oldest);
       }
+      res.setHeader('Cache-Control', 'public, max-age=120');
       res.json({ suggestions });
     } catch {
       res.json({ suggestions: [] });
     }
   });
 
-  // API 3: Ultra-Fast Realtime Official YouTube Music Search
+  // API 3: Ultra-Fast High-Accuracy YouTube Music Search (InnerTube primary + YT fallback)
   app.get('/api/search', async (req: Request, res: Response) => {
     const rawQ = sanitizeText(req.query.q, 160);
 
     if (!rawQ) {
       return res.json({
-        tracks: await enrichTracksRealtimeFast(getAllFallbackTracks(KNOWN_RESTRICTED_IDS).slice(0, 12), 450),
+        tracks: await enrichTracksRealtimeFast(getAllFallbackTracks(KNOWN_RESTRICTED_IDS).slice(0, 12), 400),
       });
     }
 
-    const cacheKey = rawQ.toLowerCase();
+    const cacheKey = rawQ.toLowerCase().replace(/\s+/g, ' ').trim();
     const now = Date.now();
     const cached = searchCache.get(cacheKey);
     if (cached && cached.expiresAt > now) {
-      res.setHeader('Cache-Control', 'public, max-age=60');
+      res.setHeader('Cache-Control', 'public, max-age=120');
       return res.json({ tracks: cached.tracks });
     }
 
@@ -1675,24 +2139,90 @@ async function startServer() {
       let work = searchInFlight.get(cacheKey);
       if (!work) {
         work = (async () => {
-          const results = await scrapeYouTubeMusic(rawQ, { limit: 18, singleTracksOnly: false });
-          if (results.length > 0) {
-            const slice = results.slice(0, 18);
-            // Fast 1350ms paced Wave-1 enrichment (instant disk/memory hits + rate-safe Deezer/JioSaavn/iTunes)
-            const fastTracks = deduplicateSearchTracks(await enrichTracksRealtimeFast(slice, 1350), rawQ);
-            searchCache.set(cacheKey, { tracks: fastTracks, expiresAt: Date.now() + 3 * 60 * 1000 });
-            if (searchCache.size > 150) {
+          // 1. Primary: Direct YouTube Music InnerTube JSON search (~450-550ms, structured studio songs + 1:1 covers!)
+          const candidates = await searchYouTubeMusicInnerTube(rawQ);
+          let ranked = rankAndFilterSearchTracks(candidates, rawQ, 15);
+
+          // 2. Smart Expansion / Fallback:
+          //    - If YTM found a verified top official song (e.g. exact song query like "Blinding Lights" or
+          //      "Die With A Smile") and dedup/cover-filtering left < 6 tracks, append studio hits by that
+          //      same artist (0ms from live/curated pool + fast 1-shot YTM Songs lookup if needed) instead of
+          //      falling back to noisy YouTube HTML viral/parody videos!
+          //    - Only fall back to scrapeYouTubeMusic HTML when YTM returned 0 quality matches.
+          if (ranked.length > 0 && ranked.length < 6 && ranked[0].isOfficial && ranked[0].artist) {
+            const topArtistRaw = String(ranked[0].artist).split(/\s*(?:,|&|\bfeat\.?\b|\bft\.?\b)\s*/i)[0].trim();
+            const topArtistNorm = normalizeMatchText(topArtistRaw);
+            const existingIds = new Set(ranked.map((t) => t.id));
+            const localArtistExtras: any[] = [];
+            if (topArtistNorm.length >= 3) {
+              for (const t of getAllFallbackTracks(KNOWN_RESTRICTED_IDS)) {
+                if (existingIds.has(t.id)) continue;
+                if (normalizeMatchText(t.artist || '').includes(topArtistNorm)) {
+                  localArtistExtras.push(t);
+                  existingIds.add(t.id);
+                  if (localArtistExtras.length >= 6) break;
+                }
+              }
+            }
+
+            let artistExtras = localArtistExtras;
+            if (artistExtras.length < 4 && topArtistRaw.length >= 3) {
+              const artistJson = await fetchYtmSearchRaw(topArtistRaw, 'EgWKAQIIAWoMEAMQBBAJEAoQBRAV', 1400);
+              const artSections =
+                artistJson?.contents?.tabbedSearchResultsRenderer?.tabs?.[0]?.tabRenderer?.content?.sectionListRenderer?.contents || [];
+              const artItems: any[] = [];
+              let aIdx = 0;
+              for (const sec of artSections) {
+                for (const it of sec.musicShelfRenderer?.contents || []) {
+                  const p = parseYtmResponsiveItem(it?.musicResponsiveListItemRenderer, 'ytm-song', aIdx++);
+                  if (p && !existingIds.has(p.id) && normalizeMatchText(p.artist).includes(topArtistNorm)) {
+                    artItems.push(p);
+                  }
+                }
+              }
+              const cleanedArtistSongs = rankAndFilterSearchTracks(artItems, topArtistRaw, 8);
+              artistExtras = [...localArtistExtras, ...cleanedArtistSongs];
+            }
+
+            if (artistExtras.length > 0) {
+              // Keep the exact query matches at the very top, followed by studio songs from the same artist
+              ranked = deduplicateSearchTracks([...ranked, ...artistExtras], rawQ).slice(0, 12);
+            }
+          } else if (ranked.length === 0) {
+            try {
+              const ytFallback = await scrapeYouTubeMusic(rawQ, { limit: 14, singleTracksOnly: false });
+              if (ytFallback.length > 0) {
+                ranked = rankAndFilterSearchTracks(ytFallback, rawQ, 15);
+              }
+            } catch {
+              // Fallback to local pool below
+            }
+          }
+
+          if (ranked.length > 0) {
+            // Fast-path: YTM studio songs ALREADY have verified 1:1 studio covers (0ms!).
+            // Only spend up to 320ms enriching any remaining non-square tracks (top 8 first).
+            const needsEnrich = ranked.some((t) => !t.hasSquareArtwork);
+            const fastTracks = needsEnrich
+              ? deduplicateSearchTracks(await enrichTracksRealtimeFast(ranked, 320), rawQ)
+              : ranked;
+
+            // Add top official songs to live discovery pool
+            addToLivePool(fastTracks.filter((t) => t.isOfficial && t.hasSquareArtwork && t.durationSec >= 90 && t.durationSec <= 540).slice(0, 6));
+
+            searchCache.set(cacheKey, { tracks: fastTracks, expiresAt: Date.now() + 10 * 60 * 1000 });
+            if (searchCache.size > 400) {
               const oldest = searchCache.keys().next().value;
               if (oldest) searchCache.delete(oldest);
             }
 
-            // Quietly warm deeper Wave 2/3 studio artwork in background and update cache if new covers resolve
+            // Quietly warm deeper Wave 2 studio artwork in background for any remaining video-only items
             if (fastTracks.some((t) => !t.hasSquareArtwork)) {
-              void enrichTracksWithSquareArtwork(slice, 4)
+              void enrichTracksWithSquareArtwork(fastTracks, 4)
                 .then((deepEnriched) => {
                   const uniqueDeep = deduplicateSearchTracks(deepEnriched, rawQ);
                   if (uniqueDeep.length > 0) {
-                    searchCache.set(cacheKey, { tracks: uniqueDeep, expiresAt: Date.now() + 3 * 60 * 1000 });
+                    searchCache.set(cacheKey, { tracks: uniqueDeep, expiresAt: Date.now() + 10 * 60 * 1000 });
                   }
                 })
                 .catch(() => {});
@@ -1701,6 +2231,7 @@ async function startServer() {
             return fastTracks;
           }
 
+          // 3. Offline/Zero-match local catalog fallback
           const matched = getAllFallbackTracks(KNOWN_RESTRICTED_IDS).filter(
             (t) =>
               t.title.toLowerCase().includes(cacheKey) ||
@@ -1710,7 +2241,7 @@ async function startServer() {
             matched.length > 0 ? matched : getAllFallbackTracks(KNOWN_RESTRICTED_IDS).slice(0, 12),
             rawQ
           );
-          return enrichTracksRealtimeFast(fallbackList, 450);
+          return enrichTracksRealtimeFast(fallbackList, 350);
         })().finally(() => {
           searchInFlight.delete(cacheKey);
         });
@@ -1718,12 +2249,12 @@ async function startServer() {
       }
 
       const tracks = await work;
-      res.setHeader('Cache-Control', 'public, max-age=60');
+      res.setHeader('Cache-Control', 'public, max-age=120');
       return res.json({ tracks });
     } catch (err: any) {
       console.error('Search error:', err.message);
       res.json({
-        tracks: await enrichTracksRealtimeFast(getAllFallbackTracks(KNOWN_RESTRICTED_IDS).slice(0, 12), 400),
+        tracks: await enrichTracksRealtimeFast(getAllFallbackTracks(KNOWN_RESTRICTED_IDS).slice(0, 12), 350),
       });
     }
   });
@@ -2441,6 +2972,7 @@ async function startServer() {
       if (BAD_SAAVN_SLUG_RE.test(slug)) return false;
     }
     return (
+      isYtmSquareCoverUrl(url) ||
       url.includes('dzcdn.net') ||
       url.includes('mzstatic.com') ||
       url.includes('scdn.co') ||

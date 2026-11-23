@@ -52,7 +52,11 @@ export function isHighResStudioPoster(url?: string | null): boolean {
     const slug = url.split('/').pop() || '';
     if (BAD_SAAVN_COVER_SLUG_RE.test(slug)) return false;
   }
+  const isSquareYtmCover =
+    (url.includes('lh3.googleusercontent.com') || url.includes('yt3.googleusercontent.com')) &&
+    /=w(\d+)-h\1(?:-|$)/i.test(url);
   return (
+    isSquareYtmCover ||
     url.includes('dzcdn.net') ||
     url.includes('mzstatic.com') ||
     url.includes('scdn.co') ||
@@ -67,10 +71,18 @@ export function isHighResStudioPoster(url?: string | null): boolean {
  * Rewrites high-res CDN URLs into fast, edge-cached WebP / right-sized variants:
  * - Apple mzstatic: 400x400bb.webp (~20KB, ~14ms) for cards, 600x600bb.webp (~44KB) for hero
  * - Deezer dzcdn: 500x500-000000-80-0-0.jpg (~25KB, edge-cached) for cards
+ * - YouTube Music googleusercontent: w400-h400-l90-rj for cards, w800-h800-l90-rj for hero
  * - Unsplash: w=480&q=75&auto=format&fit=crop for cards, w=720&q=80 for hero
  */
 export function optimizePosterUrl(url: string, size: 'card' | 'hero' = 'card'): string {
   if (!url) return '';
+  if (
+    (url.includes('lh3.googleusercontent.com') || url.includes('yt3.googleusercontent.com')) &&
+    /=w(\d+)-h\1(?:-|$)/i.test(url)
+  ) {
+    const dim = size === 'hero' ? '=w800-h800-l90-rj' : '=w400-h400-l90-rj';
+    return url.replace(/=w\d+-h\d+[^&]*/i, dim);
+  }
   if (url.includes('mzstatic.com')) {
     const dim = size === 'hero' ? '600x600bb.webp' : '400x400bb.webp';
     return url.replace(/\/\d+x\d+bb\.(jpg|jpeg|png|webp)$/i, `/${dim}`);

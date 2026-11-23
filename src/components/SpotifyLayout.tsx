@@ -501,9 +501,31 @@ export const SpotifyLayout: React.FC<SpotifyLayoutProps> = ({
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const [localSearchInput, setLocalSearchInput] = useState<string>(searchQuery || '');
   const [searchSuggestions, setSearchSuggestions] = useState<string[]>([]);
+  const [recentSearches, setRecentSearches] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem('melophile_recent_searches');
+      const parsed = saved ? JSON.parse(saved) : [];
+      return Array.isArray(parsed) ? parsed.filter((x) => typeof x === 'string').slice(0, 6) : [];
+    } catch {
+      return [];
+    }
+  });
   const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const suggestDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const suggestAbortRef = useRef<AbortController | null>(null);
   const suggestCacheRef = useRef<Map<string, string[]>>(new Map());
+
+  const saveRecentSearch = (term: string) => {
+    const clean = term.trim();
+    if (clean.length < 2) return;
+    setRecentSearches((prev) => {
+      const next = [clean, ...prev.filter((x) => x.toLowerCase() !== clean.toLowerCase())].slice(0, 6);
+      try {
+        localStorage.setItem('melophile_recent_searches', JSON.stringify(next));
+      } catch {}
+      return next;
+    });
+  };
 
   useEffect(() => {
     if (document.activeElement !== searchInputRef.current) {
@@ -536,7 +558,7 @@ export const SpotifyLayout: React.FC<SpotifyLayoutProps> = ({
       setSearchSuggestions([]);
       return;
     }
-    const key = trimmed.toLowerCase();
+    const key = trimmed.toLowerCase().replace(/\s+/g, ' ');
     const cached = suggestCacheRef.current.get(key);
     if (cached) {
       setSearchSuggestions(cached);
@@ -560,7 +582,9 @@ export const SpotifyLayout: React.FC<SpotifyLayoutProps> = ({
   const handleSearchChange = (val: string) => {
     setLocalSearchInput(val);
     if (searchDebounceRef.current) clearTimeout(searchDebounceRef.current);
-    if (!val.trim()) {
+    if (suggestDebounceRef.current) clearTimeout(suggestDebounceRef.current);
+    const trimmed = val.trim();
+    if (!trimmed) {
       if (suggestAbortRef.current) suggestAbortRef.current.abort();
       setSearchSuggestions([]);
       onClearSearch();
@@ -569,17 +593,25 @@ export const SpotifyLayout: React.FC<SpotifyLayoutProps> = ({
     if (activeView !== 'search') {
       setActiveView('search');
     }
-    searchDebounceRef.current = setTimeout(() => {
-      fetchLiveSuggestions(val);
-      onSearch(val);
-    }, 110);
+    // Fast 100ms autocomplete chips
+    suggestDebounceRef.current = setTimeout(() => {
+      fetchLiveSuggestions(trimmed);
+    }, 100);
+    // Smart 210ms live search (prevents request thrashing while typing fast, still feels instant)
+    if (trimmed.length >= 2) {
+      searchDebounceRef.current = setTimeout(() => {
+        onSearch(trimmed);
+      }, 210);
+    }
   };
 
   const handleSearchSubmitNow = (val: string) => {
     const trimmed = val.trim();
     if (!trimmed) return;
     if (searchDebounceRef.current) clearTimeout(searchDebounceRef.current);
+    if (suggestDebounceRef.current) clearTimeout(suggestDebounceRef.current);
     setLocalSearchInput(trimmed);
+    saveRecentSearch(trimmed);
     if (activeView !== 'search') {
       setActiveView('search');
     }
@@ -589,6 +621,7 @@ export const SpotifyLayout: React.FC<SpotifyLayoutProps> = ({
 
   const handleClearSearchInput = () => {
     if (searchDebounceRef.current) clearTimeout(searchDebounceRef.current);
+    if (suggestDebounceRef.current) clearTimeout(suggestDebounceRef.current);
     if (suggestAbortRef.current) suggestAbortRef.current.abort();
     setSearchSuggestions([]);
     setLocalSearchInput('');
@@ -3483,14 +3516,68 @@ export const SpotifyLayout: React.FC<SpotifyLayoutProps> = ({
                     </p>
                   </div>
                 ) : (
-                  <div className="bg-[#1e1f27] border-[3px] border-black shadow-[5px_5px_0px_#000000] p-10 text-center space-y-3">
-                    <Zap className="w-8 h-8 text-[#fde400] mx-auto" />
-                    <p className="font-display text-2xl uppercase text-white">
-                      TYPE ANY OFFICIAL ARTIST OR TRACK ABOVE
-                    </p>
-                    <p className="text-xs text-[#b9cacb]">
-                      Instant studio posters, live HD video, and synchronized speech-bubble lyrics included.
-                    </p>
+                  <div className="bg-[#1e1f27] border-[3px] border-black shadow-[5px_5px_0px_#000000] p-6 sm:p-10 text-center space-y-5">
+                    <div className="space-y-2">
+                      <Zap className="w-8 h-8 text-[#fde400] mx-auto" />
+                      <p className="font-display text-2xl uppercase text-white">
+                        SEARCH ANY OFFICIAL SONG, ARTIST, OR LYRIC
+                      </p>
+                      <p className="text-xs text-[#b9cacb]">
+                        Direct studio audio, verified 1:1 album artwork, and synced lyrics.
+                      </p>
+                    </div>
+
+                    {recentSearches.length > 0 && (
+                      <div className="space-y-2 pt-2 border-t-2 border-black/60">
+                        <div className="flex items-center justify-center gap-2">
+                          <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-[#b9cacb]">
+                            RECENT SEARCHES
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setRecentSearches([]);
+                              try {
+                                localStorage.removeItem('melophile_recent_searches');
+                              } catch {}
+                            }}
+                            className="font-mono text-[10px] font-bold uppercase text-[#ff506e] hover:underline cursor-pointer"
+                          >
+                            CLEAR
+                          </button>
+                        </div>
+                        <div className="flex flex-wrap items-center justify-center gap-2">
+                          {recentSearches.map((term) => (
+                            <button
+                              key={`recent-${term}`}
+                              type="button"
+                              onClick={() => handleSearchSubmitNow(term)}
+                              className="px-3 py-1.5 bg-[#12131a] hover:bg-[#00f0ff] hover:text-[#00363a] text-[#e3e1ec] border-2 border-black shadow-[2px_2px_0px_#000000] font-mono text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
+                            >
+                              {term}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="space-y-2 pt-1">
+                      <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-[#00f0ff] block">
+                        QUICK PICKS
+                      </span>
+                      <div className="flex flex-wrap items-center justify-center gap-2">
+                        {['The Weeknd', 'Arijit Singh', 'Die With A Smile', 'Billie Eilish', 'Diljit Dosanjh', 'Taylor Swift'].map((pick) => (
+                          <button
+                            key={`pick-${pick}`}
+                            type="button"
+                            onClick={() => handleSearchSubmitNow(pick)}
+                            className="px-3 py-1.5 bg-[#292931] hover:bg-[#fde400] hover:text-[#201c00] text-white border-2 border-black shadow-[2px_2px_0px_#000000] font-display text-sm tracking-wider uppercase transition-all cursor-pointer"
+                          >
+                            {pick}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>

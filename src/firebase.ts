@@ -39,7 +39,7 @@ export function handleFirestoreError(
   error: unknown,
   operationType: OperationType,
   path: string | null
-): never {
+): void {
   const errInfo: FirestoreErrorInfo = {
     error: error instanceof Error ? error.message : String(error),
     authInfo: {
@@ -57,17 +57,17 @@ export function handleFirestoreError(
     operationType,
     path,
   };
-  console.error('Firestore Error: ', JSON.stringify(errInfo));
-  throw new Error(JSON.stringify(errInfo));
+  console.warn('[Firestore Soft Error]', JSON.stringify(errInfo));
 }
 
-// Validate Connection to Firestore on boot
+// Validate Connection to Firestore on boot (non-blocking diagnostic)
 async function testConnection() {
   try {
     await getDocFromServer(doc(db, 'test', 'connection'));
   } catch (error) {
+    // Non-fatal: user or project might not have 'test/connection' document created or might be briefly offline
     if (error instanceof Error && error.message.includes('the client is offline')) {
-      console.error('Please check your Firebase configuration.');
+      console.warn('[Firebase] Client is currently running offline.');
     }
   }
 }

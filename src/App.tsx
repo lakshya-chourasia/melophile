@@ -1,5 +1,12 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { User, onAuthStateChanged, signInWithPopup, signOut } from 'firebase/auth';
+import {
+  User,
+  onAuthStateChanged,
+  signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
+  signOut,
+} from 'firebase/auth';
 import { Track, RepeatMode, VisualizerMode, ActiveView, GenreCollection, Playlist, ThemePreset, StreamQuality, PlayerStyle } from './types/player';
 import { THEME_PRESETS } from './utils/themeConfig';
 import { Sidebar } from './components/Sidebar';
@@ -311,6 +318,22 @@ export default function App() {
     localStorage.setItem('aura_playlists', JSON.stringify(playlists));
   }, [playlists]);
 
+  // Check redirect result on boot (for mobile browsers / popup-blocked environments)
+  useEffect(() => {
+    getRedirectResult(auth)
+      .then((result) => {
+        if (result?.user) {
+          const firstName = result.user.displayName?.split(' ')[0] || 'Listener';
+          showToast(`Signed in as ${firstName} · Taste & vault synced`);
+        }
+      })
+      .catch((err) => {
+        if (err?.code !== 'auth/popup-closed-by-user' && err?.code !== 'auth/cancelled-popup-request') {
+          console.warn('[Auth] Redirect sign-in check:', err);
+        }
+      });
+  }, [showToast]);
+
   // Firebase Auth Listener & Live Cloud Sync (Favorites, History, Taste Profile)
   useEffect(() => {
     let unsubFavorites: (() => void) | null = null;
@@ -398,8 +421,18 @@ export default function App() {
       if (err?.code === 'auth/popup-closed-by-user' || err?.code === 'auth/cancelled-popup-request') {
         return;
       }
+      // If popup was blocked by browser, seamlessly fallback to signInWithRedirect
+      if (err?.code === 'auth/popup-blocked') {
+        showToast('Redirecting to Google Sign-In...');
+        try {
+          await signInWithRedirect(auth, googleProvider);
+          return;
+        } catch (redirectErr) {
+          console.error('Redirect sign-in failed:', redirectErr);
+        }
+      }
       console.error('Google sign-in failed:', err);
-      showToast('Could not complete Google sign-in. Please allow popups and try again.');
+      showToast('Could not complete Google sign-in. Please try again.');
     } finally {
       setIsSigningIn(false);
     }

@@ -1134,9 +1134,13 @@ export const SpotifyLayout: React.FC<SpotifyLayoutProps> = ({
     });
 
     fetch(`/api/lyrics?${queryParams.toString()}`, { signal: controller.signal })
-      .then((res) => res.json())
+      .then(async (res) => {
+        if (res.ok) return res.json();
+        const fallbackRes = await fetch(`https://melophile-music.vercel.app/api/lyrics?${queryParams.toString()}`, { signal: controller.signal });
+        return fallbackRes.ok ? fallbackRes.json() : null;
+      })
       .then((data) => {
-        if (controller.signal.aborted) return;
+        if (!data || controller.signal.aborted) return;
         let parsed = data.syncedLyrics ? parseLrcLyrics(data.syncedLyrics) : [];
         const isRealSync = parsed.length > 0;
         if (!isRealSync && data.plainLyrics) {

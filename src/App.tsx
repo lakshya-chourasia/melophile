@@ -421,6 +421,13 @@ export default function App() {
       if (err?.code === 'auth/popup-closed-by-user' || err?.code === 'auth/cancelled-popup-request') {
         return;
       }
+      // If domain is not authorized in Firebase Console
+      if (err?.code === 'auth/unauthorized-domain') {
+        const currentHost = window.location.hostname;
+        console.error(`[Firebase Auth] Domain "${currentHost}" is not authorized in Firebase Authentication -> Settings -> Authorized Domains.`);
+        showToast(`Domain ${currentHost} not authorized in Firebase Console.`);
+        return;
+      }
       // If popup was blocked by browser, seamlessly fallback to signInWithRedirect
       if (err?.code === 'auth/popup-blocked') {
         showToast('Redirecting to Google Sign-In...');
@@ -497,8 +504,22 @@ export default function App() {
           params.set('recentTitles', taste.recentTitles.slice(0, 8).join(','));
         }
 
-        const res = await fetch(`/api/recommendations?${params.toString()}`, { cache: 'no-store' });
-        if (res.ok) {
+        let res: Response | null = null;
+        try {
+          res = await fetch(`/api/recommendations?${params.toString()}`, { cache: 'no-store' });
+          if (!res.ok) res = null;
+        } catch {
+          res = null;
+        }
+        if (!res) {
+          try {
+            res = await fetch(`https://melophile-music.vercel.app/api/recommendations?${params.toString()}`, { cache: 'no-store' });
+            if (!res.ok) res = null;
+          } catch {
+            res = null;
+          }
+        }
+        if (res && res.ok) {
           const data = await res.json();
           if (data.recommendations && data.recommendations.length > 0) {
             const freshRecs: Track[] = cryptoShuffleList(data.recommendations);

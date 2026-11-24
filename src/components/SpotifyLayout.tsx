@@ -568,7 +568,11 @@ export const SpotifyLayout: React.FC<SpotifyLayoutProps> = ({
     const controller = new AbortController();
     suggestAbortRef.current = controller;
     fetch(`/api/suggest?q=${encodeURIComponent(trimmed)}`, { signal: controller.signal })
-      .then((r) => (r.ok ? r.json() : null))
+      .then(async (r) => {
+        if (r.ok) return r.json();
+        const fallbackRes = await fetch(`https://melophile-music.vercel.app/api/suggest?q=${encodeURIComponent(trimmed)}`, { signal: controller.signal });
+        return fallbackRes.ok ? fallbackRes.json() : null;
+      })
       .then((data) => {
         if (!controller.signal.aborted && Array.isArray(data?.suggestions)) {
           const list = data.suggestions.slice(0, 6);

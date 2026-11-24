@@ -718,17 +718,36 @@ export default function App() {
       setIsSearching(true);
 
       try {
-        const res = await fetch(`/api/search?q=${encodeURIComponent(trimmed)}`, {
-          signal: controller.signal,
-        });
-        if (!res.ok) throw new Error('Search failed');
+        let res: Response | null = null;
+        try {
+          res = await fetch(`/api/search?q=${encodeURIComponent(trimmed)}`, {
+            signal: controller.signal,
+          });
+          if (!res.ok) res = null;
+        } catch {
+          res = null;
+        }
+
+        // Cloud failover if local server returns 404/500 or isn't running (e.g. AI Studio preview)
+        if (!res && !controller.signal.aborted) {
+          try {
+            res = await fetch(`https://melophile-music.vercel.app/api/search?q=${encodeURIComponent(trimmed)}`, {
+              signal: controller.signal,
+            });
+            if (!res.ok) res = null;
+          } catch {
+            res = null;
+          }
+        }
+
+        if (!res) throw new Error('Search failed');
         const data = await res.json();
         if (controller.signal.aborted || reqId !== searchReqIdRef.current) return;
 
         const rawTracks: Track[] = Array.isArray(data.tracks) ? data.tracks : [];
         const tracks = deduplicateTracksBySong(rawTracks, trimmed);
         primeArtworkUrls(tracks, 20);
-        setSearchResults(tracks);
+        setSearchResults(tracks.length > 0 ? tracks : localMatches);
         setIsSearching(false);
 
         // Cache client-side (keep latest 100 queries)
@@ -778,7 +797,9 @@ export default function App() {
         console.error(err);
         if (reqId === searchReqIdRef.current) {
           setIsSearching(false);
-          showToast('Unable to complete music search right now.');
+          if (localMatches.length === 0) {
+            showToast('Unable to complete music search right now.');
+          }
         }
       }
     },

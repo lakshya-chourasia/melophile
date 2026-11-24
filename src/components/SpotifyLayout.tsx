@@ -727,26 +727,35 @@ export const SpotifyLayout: React.FC<SpotifyLayoutProps> = ({
 
   useEffect(() => {
     const id = currentTrack?.id || null;
-    if (!id || !isPlaying || isBuffering || framesMovingTrackId !== id) {
+    if (!id || !isPlaying || isBuffering) {
       setStartedVideoTrackId(null);
       return;
     }
 
-    // Wait 3.4s after real frame motion starts so YouTube's centered || pause circle
-    // and top/bottom HUD have 100% auto-hidden before crossfading out the studio cover.
+    // When explicitly in fullscreen video mode (isCinemaVideo), reveal the video immediately!
+    if (isCinemaVideo) {
+      setStartedVideoTrackId(id);
+      return;
+    }
+
+    if (framesMovingTrackId !== id) {
+      setStartedVideoTrackId(null);
+      return;
+    }
+
+    // In docked canvas mode, wait briefly for frame motion so HUD auto-hides cleanly
     const timer = window.setTimeout(() => {
       setStartedVideoTrackId(id);
-    }, 3400);
+    }, 1200);
 
     return () => window.clearTimeout(timer);
-  }, [currentTrack?.id, isPlaying, isBuffering, framesMovingTrackId, hudResetNonce]);
+  }, [currentTrack?.id, isPlaying, isBuffering, framesMovingTrackId, hudResetNonce, isCinemaVideo]);
 
   const isDockedVideoRevealed = Boolean(
     currentTrack &&
       isPlaying &&
       !isBuffering &&
-      framesMovingTrackId === currentTrack.id &&
-      startedVideoTrackId === currentTrack.id
+      (isCinemaVideo || (framesMovingTrackId === currentTrack.id && startedVideoTrackId === currentTrack.id))
   );
 
   useLayoutEffect(() => {
@@ -3663,17 +3672,17 @@ export const SpotifyLayout: React.FC<SpotifyLayoutProps> = ({
               {videoSlot}
             </div>
 
-            {/* Artwork Curtain (on pause/load/track switch) + Transparent Click & Scroll Shield */}
-            {(isCinemaVideo || (canDockInMainCanvas && isVideoDocked)) &&
+            {/* Artwork Curtain (only on canvas docking when video is paused/loading) + Click Shield */}
+            {!isCinemaVideo && canDockInMainCanvas && isVideoDocked &&
               currentTrack &&
               currentTrackMeta && (
                 <div
                   onClick={onTogglePlay}
                   onDoubleClick={() => {
-                    if (!isCinemaVideo) openCinema('video');
+                    openCinema('video');
                   }}
                   onWheel={(e) => {
-                    if (!isCinemaVideo && mainScrollRef.current) {
+                    if (mainScrollRef.current) {
                       mainScrollRef.current.scrollTop += e.deltaY;
                     }
                   }}
